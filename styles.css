@@ -1,0 +1,600 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Premium Palette */
+    --primary: #E63946;  /* Vivid Red */
+    --secondary: #2A9D8F; /* Teal/Green */
+    --accent: #E9C46A;   /* Sand/Yellow */
+    --dark: #264653;     /* Deep Blue/Green */
+    
+    /* Neutrals */
+    --bg-page: #F1F5F9;
+    --bg-surface: #FFFFFF;
+    --text-main: #1E293B;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
+    
+    /* Effects */
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    --ease-squish: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Layout --- */
+.container {
+    width: 100%;
+    max-width: 800px; /* Reduced width for better focus */
+    margin: 0 auto;
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Header --- */
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 24px 0;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* --- Mode Selector --- */
+.mode-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.mode-title {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.mode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.mode-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    text-align: center;
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s var(--ease-squish);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--secondary);
+}
+
+.mode-card:active {
+    transform: scale(0.98);
+}
+
+.mode-icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.mode-card:hover .mode-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.mode-card h3 {
+    color: var(--dark);
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+.mode-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* --- Controls & Game UI --- */
+.controls {
+    background: var(--bg-surface);
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.category-select {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border);
+    background: var(--bg-page);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-main);
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+.difficulty-buttons {
+    display: flex;
+    gap: 8px;
+    background: var(--bg-page);
+    padding: 4px;
+    border-radius: var(--radius-md);
+}
+
+.difficulty-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.difficulty-btn.active {
+    background: var(--bg-surface);
+    color: var(--dark);
+    box-shadow: var(--shadow-soft);
+}
+
+.new-game-btn {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.2);
+    transition: all 0.2s ease;
+}
+
+.new-game-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* --- Stats --- */
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px 24px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+/* --- Word Search Grid --- */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+}
+
+.grid-container {
+    width: 100%;
+    /* Max width constrains it on tablet/desktop, but on mobile it fills width */
+    max-width: 500px;
+    aspect-ratio: 1;
+    background: var(--bg-surface);
+    padding: 12px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.word-grid {
+    display: grid;
+    /* Columns set by JS, but we ensure full width/height */
+    width: 100%;
+    height: 100%;
+    gap: 2px;
+    user-select: none; /* Prevent highlighting */
+    touch-action: none; /* Important for custom drag handling if implemented */
+}
+
+.grid-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    /* Responsive font sizing */
+    font-size: clamp(12px, 4vw, 24px); 
+    color: var(--text-main);
+    border-radius: 4px;
+    background: var(--bg-page);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.grid-cell.selected {
+    background: var(--accent);
+    color: var(--dark);
+    transform: scale(0.95);
+}
+
+.grid-cell.found {
+    background: var(--secondary);
+    color: white;
+    animation: popIn 0.3s var(--ease-squish);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- Word List --- */
+.word-list-container {
+    width: 100%;
+    background: var(--bg-surface);
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+}
+
+.word-list-title {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.word-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.word-item {
+    background: var(--bg-page);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.word-item.found {
+    background: var(--secondary);
+    color: white;
+    opacity: 0.7;
+    text-decoration: line-through;
+}
+
+.word-points { 
+    display: none; /* Hide points to clean up UI */ 
+}
+
+/* --- Wordle Replica Theme --- */
+.wordle-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: white; /* Force white background for replica feel */
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* NYT Font Stack */
+}
+
+.wordle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 65px; /* Standard header height */
+    border-bottom: 1px solid #d3d6da;
+    color: #1a1a1b;
+}
+
+.wordle-title {
+    font-family: 'Karnak Condensed', serif; /* Or close serif alternative */
+    font-weight: 700;
+    font-size: 2.25rem; /* 36px */
+    letter-spacing: -0.5px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    pointer-events: none;
+    margin: 0;
+}
+
+/* Fallback if Karnak not available */
+@font-face {
+    font-family: 'Karnak Condensed';
+    src: local('Georgia'), local('Times New Roman');
+    font-style: normal;
+    font-weight: 700;
+}
+
+.wordle-header-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #1a1a1b;
+    z-index: 10;
+}
+
+.wordle-header-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.wordle-game {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.wordle-grid {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    grid-gap: 5px;
+    width: 350px;
+    max-width: 100%;
+    /* Remove aspect-ratio on container to let rows define height, but limit max height */
+    height: auto; 
+    aspect-ratio: 5 / 6;
+}
+
+.wordle-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 5px;
+}
+
+.wordle-tile {
+    width: 100%;
+    /* Constraint height to be equal to width */
+    aspect-ratio: 1 / 1; 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: bold;
+    vertical-align: middle;
+    box-sizing: border-box;
+    color: #1a1a1b;
+    text-transform: uppercase;
+    user-select: none;
+    border: 2px solid #d3d6da;
+    background-color: transparent;
+}
+
+/* Filled state (black border, pop animation) */
+.wordle-tile.tile-filled {
+    border-color: #878a8c;
+    animation: popIn 0.1s;
+}
+
+.wordle-tile.flip {
+    animation: flip 0.5s ease-in;
+}
+
+/* Result states */
+.wordle-tile.tile-correct {
+    background-color: #6aaa64;
+    border-color: #6aaa64;
+    color: white;
+}
+
+.wordle-tile.tile-present {
+    background-color: #c9b458;
+    border-color: #c9b458;
+    color: white;
+}
+
+.wordle-tile.tile-absent {
+    background-color: #787c7e;
+    border-color: #787c7e;
+    color: white;
+}
+
+/* Keyboard */
+.wordle-keyboard {
+    height: 200px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 8px 8px 8px;
+    user-select: none;
+}
+
+.keyboard-row {
+    display: flex;
+    width: 100%;
+    margin: 0 auto 8px;
+    touch-action: manipulation;
+}
+
+.key {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin: 0 6px 0 0;
+    height: 58px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    background-color: #d3d6da;
+    color: #1a1a1b;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 1.25rem;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+}
+
+.key:last-of-type {
+    margin: 0;
+}
+
+.key-wide {
+    flex: 1.5;
+    font-size: 12px;
+}
+
+.key-correct { background-color: #6aaa64; color: white; }
+.key-present { background-color: #c9b458; color: white; }
+.key-absent { background-color: #787c7e; color: white; }
+
+/* Animations */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    40% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes flip {
+    0% {
+        transform: rotateX(0);
+        border-color: #878a8c; /* Start with filled border color */
+    }
+    45% {
+        transform: rotateX(90deg);
+        border-color: #878a8c;
+    }
+    55% {
+        transform: rotateX(90deg);
+        /* Color change happens here in JS, but keyframe ensures transform continuity */
+    }
+    100% {
+        transform: rotateX(0);
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 640px) {
+    .wordle-game {
+        padding: 15px;
+    }
+
+    .wordle-grid {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .wordle-tile {
+        font-size: 1.75rem;
+    }
+
+    .key {
+        height: 50px;
+        margin-right: 4px;
+        font-size: 0.9rem;
+    }
+}
+

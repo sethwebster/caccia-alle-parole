@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caccia alle Parole</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">Giochi di Parole Italiane</h1>
+      <p class="subtitle">Scegli il tuo gioco preferito</p>
+    </header>
+
+    <div id="mode-selector" class="mode-selector">
+      <h2 class="mode-title">Seleziona Modalità di Gioco</h2>
+      <div class="mode-cards">
+        <button class="mode-card" data-mode="word-search">
+          <div class="mode-icon">🔍</div>
+          <h3>Caccia alle Parole</h3>
+          <p>Trova tutte le parole nascoste nella griglia</p>
+        </button>
+        <button class="mode-card" data-mode="wordle">
+          <div class="mode-icon">🔤</div>
+          <h3>Wordle Italiano</h3>
+          <p>Indovina la parola del giorno in 6 tentativi</p>
+        </button>
+      </div>
+    </div>
+
+    <div class="controls hidden">
+      <div class="control-group">
+        <label for="category">Categoria:</label>
+        <select id="category" class="category-select">
+          <option value="">Seleziona categoria...</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Difficoltà:</label>
+        <div class="difficulty-buttons">
+          <button class="difficulty-btn" data-difficulty="easy">Facile</button>
+          <button class="difficulty-btn" data-difficulty="medium">Medio</button>
+          <button class="difficulty-btn" data-difficulty="hard">Difficile</button>
+        </div>
+      </div>
+
+      <button id="new-game-btn" class="new-game-btn">Nuova Partita</button>
+    </div>
+
+    <div class="game-stats hidden">
+      <div class="stat">
+        <span class="stat-label">Punteggio:</span>
+        <span id="score" class="stat-value">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Trovate:</span>
+        <span id="found-count" class="stat-value">0/0</span>
+      </div>
+    </div>
+
+    <div class="game-container hidden">
+      <div class="grid-container">
+        <div id="word-grid" class="word-grid"></div>
+      </div>
+
+      <div class="word-list-container">
+        <h3 class="word-list-title">Parole da Trovare</h3>
+        <ul id="word-list" class="word-list"></ul>
+      </div>
+    </div>
+
+    <div id="definitions-modal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <h2 id="modal-word" class="modal-word"></h2>
+        <p id="modal-definition" class="modal-definition"></p>
+      </div>
+    </div>
+
+    <div id="victory-modal" class="modal hidden">
+      <div class="modal-content victory-content">
+        <h2>🎉 Complimenti! 🎉</h2>
+        <p>Hai trovato tutte le parole!</p>
+        <div class="victory-stats">
+          <p><strong>Punteggio Finale:</strong> <span id="final-score"></span></p>
+        </div>
+        <button id="play-again-btn" class="new-game-btn">Gioca Ancora</button>
+      </div>
+    </div>
+
+    <!-- Wordle Container - NYT Replica Structure -->
+    <div id="wordle-container" class="wordle-container hidden">
+      <header class="wordle-header">
+        <!-- Back Button as Hamburger/Menu Icon -->
+        <button id="back-to-menu" class="wordle-header-btn" title="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+          </svg>
+        </button>
+
+        <h1 class="wordle-title">Wordle</h1>
+
+        <div class="header-right" style="display: flex; gap: 8px;">
+          <button id="wordle-share" class="wordle-header-btn" title="Condividi" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path fill="currentColor"
+                d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z">
+              </path>
+            </svg>
+          </button>
+          <button id="wordle-new-game" class="wordle-header-btn" title="Nuova Parola">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path fill="currentColor"
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 10h7V3l-2.35 3.35z">
+              </path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div id="wordle-message" class="wordle-message"></div>
+
+      <div class="wordle-game">
+        <div id="wordle-grid" class="wordle-grid"></div>
+      </div>
+
+      <div id="wordle-keyboard" class="wordle-keyboard"></div>
+    </div>
+
+    <!-- Wordle Victory Modal -->
+    <div id="wordle-victory-modal" class="modal hidden">
+      <div class="modal-content victory-content">
+        <button class="modal-close">&times;</button>
+        <h2 id="wordle-victory-title">🎉 Complimenti! 🎉</h2>
+        <p id="wordle-victory-message">Hai indovinato la parola!</p>
+        <div class="victory-stats">
+          <p><strong>Tentativi:</strong> <span id="wordle-final-guesses"></span></p>
+          <p><strong>Parola:</strong> <span id="wordle-final-word"></span></p>
+          <p id="wordle-final-definition"></p>
+        </div>
+        <button id="wordle-play-again" class="new-game-btn">Gioca Ancora</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+
+</html>

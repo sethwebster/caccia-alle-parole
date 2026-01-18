@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Wordle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Wordle Italiano Test</h1>
+            <p class="subtitle">Test Mode</p>
+        </header>
+
+        <div id="wordle-container" class="wordle-container">
+            <div class="wordle-controls">
+                <button id="wordle-new-game" class="new-game-btn">Nuova Parola</button>
+                <button id="wordle-share" class="share-btn" style="display: none;">Condividi</button>
+            </div>
+
+            <div id="wordle-message" class="wordle-message"></div>
+
+            <div class="wordle-game">
+                <div id="wordle-grid" class="wordle-grid"></div>
+            </div>
+
+            <div id="wordle-keyboard" class="wordle-keyboard"></div>
+        </div>
+
+        <div id="wordle-victory-modal" class="modal hidden">
+            <div class="modal-content victory-content">
+                <button class="modal-close">&times;</button>
+                <h2 id="wordle-victory-title">🎉 Complimenti! 🎉</h2>
+                <p id="wordle-victory-message">Hai indovinato la parola!</p>
+                <div class="victory-stats">
+                    <p><strong>Tentativi:</strong> <span id="wordle-final-guesses"></span></p>
+                    <p><strong>Parola:</strong> <span id="wordle-final-word"></span></p>
+                    <p id="wordle-final-definition"></p>
+                </div>
+                <button id="wordle-play-again" class="new-game-btn">Gioca Ancora</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { WordleUI } from './wordle.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const wordleUI = new WordleUI();
+            wordleUI.startNewGame();
+        });
+    </script>
+</body>
+</html>
