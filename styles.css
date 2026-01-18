@@ -377,8 +377,9 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: white; /* Force white background for replica feel */
-    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* NYT Font Stack */
+    background-color: white;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
 }
 
 .wordle-header {
@@ -392,24 +393,16 @@ body {
 }
 
 .wordle-title {
-    font-family: 'Karnak Condensed', serif; /* Or close serif alternative */
+    font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    font-size: 2.25rem; /* 36px */
-    letter-spacing: -0.5px;
+    font-size: 2rem;
+    letter-spacing: 0.5px;
     position: absolute;
     left: 0;
     right: 0;
     text-align: center;
     pointer-events: none;
     margin: 0;
-}
-
-/* Fallback if Karnak not available */
-@font-face {
-    font-family: 'Karnak Condensed';
-    src: local('Georgia'), local('Times New Roman');
-    font-style: normal;
-    font-weight: 700;
 }
 
 .wordle-header-btn {
@@ -427,12 +420,13 @@ body {
 }
 
 .wordle-game {
-    flex: 1;
+    flex: 0 1 auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 10px;
-    overflow: hidden;
+    padding: 0;
+    overflow: visible;
+    max-height: calc(100vh - 65px - 220px);
 }
 
 .wordle-grid {
@@ -441,9 +435,11 @@ body {
     grid-gap: 5px;
     width: 350px;
     max-width: 100%;
-    /* Remove aspect-ratio on container to let rows define height, but limit max height */
-    height: auto; 
+    height: auto;
+    max-height: calc(100vh - 65px - 240px);
     aspect-ratio: 5 / 6;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .wordle-row {
@@ -502,12 +498,14 @@ body {
 
 /* Keyboard */
 .wordle-keyboard {
-    height: 200px;
+    height: auto;
+    min-height: 200px;
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
     padding: 0 8px 8px 8px;
     user-select: none;
+    flex-shrink: 0;
 }
 
 .keyboard-row {
@@ -523,7 +521,7 @@ body {
     border: 0;
     padding: 0;
     margin: 0 6px 0 0;
-    height: 58px;
+    height: 52px;
     border-radius: 4px;
     cursor: pointer;
     user-select: none;
@@ -551,11 +549,57 @@ body {
 .key-present { background-color: #c9b458; color: white; }
 .key-absent { background-color: #787c7e; color: white; }
 
+/* Toast Message */
+.wordle-message {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #1a1a1b;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.wordle-message.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.wordle-message-error {
+    background: #e63946;
+}
+
+.wordle-message-success {
+    background: #6aaa64;
+}
+
+.wordle-message-info {
+    background: #1a1a1b;
+}
+
 /* Animations */
 @keyframes popIn {
     0% { transform: scale(0.8); opacity: 0; }
     40% { transform: scale(1.1); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+    20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+.wordle-row.shake {
+    animation: shake 0.5s;
 }
 
 @keyframes flip {
@@ -579,22 +623,42 @@ body {
 /* Mobile Adjustments */
 @media (max-width: 640px) {
     .wordle-game {
-        padding: 15px;
+        padding: 0 15px;
+        max-height: calc(100vh - 65px - 200px);
     }
 
     .wordle-grid {
         width: 100%;
         max-width: 100%;
+        max-height: calc(100vh - 65px - 210px);
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 
     .wordle-tile {
-        font-size: 1.75rem;
+        font-size: 1.25rem;
     }
 
     .key {
-        height: 50px;
+        height: 48px;
         margin-right: 4px;
+        font-size: 0.75rem;
+    }
+
+    .keyboard-row {
+        margin-bottom: 5px;
+    }
+
+    .wordle-keyboard {
+        min-height: 190px;
+        padding: 0 4px 4px 4px;
+    }
+
+    .wordle-message {
+        top: 70px;
+        max-width: calc(100% - 32px);
         font-size: 0.9rem;
+        padding: 14px 20px;
     }
 }
 

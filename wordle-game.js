@@ -180,7 +180,7 @@ export class WordleGame {
   getShareText() {
     if (this.gameState === 'playing') return null;
 
-    const title = `Wordle Italiano ${this.guesses.length}/${this.maxGuesses}`;
+    const title = `Paròla ${this.guesses.length}/${this.maxGuesses}`;
     const grid = this.guesses.map(guess => {
       return guess.result.map(state => {
         if (state === LETTER_STATE.CORRECT) return '🟩';

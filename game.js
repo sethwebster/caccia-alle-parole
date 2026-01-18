@@ -11,6 +11,7 @@ class GameManager {
 
         this.initializeElements();
         this.attachModeListeners();
+        this.initializeURLState();
     }
 
     initializeElements() {
@@ -32,11 +33,50 @@ class GameManager {
                 this.backToModeSelector();
             });
         }
+
+        // Listen for browser back/forward
+        window.addEventListener('popstate', () => {
+            this.loadFromURL();
+        });
     }
 
-    selectMode(mode) {
+    initializeURLState() {
+        this.loadFromURL();
+    }
+
+    loadFromURL() {
+        const hash = window.location.hash.slice(1);
+        const params = new URLSearchParams(window.location.search);
+        const mode = hash || params.get('mode');
+
+        if (mode === 'wordle' || mode === 'word-search') {
+            this.selectMode(mode, false);
+        } else {
+            this.backToModeSelector(false);
+        }
+    }
+
+    updateURL(mode) {
+        if (mode) {
+            window.history.pushState({ mode }, '', `#${mode}`);
+        } else {
+            window.history.pushState({}, '', window.location.pathname);
+        }
+    }
+
+    selectMode(mode, updateURL = true) {
         this.currentMode = mode;
         this.modeSelector.classList.add('hidden');
+
+        // Hide main header when in game mode
+        const header = document.querySelector('.header');
+        if (header) {
+            header.classList.add('hidden');
+        }
+
+        if (updateURL) {
+            this.updateURL(mode);
+        }
 
         if (mode === 'word-search') {
             this.showWordSearch();
@@ -72,9 +112,13 @@ class GameManager {
         this.wordleUI.show();
     }
 
-    backToModeSelector() {
+    backToModeSelector(updateURL = true) {
         this.currentMode = null;
         this.modeSelector.classList.remove('hidden');
+
+        if (updateURL) {
+            this.updateURL(null);
+        }
 
         document.querySelector('.controls').classList.add('hidden');
         document.querySelector('.game-stats').classList.add('hidden');

@@ -11,6 +11,7 @@ export class WordleUI {
     this.game = new WordleGame();
     this.elements = {};
     this.shakeTimeout = null;
+    this.messageTimeout = null;
 
     this.initializeElements();
     this.attachEventListeners();
@@ -101,7 +102,6 @@ export class WordleUI {
     this.game.startNewGame(true);
     this.buildGrid();
     this.buildKeyboard();
-    this.showMessage('Indovina la parola!', 'info');
   }
 
   buildGrid() {
@@ -242,13 +242,23 @@ export class WordleUI {
   }
 
   showMessage(text, type = 'info') {
-    this.elements.message.textContent = text;
-    this.elements.message.className = `wordle-message wordle-message-${type}`;
-    this.elements.message.classList.add('show');
-
-    setTimeout(() => {
+    // Clear any existing timeout
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
       this.elements.message.classList.remove('show');
-    }, 3000);
+    }
+
+    // Small delay to allow re-triggering animation
+    setTimeout(() => {
+      this.elements.message.textContent = text;
+      this.elements.message.className = `wordle-message wordle-message-${type}`;
+      this.elements.message.classList.add('show');
+
+      this.messageTimeout = setTimeout(() => {
+        this.elements.message.classList.remove('show');
+        this.messageTimeout = null;
+      }, 2000);
+    }, 10);
   }
 
   showVictoryModal() {
