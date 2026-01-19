@@ -3,6 +3,8 @@
 	import '../app.css';
 	import Toast from '$lib/components/ui/Toast.svelte';
 
+	let { children } = $props();
+
 	onMount(() => {
 		// Clear legacy localStorage on first visit to SvelteKit version
 		if (typeof localStorage !== 'undefined' && !localStorage.getItem('sveltekit_migrated')) {
@@ -13,7 +15,7 @@
 </script>
 
 <div class="cds-h-screen" style="background: var(--cds-color-background);">
-	<slot />
+	{@render children()}
 </div>
 
 <Toast position="top-right" />
