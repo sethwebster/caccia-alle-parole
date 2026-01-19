@@ -102,17 +102,19 @@ export class WordleUI {
 
   startNewGame() {
     this.isLockedUIApplied = false; // Reset the flag when starting a new game
-    this.game.startNewGame(true);
     
-    // Check if game is locked before rebuilding UI (optimization)
-    const state = this.game.getGameState();
-    if (state.gameState === 'locked') {
-      this.applyLockedUI();
-      return; // Exit early, no need to build grid/keyboard
-    }
-    
+    // Build grid and keyboard first, before starting the game
     this.buildGrid();
     this.buildKeyboard();
+    
+    // Now start the game (this will trigger render)
+    this.game.startNewGame(true);
+    
+    // Check if game is locked and apply locked UI
+    const state = this.game.getGameState();
+    if (state.gameState === 'locked' || state.gameState === 'won' || state.gameState === 'lost') {
+      this.applyLockedUI();
+    }
   }
 
   buildGrid() {
@@ -364,9 +366,9 @@ export class WordleUI {
     if (container) {
       container.classList.remove('hidden');
       container.style.display = 'flex';
-      if (this.game.gameState === 'playing' && this.game.guesses.length === 0) {
-        this.startNewGame();
-      }
+      // Always initialize the game when showing
+      // This will either start a fresh game or load the saved state if already played today
+      this.startNewGame();
     }
   }
 

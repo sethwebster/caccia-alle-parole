@@ -5,6 +5,7 @@
 
 const STORAGE_KEY = 'wordle_last_play';
 const COOKIE_NAME = 'wordle_last_play';
+const GAME_STATE_KEY = 'wordle_game_state';
 
 /**
  * Gets the current date as a string (UTC) in format YYYY-MM-DD
@@ -127,6 +128,7 @@ export function getLastPlayDate() {
 export function clearPlayTracking() {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(GAME_STATE_KEY);
   } catch (e) {
     // Silent fail
   }
@@ -137,4 +139,50 @@ export function clearPlayTracking() {
     cookieString += ';Secure';
   }
   document.cookie = cookieString;
+}
+
+/**
+ * Saves the game state (guesses and keyboard state) to localStorage
+ */
+export function saveGameState(gameState) {
+  try {
+    const stateToSave = {
+      guesses: gameState.guesses,
+      keyboardState: gameState.keyboardState,
+      gameState: gameState.gameState,
+      targetWordData: gameState.targetWordData,
+      date: getTodayDateString()
+    };
+    localStorage.setItem(GAME_STATE_KEY, JSON.stringify(stateToSave));
+    return true;
+  } catch (e) {
+    console.warn('Failed to save game state:', e);
+    return false;
+  }
+}
+
+/**
+ * Loads the saved game state from localStorage
+ * Returns null if no state exists or if it's from a different day
+ */
+export function loadGameState() {
+  try {
+    const saved = localStorage.getItem(GAME_STATE_KEY);
+    if (!saved) return null;
+    
+    const state = JSON.parse(saved);
+    const today = getTodayDateString();
+    
+    // Only return state if it's from today
+    if (state.date === today) {
+      return state;
+    }
+    
+    // Clear old state
+    localStorage.removeItem(GAME_STATE_KEY);
+    return null;
+  } catch (e) {
+    console.warn('Failed to load game state:', e);
+    return null;
+  }
 }
