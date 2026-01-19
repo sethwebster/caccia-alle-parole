@@ -21,6 +21,9 @@
     --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
     --ease-squish: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Layout */
+    --header-controls-height: 420px; /* Estimated height of header + controls + stats + gaps */
 }
 
 * {
@@ -275,7 +278,7 @@ body {
     /* Max width constrains it on tablet/desktop, but on mobile it fills width */
     max-width: 500px;
     /* Constrain height to fit in viewport, accounting for header and controls */
-    max-height: min(500px, calc(100vh - 420px));
+    max-height: min(500px, calc(100vh - var(--header-controls-height)));
     aspect-ratio: 1;
     background: var(--bg-surface);
     padding: 12px;
