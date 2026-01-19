@@ -282,7 +282,7 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: auto; /* Allow scrolling for larger grids */
 }
 
 .word-grid {
