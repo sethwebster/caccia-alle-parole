@@ -131,6 +131,10 @@ export function clearPlayTracking() {
     // Silent fail
   }
   
-  // Clear cookie by setting expired date
-  document.cookie = `${COOKIE_NAME}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  // Clear cookie by setting expired date with same flags used when setting
+  let cookieString = `${COOKIE_NAME}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax`;
+  if (window.location.protocol === 'https:') {
+    cookieString += ';Secure';
+  }
+  document.cookie = cookieString;
 }
