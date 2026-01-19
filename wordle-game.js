@@ -217,7 +217,7 @@ export class WordleGame {
       }).join('');
     }).join('\n');
 
-    const url = window.location.origin + window.location.pathname + '#parola';
+    const url = window.location.href.split('#')[0] + '#parola';
 
     return `${title}\n\n${grid}\n\n${url}`;
   }
