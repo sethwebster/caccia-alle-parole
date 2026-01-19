@@ -274,11 +274,15 @@ body {
     width: 100%;
     /* Max width constrains it on tablet/desktop, but on mobile it fills width */
     max-width: 500px;
+    /* Constrain height to fit in viewport, accounting for header and controls */
+    max-height: min(500px, calc(100vh - 420px));
     aspect-ratio: 1;
     background: var(--bg-surface);
     padding: 12px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .word-grid {
