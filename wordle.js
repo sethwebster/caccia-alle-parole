@@ -45,7 +45,7 @@ export class WordleUI {
     // Physical keyboard
     document.addEventListener('keydown', (e) => {
       const wordleContainer = document.getElementById('wordle-container');
-      if (wordleContainer && !wordleContainer.classList.contains('hidden')) {
+      if (wordleContainer && !wordleContainer.classList.contains('cds-hidden')) {
         this.handlePhysicalKey(e);
       }
     });
@@ -61,7 +61,7 @@ export class WordleUI {
 
     // Modal click outside
     this.elements.victoryModal.addEventListener('click', (e) => {
-      if (e.target === this.elements.victoryModal) {
+      if (e.target.classList.contains('cds-modal__backdrop')) {
         this.hideVictoryModal();
       }
     });
@@ -273,11 +273,13 @@ export class WordleUI {
     this.elements.finalWord.textContent = `${state.targetWordData.word} (${state.targetWordData.translation})`;
     this.elements.finalDefinition.textContent = state.targetWordData.definition;
 
-    this.elements.victoryModal.classList.remove('hidden');
+    this.elements.victoryModal.classList.remove('cds-hidden');
+    setTimeout(() => this.elements.victoryModal.classList.add('cds-modal--open'), 10);
   }
 
   hideVictoryModal() {
-    this.elements.victoryModal.classList.add('hidden');
+    this.elements.victoryModal.classList.remove('cds-modal--open');
+    setTimeout(() => this.elements.victoryModal.classList.add('cds-hidden'), 200);
   }
 
   updateShareButton(state) {
@@ -314,7 +316,7 @@ export class WordleUI {
   show() {
     const container = document.getElementById('wordle-container');
     if (container) {
-      container.classList.remove('hidden');
+      container.classList.remove('cds-hidden');
       container.style.display = 'flex';
       if (this.game.gameState === 'playing' && this.game.guesses.length === 0) {
         this.startNewGame();
@@ -325,7 +327,7 @@ export class WordleUI {
   hide() {
     const container = document.getElementById('wordle-container');
     if (container) {
-      container.classList.add('hidden');
+      container.classList.add('cds-hidden');
       container.style.display = 'none';
     }
   }

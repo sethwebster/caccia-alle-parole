@@ -5,95 +5,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caccia alle Parole</title>
+
+  <!-- CDS Design System -->
+  <link rel="stylesheet" href="cds/tokens/colors.css">
+  <link rel="stylesheet" href="cds/tokens/typography.css">
+  <link rel="stylesheet" href="cds/tokens/spacing.css">
+  <link rel="stylesheet" href="cds/tokens/elevation.css">
+  <link rel="stylesheet" href="cds/components/buttons.css">
+  <link rel="stylesheet" href="cds/components/cards.css">
+  <link rel="stylesheet" href="cds/components/inputs.css">
+  <link rel="stylesheet" href="cds/components/modals.css">
+  <link rel="stylesheet" href="cds/components/toasts.css">
+  <link rel="stylesheet" href="cds/components/grid.css">
+  <link rel="stylesheet" href="cds/components/nav.css">
+  <link rel="stylesheet" href="cds/utilities/layout.css">
+  <link rel="stylesheet" href="cds/utilities/helpers.css">
+
+  <!-- Game-specific styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <div class="container">
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="cds-container">
+      <div class="top-nav__inner">
+        <div class="top-nav__brand">
+          <button id="nav-home" class="top-nav__logo">
+            🎮 <span class="top-nav__title">Giochi di Parole</span>
+          </button>
+        </div>
+
+        <button class="top-nav__toggle" id="nav-toggle" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="top-nav__menu" id="nav-menu">
+          <a href="#" class="top-nav__link" data-nav="home">Home</a>
+          <a href="#parola" class="top-nav__link" data-nav="parola">Paròla</a>
+          <a href="#caccia" class="top-nav__link" data-nav="caccia">Caccia</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="cds-container app-content">
     <header class="header">
-      <h1 class="title">Giochi di Parole Italiane</h1>
-      <p class="subtitle">Scegli il tuo gioco preferito</p>
+      <h1 class="cds-heading-1 cds-text-center">Giochi di Parole Italiane</h1>
+      <p class="cds-text-lg cds-text-center cds-text-secondary-color">Scegli il tuo gioco preferito</p>
     </header>
 
     <div id="mode-selector" class="mode-selector">
-      <h2 class="mode-title">Seleziona Modalità di Gioco</h2>
-      <div class="mode-cards">
-        <button class="mode-card" data-mode="word-search">
+      <h2 class="cds-heading-3 cds-text-center cds-mb-6">Seleziona Modalità di Gioco</h2>
+      <div class="cds-grid cds-grid--cols-2 cds-grid--sm-cols-1 cds-grid--gap-6">
+        <button class="cds-card cds-card--interactive mode-card" data-mode="word-search">
           <div class="mode-icon">🔍</div>
-          <h3>Caccia alle Parole</h3>
-          <p>Trova tutte le parole nascoste nella griglia</p>
+          <h3 class="cds-card__title">Caccia alle Parole</h3>
+          <p class="cds-text-sm cds-text-secondary-color">Trova tutte le parole nascoste nella griglia</p>
         </button>
-        <button class="mode-card" data-mode="wordle">
+        <button class="cds-card cds-card--interactive mode-card" data-mode="wordle">
           <div class="mode-icon">🔤</div>
-          <h3>Paròla</h3>
-          <p>Indovina la parola del giorno in 6 tentativi</p>
+          <h3 class="cds-card__title">Paròla</h3>
+          <p class="cds-text-sm cds-text-secondary-color">Indovina la parola del giorno in 6 tentativi</p>
         </button>
       </div>
     </div>
 
-    <div class="controls hidden">
-      <div class="control-group">
-        <label for="category">Categoria:</label>
-        <select id="category" class="category-select">
+    <div class="controls cds-hidden">
+      <div class="cds-form-group">
+        <label for="category" class="cds-label">Categoria:</label>
+        <select id="category" class="cds-input cds-select">
           <option value="">Seleziona categoria...</option>
         </select>
       </div>
 
-      <div class="control-group">
-        <label>Difficoltà:</label>
-        <div class="difficulty-buttons">
-          <button class="difficulty-btn" data-difficulty="easy">Facile</button>
-          <button class="difficulty-btn" data-difficulty="medium">Medio</button>
-          <button class="difficulty-btn" data-difficulty="hard">Difficile</button>
+      <div class="cds-form-group">
+        <label class="cds-label">Difficoltà:</label>
+        <div class="cds-button-group">
+          <button class="cds-button cds-button--outline difficulty-btn" data-difficulty="easy">Facile</button>
+          <button class="cds-button cds-button--outline difficulty-btn" data-difficulty="medium">Medio</button>
+          <button class="cds-button cds-button--outline difficulty-btn" data-difficulty="hard">Difficile</button>
         </div>
       </div>
 
-      <button id="new-game-btn" class="new-game-btn">Nuova Partita</button>
+      <button id="new-game-btn" class="cds-button cds-button--primary cds-w-full">Nuova Partita</button>
     </div>
 
-    <div class="game-stats hidden">
-      <div class="stat">
-        <span class="stat-label">Punteggio:</span>
-        <span id="score" class="stat-value">0</span>
-      </div>
-      <div class="stat">
-        <span class="stat-label">Trovate:</span>
-        <span id="found-count" class="stat-value">0/0</span>
+    <div class="game-stats cds-hidden">
+      <div class="cds-hstack cds-hstack--lg cds-justify-center">
+        <div class="stat">
+          <span class="cds-text-sm cds-text-secondary-color">Punteggio:</span>
+          <span id="score" class="cds-text-lg cds-font-semibold">0</span>
+        </div>
+        <div class="stat">
+          <span class="cds-text-sm cds-text-secondary-color">Trovate:</span>
+          <span id="found-count" class="cds-text-lg cds-font-semibold">0/0</span>
+        </div>
       </div>
     </div>
 
-    <div class="game-container hidden">
+    <div class="game-container cds-hidden">
       <div class="grid-container">
         <div id="word-grid" class="word-grid"></div>
       </div>
 
-      <div class="word-list-container">
-        <h3 class="word-list-title">Parole da Trovare</h3>
+      <div class="word-list-container cds-card">
+        <h3 class="cds-heading-5 cds-text-center cds-mb-3">Parole da Trovare</h3>
         <ul id="word-list" class="word-list"></ul>
       </div>
     </div>
 
-    <div id="definitions-modal" class="modal hidden">
-      <div class="modal-content">
-        <button class="modal-close">&times;</button>
-        <h2 id="modal-word" class="modal-word"></h2>
-        <p id="modal-definition" class="modal-definition"></p>
+    <div id="definitions-modal" class="cds-modal cds-hidden">
+      <div class="cds-modal__backdrop"></div>
+      <div class="cds-modal__content">
+        <div class="cds-modal__header">
+          <h3 id="modal-word" class="cds-modal__title"></h3>
+          <button class="cds-modal__close modal-close">&times;</button>
+        </div>
+        <div class="cds-modal__body">
+          <p id="modal-definition" class="modal-definition"></p>
+        </div>
       </div>
     </div>
 
-    <div id="victory-modal" class="modal hidden">
-      <div class="modal-content victory-content">
-        <h2>🎉 Complimenti! 🎉</h2>
-        <p>Hai trovato tutte le parole!</p>
-        <div class="victory-stats">
-          <p><strong>Punteggio Finale:</strong> <span id="final-score"></span></p>
+    <div id="victory-modal" class="cds-modal cds-hidden">
+      <div class="cds-modal__backdrop"></div>
+      <div class="cds-modal__content">
+        <div class="cds-modal__header">
+          <h2 class="cds-modal__title">🎉 Complimenti! 🎉</h2>
         </div>
-        <button id="play-again-btn" class="new-game-btn">Gioca Ancora</button>
+        <div class="cds-modal__body cds-text-center">
+          <p class="cds-text-lg">Hai trovato tutte le parole!</p>
+          <div class="cds-mt-4">
+            <p class="cds-text-base"><strong>Punteggio Finale:</strong> <span id="final-score" class="cds-text-primary-color cds-font-bold"></span></p>
+          </div>
+        </div>
+        <div class="cds-modal__footer">
+          <button id="play-again-btn" class="cds-button cds-button--primary cds-w-full">Gioca Ancora</button>
+        </div>
       </div>
     </div>
 
     <!-- Wordle Container - NYT Replica Structure -->
-    <div id="wordle-container" class="wordle-container hidden">
+    <div id="wordle-container" class="wordle-container cds-hidden">
       <header class="wordle-header">
         <!-- Back Button as Hamburger/Menu Icon -->
         <button id="back-to-menu" class="wordle-header-btn" title="Menu">
@@ -132,17 +188,24 @@
     </div>
 
     <!-- Wordle Victory Modal -->
-    <div id="wordle-victory-modal" class="modal hidden">
-      <div class="modal-content victory-content">
-        <button class="modal-close">&times;</button>
-        <h2 id="wordle-victory-title">🎉 Complimenti! 🎉</h2>
-        <p id="wordle-victory-message">Hai indovinato la parola!</p>
-        <div class="victory-stats">
-          <p><strong>Tentativi:</strong> <span id="wordle-final-guesses"></span></p>
-          <p><strong>Parola:</strong> <span id="wordle-final-word"></span></p>
-          <p id="wordle-final-definition"></p>
+    <div id="wordle-victory-modal" class="cds-modal cds-hidden">
+      <div class="cds-modal__backdrop"></div>
+      <div class="cds-modal__content">
+        <div class="cds-modal__header">
+          <h2 id="wordle-victory-title" class="cds-modal__title">🎉 Complimenti! 🎉</h2>
+          <button class="cds-modal__close modal-close">&times;</button>
         </div>
-        <button id="wordle-play-again" class="new-game-btn">Gioca Ancora</button>
+        <div class="cds-modal__body cds-text-center">
+          <p id="wordle-victory-message" class="cds-text-lg cds-mb-4">Hai indovinato la parola!</p>
+          <div class="cds-stack cds-stack--sm">
+            <p class="cds-text-base"><strong>Tentativi:</strong> <span id="wordle-final-guesses" class="cds-text-primary-color"></span></p>
+            <p class="cds-text-base"><strong>Parola:</strong> <span id="wordle-final-word" class="cds-text-primary-color cds-font-bold"></span></p>
+            <p id="wordle-final-definition" class="cds-text-sm cds-text-secondary-color"></p>
+          </div>
+        </div>
+        <div class="cds-modal__footer">
+          <button id="wordle-play-again" class="cds-button cds-button--primary cds-w-full">Gioca Ancora</button>
+        </div>
       </div>
     </div>
   </div>

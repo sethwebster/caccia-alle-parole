@@ -11,6 +11,7 @@ class GameManager {
 
         this.initializeElements();
         this.attachModeListeners();
+        this.initializeNavigation();
         this.initializeURLState();
     }
 
@@ -18,6 +19,10 @@ class GameManager {
         this.modeSelector = document.getElementById('mode-selector');
         this.modeCards = document.querySelectorAll('.mode-card');
         this.backToMenuBtn = document.getElementById('back-to-menu');
+        this.navToggle = document.getElementById('nav-toggle');
+        this.navMenu = document.getElementById('nav-menu');
+        this.navHome = document.getElementById('nav-home');
+        this.navLinks = document.querySelectorAll('.top-nav__link');
     }
 
     attachModeListeners() {
@@ -40,6 +45,67 @@ class GameManager {
         });
     }
 
+    initializeNavigation() {
+        // Mobile menu toggle
+        if (this.navToggle) {
+            this.navToggle.addEventListener('click', () => {
+                this.navToggle.classList.toggle('active');
+                this.navMenu.classList.toggle('active');
+            });
+        }
+
+        // Home button
+        if (this.navHome) {
+            this.navHome.addEventListener('click', () => {
+                this.backToModeSelector();
+                this.closeMobileMenu();
+            });
+        }
+
+        // Navigation links
+        this.navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const nav = e.currentTarget.dataset.nav;
+
+                if (nav === 'home') {
+                    e.preventDefault();
+                    this.backToModeSelector();
+                }
+
+                this.closeMobileMenu();
+
+                // Delay active link update to let hash change
+                setTimeout(() => this.updateActiveNavLink(), 50);
+            });
+        });
+    }
+
+    closeMobileMenu() {
+        if (this.navToggle) {
+            this.navToggle.classList.remove('active');
+            this.navMenu.classList.remove('active');
+        }
+    }
+
+    updateActiveNavLink() {
+        this.navLinks.forEach(link => link.classList.remove('active'));
+
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+            // Map Italian routes to nav data-nav values
+            const navValue = hash; // Already in Italian (parola, caccia)
+            const activeLink = document.querySelector(`.top-nav__link[data-nav="${navValue}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        } else {
+            const homeLink = document.querySelector('.top-nav__link[data-nav="home"]');
+            if (homeLink) {
+                homeLink.classList.add('active');
+            }
+        }
+    }
+
     initializeURLState() {
         this.loadFromURL();
     }
@@ -47,7 +113,14 @@ class GameManager {
     loadFromURL() {
         const hash = window.location.hash.slice(1);
         const params = new URLSearchParams(window.location.search);
-        const mode = hash || params.get('mode');
+        let mode = hash || params.get('mode');
+
+        // Map Italian routes to internal modes
+        if (mode === 'parola') {
+            mode = 'wordle';
+        } else if (mode === 'caccia') {
+            mode = 'word-search';
+        }
 
         if (mode === 'wordle' || mode === 'word-search') {
             this.selectMode(mode, false);
@@ -58,7 +131,9 @@ class GameManager {
 
     updateURL(mode) {
         if (mode) {
-            window.history.pushState({ mode }, '', `#${mode}`);
+            // Use Italian routes in URL
+            const italianRoute = mode === 'wordle' ? 'parola' : mode === 'word-search' ? 'caccia' : mode;
+            window.history.pushState({ mode }, '', `#${italianRoute}`);
         } else {
             window.history.pushState({}, '', window.location.pathname);
         }
@@ -66,17 +141,19 @@ class GameManager {
 
     selectMode(mode, updateURL = true) {
         this.currentMode = mode;
-        this.modeSelector.classList.add('hidden');
+        this.modeSelector.classList.add('cds-hidden');
 
         // Hide main header when in game mode
         const header = document.querySelector('.header');
         if (header) {
-            header.classList.add('hidden');
+            header.classList.add('cds-hidden');
         }
 
         if (updateURL) {
             this.updateURL(mode);
         }
+
+        this.updateActiveNavLink();
 
         if (mode === 'word-search') {
             this.showWordSearch();
@@ -90,13 +167,19 @@ class GameManager {
             this.wordSearchGame = new WordSearchGame();
         }
 
-        document.querySelector('.controls').classList.remove('hidden');
-        document.querySelector('.game-stats').classList.remove('hidden');
-        document.querySelector('.game-container').classList.remove('hidden');
+        // Try to load saved game state
+        const hasRestoredState = this.wordSearchGame.loadGameState();
+
+        // Only show controls, not the game board until user starts game (unless we restored state)
+        document.querySelector('.controls').classList.remove('cds-hidden');
+        if (!hasRestoredState) {
+            document.querySelector('.game-stats').classList.add('cds-hidden');
+            document.querySelector('.game-container').classList.add('cds-hidden');
+        }
 
         const wordleContainer = document.getElementById('wordle-container');
         if (wordleContainer) {
-            wordleContainer.classList.add('hidden');
+            wordleContainer.classList.add('cds-hidden');
         }
     }
 
@@ -105,24 +188,32 @@ class GameManager {
             this.wordleUI = new WordleUI();
         }
 
-        document.querySelector('.controls').classList.add('hidden');
-        document.querySelector('.game-stats').classList.add('hidden');
-        document.querySelector('.game-container').classList.add('hidden');
+        document.querySelector('.controls').classList.add('cds-hidden');
+        document.querySelector('.game-stats').classList.add('cds-hidden');
+        document.querySelector('.game-container').classList.add('cds-hidden');
 
         this.wordleUI.show();
     }
 
     backToModeSelector(updateURL = true) {
         this.currentMode = null;
-        this.modeSelector.classList.remove('hidden');
+        this.modeSelector.classList.remove('cds-hidden');
+
+        // Show main header when going back to mode selector
+        const header = document.querySelector('.header');
+        if (header) {
+            header.classList.remove('cds-hidden');
+        }
 
         if (updateURL) {
             this.updateURL(null);
         }
 
-        document.querySelector('.controls').classList.add('hidden');
-        document.querySelector('.game-stats').classList.add('hidden');
-        document.querySelector('.game-container').classList.add('hidden');
+        this.updateActiveNavLink();
+
+        document.querySelector('.controls').classList.add('cds-hidden');
+        document.querySelector('.game-stats').classList.add('cds-hidden');
+        document.querySelector('.game-container').classList.add('cds-hidden');
 
         if (this.wordleUI) {
             this.wordleUI.hide();
@@ -182,7 +273,7 @@ class WordSearchGame {
         }
 
         this.definitionsModal.addEventListener('click', (e) => {
-            if (e.target === this.definitionsModal) {
+            if (e.target.classList.contains('cds-modal__backdrop')) {
                 this.hideDefinitionModal();
             }
         });
@@ -257,6 +348,16 @@ class WordSearchGame {
         this.renderGrid();
         this.renderWordList();
         this.initializeSelector();
+
+        // Show game board and stats after successful game generation
+        document.querySelector('.game-stats').classList.remove('cds-hidden');
+        document.querySelector('.game-container').classList.remove('cds-hidden');
+
+        // Update URL with game params
+        this.updateGameURL();
+
+        // Save game state to localStorage
+        this.saveGameState();
     }
 
     resetGame() {
@@ -268,6 +369,9 @@ class WordSearchGame {
         if (this.gridContainer.querySelector('[data-row]')) {
             resetSelector();
         }
+
+        // Clear old game state when starting new game
+        this.clearGameState();
     }
 
     renderGrid() {
@@ -353,6 +457,9 @@ class WordSearchGame {
 
         this.updateFoundCount();
 
+        // Save game state after finding a word
+        this.saveGameState();
+
         // Check if all words found
         if (isComplete()) {
             setTimeout(() => this.showVictoryModal(), 500);
@@ -392,20 +499,115 @@ class WordSearchGame {
 
         modalWord.textContent = `${wordData.word} (${wordData.translation})`;
         modalDefinition.textContent = wordData.definition;
-        this.definitionsModal.classList.remove('hidden');
+        this.definitionsModal.classList.remove('cds-hidden');
+        setTimeout(() => this.definitionsModal.classList.add('cds-modal--open'), 10);
     }
 
     hideDefinitionModal() {
-        this.definitionsModal.classList.add('hidden');
+        this.definitionsModal.classList.remove('cds-modal--open');
+        setTimeout(() => this.definitionsModal.classList.add('cds-hidden'), 200);
     }
 
     showVictoryModal() {
         document.getElementById('final-score').textContent = this.score;
-        this.victoryModal.classList.remove('hidden');
+        this.victoryModal.classList.remove('cds-hidden');
+        setTimeout(() => this.victoryModal.classList.add('cds-modal--open'), 10);
+
+        // Clear game state on victory
+        this.clearGameState();
     }
 
     hideVictoryModal() {
-        this.victoryModal.classList.add('hidden');
+        this.victoryModal.classList.remove('cds-modal--open');
+        setTimeout(() => this.victoryModal.classList.add('cds-hidden'), 200);
+    }
+
+    updateGameURL() {
+        const params = new URLSearchParams();
+        params.set('categoria', this.currentCategory);
+        params.set('difficolta', this.currentDifficulty);
+
+        const hash = window.location.hash.split('?')[0];
+        window.history.replaceState(null, '', `${hash}?${params.toString()}`);
+    }
+
+    saveGameState() {
+        const state = {
+            category: this.currentCategory,
+            difficulty: this.currentDifficulty,
+            gridData: this.gridData,
+            words: this.words,
+            score: this.score,
+            foundWords: getFoundWords(),
+            timestamp: Date.now()
+        };
+        localStorage.setItem('wordSearchGameState', JSON.stringify(state));
+    }
+
+    loadGameState() {
+        try {
+            const saved = localStorage.getItem('wordSearchGameState');
+            if (!saved) return false;
+
+            const state = JSON.parse(saved);
+
+            // Check if state is less than 24 hours old
+            if (Date.now() - state.timestamp > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem('wordSearchGameState');
+                return false;
+            }
+
+            // Restore state
+            this.currentCategory = state.category;
+            this.currentDifficulty = state.difficulty;
+            this.gridData = state.gridData;
+            this.words = state.words;
+            this.score = state.score;
+
+            // Update UI
+            this.categorySelect.value = state.category;
+            this.difficultyButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
+            });
+
+            // Render grid and word list
+            this.renderGrid();
+            this.renderWordList();
+            this.initializeSelector();
+
+            // Restore found words
+            if (state.foundWords && state.foundWords.length > 0) {
+                state.foundWords.forEach(foundWord => {
+                    const cells = [];
+                    for (let i = 0; i < foundWord.word.length; i++) {
+                        const row = foundWord.row + (foundWord.direction.row * i);
+                        const col = foundWord.col + (foundWord.direction.col * i);
+                        const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                        if (cell) {
+                            cell.classList.add('found');
+                            cells.push(cell);
+                        }
+                    }
+                });
+            }
+
+            this.updateScore();
+            this.updateFoundCount();
+
+            // Show game board and stats
+            document.querySelector('.game-stats').classList.remove('cds-hidden');
+            document.querySelector('.game-container').classList.remove('cds-hidden');
+
+            return true;
+        } catch (error) {
+            console.error('Failed to load game state:', error);
+            localStorage.removeItem('wordSearchGameState');
+            return false;
+        }
+    }
+
+    clearGameState() {
+        localStorage.removeItem('wordSearchGameState');
     }
 }
 

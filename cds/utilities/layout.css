@@ -11,7 +11,7 @@
 .cds-inline-flex { display: inline-flex; }
 .cds-grid { display: grid; }
 .cds-inline-grid { display: inline-grid; }
-.cds-hidden { display: none; }
+.cds-hidden { display: none !important; }
 
 /* Position */
 .cds-relative { position: relative; }

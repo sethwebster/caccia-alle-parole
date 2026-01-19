@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-    /* Premium Palette */
-    --primary: #E63946;  /* Vivid Red */
-    --secondary: #2A9D8F; /* Teal/Green */
-    --accent: #E9C46A;   /* Sand/Yellow */
-    --dark: #264653;     /* Deep Blue/Green */
-    
-    /* Neutrals */
-    --bg-page: #F1F5F9;
-    --bg-surface: #FFFFFF;
-    --text-main: #1E293B;
-    --text-muted: #64748B;
-    --border: #E2E8F0;
-    
-    /* Effects */
-    --radius-lg: 24px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    /* Map to CDS Design Tokens */
+    --primary: var(--cds-color-primary);
+    --secondary: var(--cds-color-secondary);
+    --accent: var(--cds-color-accent);
+    --dark: var(--cds-color-dark);
+
+    /* Neutrals from CDS */
+    --bg-page: var(--cds-color-gray-100);
+    --bg-surface: var(--cds-color-surface);
+    --text-main: var(--cds-color-text-primary);
+    --text-muted: var(--cds-color-text-secondary);
+    --border: var(--cds-color-border);
+
+    /* Effects from CDS */
+    --radius-lg: var(--cds-radius-xl);
+    --radius-md: var(--cds-radius-md);
+    --radius-sm: var(--cds-radius-sm);
+    --shadow-soft: var(--cds-shadow-sm);
+    --shadow-card: var(--cds-shadow-card);
     --ease-squish: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
     /* Layout */
@@ -158,7 +158,7 @@ body {
     padding: 24px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    margin-bottom: 24px;
+    margin: var(--cds-space-4) 0 var(--cds-space-6);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -250,7 +250,7 @@ body {
 .game-stats {
     display: flex;
     justify-content: space-between;
-    padding: 0 16px 24px;
+    padding: var(--cds-space-4) var(--cds-space-4) var(--cds-space-6);
 }
 
 .stat {
@@ -277,37 +277,32 @@ body {
     flex-direction: column;
     gap: 24px;
     align-items: center;
+    padding: var(--cds-space-4) 0;
 }
 
 .grid-container {
     width: 100%;
-    /* Max width constrains it on tablet/desktop, but on mobile it fills width */
-    max-width: 500px;
-    /* Constrain height to fit in viewport, accounting for header and controls */
-    max-height: min(500px, calc(100vh - var(--header-controls-height)));
-    /* Note: aspect-ratio removed to allow grid to adapt to available space */
-    /* Grid will be sized based on content and available viewport height */
+    max-width: 600px;
+    aspect-ratio: 1 / 1;
     background: var(--bg-surface);
-    padding: 12px;
+    padding: 16px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
     box-sizing: border-box;
-    overflow: hidden; /* Prevent scrolling - grid should fit */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    /* No display property - word-grid is block, fills padding box naturally */
 }
 
 .word-grid {
     display: grid;
-    /* Columns set by JS, but we ensure it fits within container */
-    width: 100%;
-    max-width: 100%;
-    max-height: 100%;
+    /* Absolute positioning respects parent padding via inset: 0 */
+    position: absolute;
+    inset: 16px;
     gap: 2px;
-    user-select: none; /* Prevent highlighting */
-    touch-action: none; /* Important for custom drag handling if implemented */
-    aspect-ratio: 1 / 1; /* Keep grid square */
+    user-select: none;
+    touch-action: none;
+    box-sizing: border-box;
 }
 
 .grid-cell {
@@ -316,16 +311,21 @@ body {
     justify-content: center;
     font-weight: 600;
     /* Responsive font sizing */
-    font-size: clamp(12px, 3vw, 20px);
+    font-size: clamp(10px, 1.8vw, 16px);
+    line-height: 1;
     color: var(--text-main);
-    border-radius: 4px;
+    border-radius: 3px;
     background: var(--bg-page);
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
     aspect-ratio: 1 / 1; /* Square cells */
-    width: 100%;
-    height: auto;
+    min-width: 0;
+    min-height: 0;
     box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+    padding: 2px;
 }
 
 .grid-cell.selected {
@@ -687,22 +687,24 @@ body {
     /* Word Search Grid Mobile */
     .grid-container {
         max-width: 100%;
-        padding: 8px;
+        padding: 12px;
         margin: 0;
     }
 
     .word-grid {
+        inset: 12px; /* Match mobile padding */
         gap: 1px;
     }
 
     .grid-cell {
-        font-size: clamp(10px, 2.5vw, 16px);
+        font-size: clamp(7px, 1.6vw, 12px);
         border-radius: 2px;
+        padding: 1px;
     }
 
     .game-container {
         gap: 16px;
-        padding: 0 8px;
+        padding: var(--cds-space-2) 0;
     }
 }
 
