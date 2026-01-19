@@ -1,16 +1,26 @@
+/* CDS Design System Imports */
+
+/* Fonts */
+@import './lib/styles/fonts.css';
+
 /* Design Tokens */
-:root {
-  --color-primary: #4a90e2;
-  --color-success: #6aaa64;
-  --color-present: #c9b458;
-  --color-absent: #787c7e;
-  --color-border: #e0e0e0;
-  --color-surface: #ffffff;
-  --color-surface-secondary: #f5f5f5;
-  --color-text-primary: #212121;
-  --color-text-secondary: #666666;
-  --color-text-tertiary: #9e9e9e;
-}
+@import './lib/styles/tokens/colors.css';
+@import './lib/styles/tokens/spacing.css';
+@import './lib/styles/tokens/typography.css';
+@import './lib/styles/tokens/elevation.css';
+
+/* Component Styles */
+@import './lib/styles/components/buttons.css';
+@import './lib/styles/components/cards.css';
+@import './lib/styles/components/inputs.css';
+@import './lib/styles/components/modals.css';
+@import './lib/styles/components/toasts.css';
+@import './lib/styles/components/grid.css';
+@import './lib/styles/components/nav.css';
+
+/* Utility Styles */
+@import './lib/styles/utilities/layout.css';
+@import './lib/styles/utilities/helpers.css';
 
 /* Reset */
 * {
@@ -20,14 +30,14 @@
 /* Base Styles */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: var(--color-text-primary);
-  background: var(--color-surface-secondary);
+  font-family: var(--cds-font-family-base);
+  color: var(--cds-color-text-primary);
+  background: var(--cds-color-background);
 }
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
-  font-weight: 700;
+  font-weight: var(--cds-font-weight-bold);
 }
 
 p {
@@ -35,7 +45,7 @@ p {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--cds-color-primary);
   text-decoration: none;
 }
 

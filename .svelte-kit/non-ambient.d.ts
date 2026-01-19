@@ -27,16 +27,17 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/parola";
+		RouteId(): "/" | "/caccia" | "/parola";
 		RouteParams(): {
 			
 		};
 		LayoutParams(): {
 			"/": Record<string, never>;
+			"/caccia": Record<string, never>;
 			"/parola": Record<string, never>
 		};
-		Pathname(): "/" | "/parola" | "/parola/";
+		Pathname(): "/" | "/caccia" | "/caccia/" | "/parola" | "/parola/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): string & {};
+		Asset(): "/fonts/poppins/poppins-400.woff2" | "/fonts/poppins/poppins-500.woff2" | "/fonts/poppins/poppins-600.woff2" | "/fonts/poppins/poppins-700.woff2" | string & {};
 	}
 }

@@ -1,0 +1,98 @@
+/**
+ * CDS Color Tokens
+ * Apple HIG-inspired color palette
+ */
+
+:root {
+  /* Primary Brand Colors */
+  --cds-color-primary: #E63946;
+  --cds-color-primary-hover: #D32F3C;
+  --cds-color-primary-active: #C62828;
+  --cds-color-primary-light: #FFEBEE;
+
+  --cds-color-secondary: #2A9D8F;
+  --cds-color-secondary-hover: #26897C;
+  --cds-color-secondary-active: #1D6B61;
+  --cds-color-secondary-light: #E0F2F1;
+
+  --cds-color-accent: #E9C46A;
+  --cds-color-accent-hover: #D4AF37;
+  --cds-color-accent-active: #B8960F;
+  --cds-color-accent-light: #FFF8E1;
+
+  --cds-color-dark: #264653;
+  --cds-color-dark-hover: #1E3A44;
+  --cds-color-dark-active: #162E36;
+
+  /* Semantic Colors */
+  --cds-color-success: #6AAA64;
+  --cds-color-success-hover: #5A9454;
+  --cds-color-success-light: #E8F5E9;
+
+  --cds-color-error: #E63946;
+  --cds-color-error-hover: #D32F3C;
+  --cds-color-error-light: #FFEBEE;
+
+  --cds-color-warning: #F4A261;
+  --cds-color-warning-hover: #E08E3E;
+  --cds-color-warning-light: #FFF3E0;
+
+  --cds-color-info: #457B9D;
+  --cds-color-info-hover: #3A6682;
+  --cds-color-info-light: #E1F5FE;
+
+  /* Neutral Grays (50-950) */
+  --cds-color-gray-50: #FAFAFA;
+  --cds-color-gray-100: #F5F5F5;
+  --cds-color-gray-200: #EEEEEE;
+  --cds-color-gray-300: #E0E0E0;
+  --cds-color-gray-400: #BDBDBD;
+  --cds-color-gray-500: #9E9E9E;
+  --cds-color-gray-600: #757575;
+  --cds-color-gray-700: #616161;
+  --cds-color-gray-800: #424242;
+  --cds-color-gray-900: #212121;
+  --cds-color-gray-950: #0A0A0A;
+
+  /* Surface Colors */
+  --cds-color-background: #F1F5F9;
+  --cds-color-surface: #FFFFFF;
+  --cds-color-surface-elevated: #FFFFFF;
+  --cds-color-surface-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Border Colors */
+  --cds-color-border: #E2E8F0;
+  --cds-color-border-hover: #CBD5E1;
+  --cds-color-border-focus: var(--cds-color-primary);
+
+  /* Text Colors */
+  --cds-color-text-primary: #1E293B;
+  --cds-color-text-secondary: #64748B;
+  --cds-color-text-tertiary: #94A3B8;
+  --cds-color-text-disabled: #CBD5E1;
+  --cds-color-text-inverse: #FFFFFF;
+
+  /* Interactive States */
+  --cds-color-interactive: var(--cds-color-primary);
+  --cds-color-interactive-hover: var(--cds-color-primary-hover);
+  --cds-color-interactive-active: var(--cds-color-primary-active);
+
+  /* Focus Ring */
+  --cds-color-focus-ring: rgba(230, 57, 70, 0.3);
+}
+
+/* Dark Mode Support (future) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cds-color-background: #0F172A;
+    --cds-color-surface: #1E293B;
+    --cds-color-surface-elevated: #334155;
+
+    --cds-color-text-primary: #F1F5F9;
+    --cds-color-text-secondary: #CBD5E1;
+    --cds-color-text-tertiary: #94A3B8;
+
+    --cds-color-border: #334155;
+    --cds-color-border-hover: #475569;
+  }
+}

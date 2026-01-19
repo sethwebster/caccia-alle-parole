@@ -1,0 +1,221 @@
+/**
+ * CDS Modal Component
+ * Overlay dialog for focused content
+ */
+
+/* Modal Backdrop */
+.cds-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--cds-z-modal-backdrop);
+  background-color: var(--cds-color-surface-overlay);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.cds-modal-backdrop.cds-modal--open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Container */
+.cds-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--cds-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cds-space-4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.cds-modal.cds-modal--open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Content */
+.cds-modal__content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  max-height: calc(100vh - var(--cds-space-8));
+  overflow: auto;
+  background-color: var(--cds-color-surface);
+  border-radius: var(--cds-radius-modal);
+  box-shadow: var(--cds-shadow-modal);
+  transform: scale(0.95);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cds-modal--open .cds-modal__content {
+  transform: scale(1);
+}
+
+/* Modal Sizes */
+.cds-modal--sm .cds-modal__content {
+  max-width: 400px;
+}
+
+.cds-modal--lg .cds-modal__content {
+  max-width: 800px;
+}
+
+.cds-modal--xl .cds-modal__content {
+  max-width: 1200px;
+}
+
+.cds-modal--fullscreen .cds-modal__content {
+  max-width: none;
+  max-height: none;
+  width: calc(100vw - var(--cds-space-8));
+  height: calc(100vh - var(--cds-space-8));
+  border-radius: var(--cds-radius-lg);
+}
+
+/* Modal Header */
+.cds-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cds-space-4);
+  padding: var(--cds-space-6);
+  border-bottom: 1px solid var(--cds-color-border);
+}
+
+.cds-modal--no-header-border .cds-modal__header {
+  border-bottom: none;
+}
+
+/* Modal Title */
+.cds-modal__title {
+  margin: 0;
+  font-size: var(--cds-font-size-2xl);
+  font-weight: var(--cds-font-weight-semibold);
+  line-height: var(--cds-line-height-snug);
+  color: var(--cds-color-text-primary);
+}
+
+/* Modal Close Button */
+.cds-modal__close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--cds-color-text-secondary);
+  border-radius: var(--cds-radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cds-modal__close:hover {
+  background-color: var(--cds-color-gray-100);
+  color: var(--cds-color-text-primary);
+}
+
+.cds-modal__close:focus-visible {
+  outline: none;
+  box-shadow: var(--cds-shadow-focus);
+}
+
+/* Modal Body */
+.cds-modal__body {
+  padding: var(--cds-space-modal-padding);
+  font-size: var(--cds-font-size-base);
+  line-height: var(--cds-line-height-relaxed);
+  color: var(--cds-color-text-primary);
+}
+
+/* Modal Footer */
+.cds-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cds-space-3);
+  padding: var(--cds-space-6);
+  border-top: 1px solid var(--cds-color-border);
+}
+
+.cds-modal--no-footer-border .cds-modal__footer {
+  border-top: none;
+}
+
+/* Centered Modal */
+.cds-modal--centered .cds-modal__body {
+  text-align: center;
+}
+
+.cds-modal--centered .cds-modal__footer {
+  justify-content: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .cds-modal {
+    padding: var(--cds-space-2);
+  }
+
+  .cds-modal__content {
+    max-height: calc(100vh - var(--cds-space-4));
+  }
+
+  .cds-modal--fullscreen .cds-modal__content {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .cds-modal__header,
+  .cds-modal__body,
+  .cds-modal__footer {
+    padding: var(--cds-space-4);
+  }
+
+  .cds-modal__title {
+    font-size: var(--cds-font-size-xl);
+  }
+}
+
+/* Prevent Body Scroll when Modal Open */
+body.cds-modal-open {
+  overflow: hidden;
+}
+
+/* Animation Variants */
+.cds-modal--fade-in .cds-modal__content {
+  animation: cds-modal-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cds-modal-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.cds-modal--slide-up .cds-modal__content {
+  animation: cds-modal-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cds-modal-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

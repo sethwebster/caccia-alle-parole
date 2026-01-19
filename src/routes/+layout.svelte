@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import '../app.css';
+	import Toast from '$lib/components/ui/Toast.svelte';
 
 	onMount(() => {
 		// Clear legacy localStorage on first visit to SvelteKit version
@@ -11,6 +12,8 @@
 	});
 </script>
 
-<div class="min-h-screen bg-surface-secondary">
+<div class="cds-h-screen" style="background: var(--cds-color-background);">
 	<slot />
 </div>
+
+<Toast position="top-right" />
