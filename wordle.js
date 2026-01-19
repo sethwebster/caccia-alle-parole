@@ -1,4 +1,5 @@
 import { WordleGame, LETTER_STATE } from './wordle-game.js';
+import { getDailyPuzzleNumber } from './wordle-data.js';
 
 const KEYBOARD_LAYOUT = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -30,6 +31,7 @@ export class WordleUI {
     this.elements.finalGuesses = document.getElementById('wordle-final-guesses');
     this.elements.finalWord = document.getElementById('wordle-final-word');
     this.elements.finalDefinition = document.getElementById('wordle-final-definition');
+    this.elements.title = document.querySelector('.wordle-title');
   }
 
   attachEventListeners() {
@@ -107,6 +109,12 @@ export class WordleUI {
   }
 
   initialize() {
+    // Update title with puzzle number
+    const puzzleNumber = getDailyPuzzleNumber();
+    if (this.elements.title) {
+      this.elements.title.textContent = `Paròla #${puzzleNumber}`;
+    }
+
     // Try to load saved state or start new game
     this.game.startNewGame(true);
     this.buildGrid();

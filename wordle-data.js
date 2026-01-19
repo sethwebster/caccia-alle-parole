@@ -176,6 +176,14 @@ export function getDailyWord() {
   return wordleWords[wordIndex];
 }
 
+export function getDailyPuzzleNumber() {
+  const today = new Date();
+  const startDate = Date.UTC(2024, 0, 1);
+  const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const daysSinceStart = Math.floor((todayUTC - startDate) / (1000 * 60 * 60 * 24));
+  return daysSinceStart + 1; // Start from 1, not 0
+}
+
 export function isValidWord(word) {
   return validWords.has(word.toUpperCase());
 }
