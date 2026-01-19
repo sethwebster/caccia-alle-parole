@@ -163,3 +163,12 @@
 .cds-backdrop-blur { backdrop-filter: blur(8px); }
 .cds-backdrop-blur-sm { backdrop-filter: blur(4px); }
 .cds-backdrop-blur-lg { backdrop-filter: blur(16px); }
+
+/* Font Size Utilities */
+.cds-text-xs { font-size: var(--cds-font-size-xs); }
+.cds-text-sm { font-size: var(--cds-font-size-sm); }
+.cds-text-base { font-size: var(--cds-font-size-base); }
+.cds-text-lg { font-size: var(--cds-font-size-lg); }
+.cds-text-xl { font-size: var(--cds-font-size-xl); }
+.cds-text-2xl { font-size: var(--cds-font-size-2xl); }
+.cds-text-3xl { font-size: var(--cds-font-size-3xl); }

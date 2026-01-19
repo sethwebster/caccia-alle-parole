@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import '../app.css';
+	import TopNav from '$lib/components/ui/TopNav.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 
 	let { children } = $props();
@@ -14,7 +15,9 @@
 	});
 </script>
 
-<div class="cds-h-screen" style="background: var(--cds-color-background);">
+<TopNav />
+
+<div class="app-content min-h-screen" style="background: var(--cds-color-background);">
 	{@render children()}
 </div>
 
