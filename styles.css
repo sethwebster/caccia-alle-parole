@@ -23,7 +23,13 @@
     --ease-squish: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
     /* Layout */
-    --header-controls-height: 420px; /* Estimated height of header + controls + stats + gaps */
+    /* Approximate height of header elements above the grid:
+       - Controls panel: ~180px (category select, difficulty buttons, new game button)
+       - Game stats: ~80px (score and found count)
+       - Gaps and margins: ~160px
+       Total: ~420px
+       This ensures the grid fits within the viewport on most screen sizes */
+    --header-controls-height: 420px;
 }
 
 * {
@@ -279,7 +285,8 @@ body {
     max-width: 500px;
     /* Constrain height to fit in viewport, accounting for header and controls */
     max-height: min(500px, calc(100vh - var(--header-controls-height)));
-    aspect-ratio: 1;
+    /* Note: aspect-ratio removed to allow grid to adapt to available space */
+    /* Grid will be sized based on content and available viewport height */
     background: var(--bg-surface);
     padding: 12px;
     border-radius: var(--radius-lg);
