@@ -1,0 +1,277 @@
+/**
+ * CDS Helper Utilities
+ * Miscellaneous helper classes
+ */
+
+/* Border Radius */
+.cds-rounded-none { border-radius: var(--cds-radius-none); }
+.cds-rounded-sm { border-radius: var(--cds-radius-sm); }
+.cds-rounded-base { border-radius: var(--cds-radius-base); }
+.cds-rounded-md { border-radius: var(--cds-radius-md); }
+.cds-rounded-lg { border-radius: var(--cds-radius-lg); }
+.cds-rounded-xl { border-radius: var(--cds-radius-xl); }
+.cds-rounded-full { border-radius: var(--cds-radius-full); }
+
+/* Border */
+.cds-border { border: 1px solid var(--cds-color-border); }
+.cds-border-2 { border: 2px solid var(--cds-color-border); }
+.cds-border-none { border: none; }
+
+.cds-border-t { border-top: 1px solid var(--cds-color-border); }
+.cds-border-b { border-bottom: 1px solid var(--cds-color-border); }
+.cds-border-l { border-left: 1px solid var(--cds-color-border); }
+.cds-border-r { border-right: 1px solid var(--cds-color-border); }
+
+/* Background Colors */
+.cds-bg-primary { background-color: var(--cds-color-primary); }
+.cds-bg-secondary { background-color: var(--cds-color-secondary); }
+.cds-bg-accent { background-color: var(--cds-color-accent); }
+.cds-bg-surface { background-color: var(--cds-color-surface); }
+.cds-bg-background { background-color: var(--cds-color-background); }
+
+.cds-bg-success { background-color: var(--cds-color-success); }
+.cds-bg-error { background-color: var(--cds-color-error); }
+.cds-bg-warning { background-color: var(--cds-color-warning); }
+.cds-bg-info { background-color: var(--cds-color-info); }
+
+.cds-bg-transparent { background-color: transparent; }
+
+/* Text Colors */
+.cds-text-primary-color { color: var(--cds-color-primary); }
+.cds-text-secondary-color { color: var(--cds-color-secondary); }
+.cds-text-accent-color { color: var(--cds-color-accent); }
+
+.cds-text-success { color: var(--cds-color-success); }
+.cds-text-error { color: var(--cds-color-error); }
+.cds-text-warning { color: var(--cds-color-warning); }
+.cds-text-info { color: var(--cds-color-info); }
+
+/* Transitions */
+.cds-transition-all {
+  transition: all 0.2s ease;
+}
+
+.cds-transition-colors {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.cds-transition-transform {
+  transition: transform 0.2s ease;
+}
+
+.cds-transition-opacity {
+  transition: opacity 0.2s ease;
+}
+
+.cds-transition-none {
+  transition: none;
+}
+
+/* Animations */
+.cds-animate-spin {
+  animation: cds-spin 1s linear infinite;
+}
+
+@keyframes cds-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cds-animate-pulse {
+  animation: cds-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes cds-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.cds-animate-bounce {
+  animation: cds-bounce 1s infinite;
+}
+
+@keyframes cds-bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.cds-animate-fade-in {
+  animation: cds-fade-in 0.3s ease;
+}
+
+@keyframes cds-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cds-animate-slide-up {
+  animation: cds-slide-up 0.3s ease;
+}
+
+@keyframes cds-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Transform */
+.cds-scale-95 { transform: scale(0.95); }
+.cds-scale-100 { transform: scale(1); }
+.cds-scale-105 { transform: scale(1.05); }
+.cds-scale-110 { transform: scale(1.1); }
+
+.cds-rotate-45 { transform: rotate(45deg); }
+.cds-rotate-90 { transform: rotate(90deg); }
+.cds-rotate-180 { transform: rotate(180deg); }
+
+/* Screen Reader Only */
+.cds-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.cds-not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Focus Visible */
+.cds-focus-ring:focus-visible {
+  outline: none;
+  box-shadow: var(--cds-shadow-focus);
+}
+
+/* Interactive States */
+.cds-interactive {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cds-interactive:hover {
+  opacity: 0.8;
+}
+
+.cds-interactive:active {
+  opacity: 0.6;
+}
+
+/* Disabled State */
+.cds-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading State */
+.cds-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.cds-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+/* Scrollbar Styling (webkit) */
+.cds-scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cds-scrollbar-thin::-webkit-scrollbar-track {
+  background-color: var(--cds-color-gray-100);
+  border-radius: var(--cds-radius-full);
+}
+
+.cds-scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--cds-color-gray-400);
+  border-radius: var(--cds-radius-full);
+}
+
+.cds-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: var(--cds-color-gray-500);
+}
+
+/* No Scrollbar */
+.cds-scrollbar-none {
+  scrollbar-width: none;
+}
+
+.cds-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Gradient Backgrounds */
+.cds-gradient-primary {
+  background: linear-gradient(135deg, var(--cds-color-primary), var(--cds-color-secondary));
+}
+
+.cds-gradient-sunset {
+  background: linear-gradient(135deg, #E63946, #E9C46A);
+}
+
+.cds-gradient-ocean {
+  background: linear-gradient(135deg, #2A9D8F, #264653);
+}
+
+/* Divider */
+.cds-divider {
+  height: 1px;
+  background-color: var(--cds-color-border);
+  border: none;
+  margin: var(--cds-space-4) 0;
+}
+
+.cds-divider-vertical {
+  width: 1px;
+  height: auto;
+  background-color: var(--cds-color-border);
+  border: none;
+  margin: 0 var(--cds-space-4);
+}
+
+/* Aspect Ratio Boxes */
+.cds-aspect-box {
+  position: relative;
+  width: 100%;
+}
+
+.cds-aspect-box::before {
+  content: '';
+  display: block;
+  padding-bottom: 100%; /* 1:1 default */
+}
+
+.cds-aspect-box > * {
+  position: absolute;
+  inset: 0;
+}
