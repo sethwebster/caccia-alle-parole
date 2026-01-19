@@ -57,7 +57,16 @@ function getCookie(name) {
 function setCookie(name, value, days) {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  
+  // Build cookie string with Secure flag for HTTPS
+  let cookieString = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  
+  // Add Secure flag if using HTTPS
+  if (window.location.protocol === 'https:') {
+    cookieString += ';Secure';
+  }
+  
+  document.cookie = cookieString;
 }
 
 /**
