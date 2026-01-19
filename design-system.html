@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS Component Showcase</title>
+
+    <!-- CDS Styles -->
+    <link rel="stylesheet" href="cds/tokens/colors.css">
+    <link rel="stylesheet" href="cds/tokens/typography.css">
+    <link rel="stylesheet" href="cds/tokens/spacing.css">
+    <link rel="stylesheet" href="cds/tokens/elevation.css">
+    <link rel="stylesheet" href="cds/components/buttons.css">
+    <link rel="stylesheet" href="cds/components/cards.css">
+    <link rel="stylesheet" href="cds/components/modals.css">
+    <link rel="stylesheet" href="cds/components/toasts.css">
+    <link rel="stylesheet" href="cds/components/inputs.css">
+    <link rel="stylesheet" href="cds/components/grid.css">
+    <link rel="stylesheet" href="cds/utilities/layout.css">
+    <link rel="stylesheet" href="cds/utilities/helpers.css">
+
+    <style>
+        body {
+            font-family: var(--cds-font-family-base);
+            background-color: var(--cds-color-background);
+            color: var(--cds-color-text-primary);
+            margin: 0;
+            padding: 0;
+        }
+
+        .showcase-header {
+            background: var(--cds-gradient-primary);
+            color: white;
+            padding: var(--cds-space-16) 0;
+            text-align: center;
+            margin-bottom: var(--cds-space-12);
+        }
+
+        .showcase-section {
+            margin-bottom: var(--cds-space-16);
+        }
+
+        .showcase-section__title {
+            font-size: var(--cds-font-size-2xl);
+            font-weight: var(--cds-font-weight-bold);
+            margin-bottom: var(--cds-space-4);
+            padding-bottom: var(--cds-space-2);
+            border-bottom: 2px solid var(--cds-color-border);
+        }
+
+        .showcase-section__description {
+            color: var(--cds-color-text-secondary);
+            margin-bottom: var(--cds-space-6);
+        }
+
+        .example-group {
+            margin-bottom: var(--cds-space-8);
+        }
+
+        .example-group__label {
+            font-size: var(--cds-font-size-sm);
+            font-weight: var(--cds-font-weight-semibold);
+            color: var(--cds-color-text-secondary);
+            margin-bottom: var(--cds-space-3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .example-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--cds-space-4);
+            align-items: center;
+        }
+
+        .color-swatch {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--cds-radius-md);
+            box-shadow: var(--cds-shadow-base);
+            display: flex;
+            align-items: flex-end;
+            padding: var(--cds-space-2);
+            font-size: var(--cds-font-size-xs);
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="showcase-header">
+        <h1 class="cds-heading-1" style="margin: 0;">Caccia Design System</h1>
+        <p class="cds-heading-4" style="margin: var(--cds-space-2) 0 0 0; opacity: 0.9;">Component Showcase & Examples</p>
+    </div>
+
+    <div class="cds-container">
+        <!-- Colors -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Colors</h2>
+            <p class="showcase-section__description">Brand and semantic color palette</p>
+
+            <div class="example-group">
+                <div class="example-group__label">Brand Colors</div>
+                <div class="example-grid">
+                    <div class="color-swatch cds-bg-primary">Primary</div>
+                    <div class="color-swatch cds-bg-secondary">Secondary</div>
+                    <div class="color-swatch cds-bg-accent">Accent</div>
+                    <div class="color-swatch" style="background: var(--cds-color-dark)">Dark</div>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Semantic Colors</div>
+                <div class="example-grid">
+                    <div class="color-swatch cds-bg-success">Success</div>
+                    <div class="color-swatch cds-bg-error">Error</div>
+                    <div class="color-swatch cds-bg-warning">Warning</div>
+                    <div class="color-swatch cds-bg-info">Info</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Typography</h2>
+            <p class="showcase-section__description">Type scale and text styles</p>
+
+            <div class="example-group">
+                <h1 class="cds-heading-1">Heading 1 - Display Large</h1>
+                <h2 class="cds-heading-2">Heading 2 - Display Medium</h2>
+                <h3 class="cds-heading-3">Heading 3 - Title Large</h3>
+                <h4 class="cds-heading-4">Heading 4 - Title Medium</h4>
+                <h5 class="cds-heading-5">Heading 5 - Title Small</h5>
+                <h6 class="cds-heading-6">Heading 6 - Label Large</h6>
+            </div>
+
+            <div class="example-group">
+                <p class="cds-text-lg">Large body text - Used for emphasis or larger content areas</p>
+                <p class="cds-text-base">Base body text - Default paragraph and content text</p>
+                <p class="cds-text-sm">Small text - Captions, labels, secondary information</p>
+                <p class="cds-text-xs">Extra small text - Fine print, timestamps, metadata</p>
+            </div>
+        </section>
+
+        <!-- Buttons -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Buttons</h2>
+            <p class="showcase-section__description">Interactive button components with variants</p>
+
+            <div class="example-group">
+                <div class="example-group__label">Variants</div>
+                <div class="example-grid">
+                    <button class="cds-button cds-button--primary">Primary</button>
+                    <button class="cds-button cds-button--secondary">Secondary</button>
+                    <button class="cds-button cds-button--outline">Outline</button>
+                    <button class="cds-button cds-button--ghost">Ghost</button>
+                    <button class="cds-button cds-button--danger">Danger</button>
+                    <button class="cds-button cds-button--success">Success</button>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Sizes</div>
+                <div class="example-grid">
+                    <button class="cds-button cds-button--primary cds-button--sm">Small</button>
+                    <button class="cds-button cds-button--primary">Medium</button>
+                    <button class="cds-button cds-button--primary cds-button--lg">Large</button>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">States</div>
+                <div class="example-grid">
+                    <button class="cds-button cds-button--primary">Default</button>
+                    <button class="cds-button cds-button--primary" disabled>Disabled</button>
+                    <button class="cds-button cds-button--primary cds-button--loading">
+                        <span class="cds-button__spinner"></span>
+                        Loading
+                    </button>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Button Group</div>
+                <div class="cds-button-group">
+                    <button class="cds-button cds-button--outline">Left</button>
+                    <button class="cds-button cds-button--outline">Center</button>
+                    <button class="cds-button cds-button--outline">Right</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Cards</h2>
+            <p class="showcase-section__description">Flexible content containers</p>
+
+            <div class="cds-grid cds-grid--cols-3 cds-grid--sm-cols-1">
+                <div class="cds-card">
+                    <div class="cds-card__header">
+                        <h3 class="cds-card__title">Default Card</h3>
+                    </div>
+                    <div class="cds-card__body">
+                        <p>This is a default card with standard elevation and padding.</p>
+                    </div>
+                    <div class="cds-card__footer">
+                        <button class="cds-button cds-button--primary cds-button--sm">Action</button>
+                    </div>
+                </div>
+
+                <div class="cds-card cds-card--elevated">
+                    <div class="cds-card__header">
+                        <h3 class="cds-card__title">Elevated Card</h3>
+                    </div>
+                    <div class="cds-card__body">
+                        <p>This card has increased elevation for prominence.</p>
+                    </div>
+                </div>
+
+                <div class="cds-card cds-card--outline">
+                    <div class="cds-card__header">
+                        <h3 class="cds-card__title">Outline Card</h3>
+                    </div>
+                    <div class="cds-card__body">
+                        <p>This card uses a border instead of shadow.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-group" style="margin-top: var(--cds-space-6);">
+                <div class="example-group__label">Interactive Card</div>
+                <div class="cds-card cds-card--interactive" style="max-width: 400px;">
+                    <div class="cds-card__header">
+                        <h3 class="cds-card__title">Clickable Card</h3>
+                        <p class="cds-card__subtitle">Hover to see effect</p>
+                    </div>
+                    <div class="cds-card__body">
+                        <p>Interactive cards respond to hover with elevation and transform.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form Inputs -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Form Inputs</h2>
+            <p class="showcase-section__description">Text inputs, selects, and form controls</p>
+
+            <div class="cds-grid cds-grid--cols-2 cds-grid--sm-cols-1">
+                <div class="cds-form-group">
+                    <label class="cds-label">Text Input</label>
+                    <input type="text" class="cds-input" placeholder="Enter text...">
+                    <p class="cds-helper-text">Helper text for additional context</p>
+                </div>
+
+                <div class="cds-form-group">
+                    <label class="cds-label cds-label--required">Required Input</label>
+                    <input type="email" class="cds-input" placeholder="email@example.com">
+                </div>
+
+                <div class="cds-form-group">
+                    <label class="cds-label">Success State</label>
+                    <input type="text" class="cds-input cds-input--success" value="Valid input">
+                    <p class="cds-helper-text cds-helper-text--success">Input is valid!</p>
+                </div>
+
+                <div class="cds-form-group">
+                    <label class="cds-label">Error State</label>
+                    <input type="text" class="cds-input cds-input--error" value="Invalid input">
+                    <p class="cds-helper-text cds-helper-text--error">This field has an error</p>
+                </div>
+
+                <div class="cds-form-group">
+                    <label class="cds-label">Select</label>
+                    <select class="cds-input cds-select">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+
+                <div class="cds-form-group">
+                    <label class="cds-label">Textarea</label>
+                    <textarea class="cds-input cds-textarea" placeholder="Enter longer text..."></textarea>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Checkboxes & Radios</div>
+                <div class="cds-stack cds-stack--md">
+                    <label class="cds-checkbox">
+                        <input type="checkbox" class="cds-checkbox__input">
+                        <span class="cds-checkbox__box"></span>
+                        <span>Checkbox option 1</span>
+                    </label>
+                    <label class="cds-checkbox">
+                        <input type="checkbox" class="cds-checkbox__input" checked>
+                        <span class="cds-checkbox__box"></span>
+                        <span>Checkbox option 2 (checked)</span>
+                    </label>
+                    <label class="cds-radio">
+                        <input type="radio" name="radio-example" class="cds-radio__input">
+                        <span class="cds-radio__circle"></span>
+                        <span>Radio option 1</span>
+                    </label>
+                    <label class="cds-radio">
+                        <input type="radio" name="radio-example" class="cds-radio__input" checked>
+                        <span class="cds-radio__circle"></span>
+                        <span>Radio option 2 (checked)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Toggle Switch</div>
+                <label class="cds-switch">
+                    <input type="checkbox" class="cds-switch__input">
+                    <span class="cds-switch__track">
+                        <span class="cds-switch__thumb"></span>
+                    </span>
+                    <span>Enable notifications</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Grid & Layout -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Grid & Layout</h2>
+            <p class="showcase-section__description">Responsive grid system and flex utilities</p>
+
+            <div class="example-group">
+                <div class="example-group__label">12-Column Grid</div>
+                <div class="cds-grid cds-grid--cols-12 cds-grid--gap-2">
+                    <div class="cds-col-span-12"><div class="cds-card cds-card--flat">12 columns</div></div>
+                    <div class="cds-col-span-6"><div class="cds-card cds-card--flat">6 columns</div></div>
+                    <div class="cds-col-span-6"><div class="cds-card cds-card--flat">6 columns</div></div>
+                    <div class="cds-col-span-4"><div class="cds-card cds-card--flat">4 columns</div></div>
+                    <div class="cds-col-span-4"><div class="cds-card cds-card--flat">4 columns</div></div>
+                    <div class="cds-col-span-4"><div class="cds-card cds-card--flat">4 columns</div></div>
+                    <div class="cds-col-span-3"><div class="cds-card cds-card--flat">3</div></div>
+                    <div class="cds-col-span-3"><div class="cds-card cds-card--flat">3</div></div>
+                    <div class="cds-col-span-3"><div class="cds-card cds-card--flat">3</div></div>
+                    <div class="cds-col-span-3"><div class="cds-card cds-card--flat">3</div></div>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Stack Layout</div>
+                <div class="cds-stack cds-stack--md">
+                    <div class="cds-card cds-card--compact">Item 1</div>
+                    <div class="cds-card cds-card--compact">Item 2</div>
+                    <div class="cds-card cds-card--compact">Item 3</div>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Horizontal Stack (HStack)</div>
+                <div class="cds-hstack cds-hstack--md">
+                    <div class="cds-card cds-card--compact">Item 1</div>
+                    <div class="cds-card cds-card--compact">Item 2</div>
+                    <div class="cds-card cds-card--compact">Item 3</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toasts -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Toast Notifications</h2>
+            <p class="showcase-section__description">Temporary notification messages (click to trigger)</p>
+
+            <div class="example-grid">
+                <button class="cds-button cds-button--outline" onclick="showToast('default')">Default Toast</button>
+                <button class="cds-button cds-button--success" onclick="showToast('success')">Success Toast</button>
+                <button class="cds-button cds-button--danger" onclick="showToast('error')">Error Toast</button>
+                <button class="cds-button" style="background: var(--cds-color-warning); color: var(--cds-color-text-primary);" onclick="showToast('warning')">Warning Toast</button>
+                <button class="cds-button" style="background: var(--cds-color-info);" onclick="showToast('info')">Info Toast</button>
+            </div>
+        </section>
+
+        <!-- Modals -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Modals</h2>
+            <p class="showcase-section__description">Dialog overlays for focused content</p>
+
+            <div class="example-grid">
+                <button class="cds-button cds-button--primary" onclick="showModal('default')">Default Modal</button>
+                <button class="cds-button cds-button--outline" onclick="showModal('small')">Small Modal</button>
+                <button class="cds-button cds-button--outline" onclick="showModal('large')">Large Modal</button>
+            </div>
+        </section>
+
+        <!-- Utilities -->
+        <section class="showcase-section">
+            <h2 class="showcase-section__title">Utility Classes</h2>
+            <p class="showcase-section__description">Helper classes for common patterns</p>
+
+            <div class="example-group">
+                <div class="example-group__label">Borders & Radius</div>
+                <div class="example-grid">
+                    <div class="cds-card cds-card--flat cds-rounded-none" style="width: 80px; height: 80px;">None</div>
+                    <div class="cds-card cds-card--flat cds-rounded-sm" style="width: 80px; height: 80px;">Small</div>
+                    <div class="cds-card cds-card--flat cds-rounded-base" style="width: 80px; height: 80px;">Base</div>
+                    <div class="cds-card cds-card--flat cds-rounded-lg" style="width: 80px; height: 80px;">Large</div>
+                    <div class="cds-card cds-card--flat cds-rounded-full" style="width: 80px; height: 80px;">Full</div>
+                </div>
+            </div>
+
+            <div class="example-group">
+                <div class="example-group__label">Animations</div>
+                <div class="example-grid">
+                    <div class="cds-card cds-card--flat cds-animate-pulse" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">Pulse</div>
+                    <div class="cds-card cds-card--flat cds-animate-spin" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">🔄</div>
+                    <div class="cds-card cds-card--flat cds-animate-bounce" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">Bounce</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="cds-toast-container cds-toast-container--top-right" id="toast-container"></div>
+
+    <!-- Modal Examples -->
+    <div class="cds-modal cds-hidden" id="modal-default">
+        <div class="cds-modal__backdrop" onclick="hideModal('default')"></div>
+        <div class="cds-modal__content">
+            <div class="cds-modal__header">
+                <h3 class="cds-modal__title">Modal Title</h3>
+                <button class="cds-modal__close" onclick="hideModal('default')">&times;</button>
+            </div>
+            <div class="cds-modal__body">
+                <p>This is a default modal dialog. It can contain any content you need.</p>
+            </div>
+            <div class="cds-modal__footer">
+                <button class="cds-button cds-button--ghost" onclick="hideModal('default')">Cancel</button>
+                <button class="cds-button cds-button--primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cds-modal cds-hidden" id="modal-small">
+        <div class="cds-modal__backdrop" onclick="hideModal('small')"></div>
+        <div class="cds-modal__content cds-modal__content--sm">
+            <div class="cds-modal__header">
+                <h3 class="cds-modal__title">Small Modal</h3>
+                <button class="cds-modal__close" onclick="hideModal('small')">&times;</button>
+            </div>
+            <div class="cds-modal__body">
+                <p>This is a smaller modal for quick confirmations.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cds-modal cds-hidden" id="modal-large">
+        <div class="cds-modal__backdrop" onclick="hideModal('large')"></div>
+        <div class="cds-modal__content cds-modal__content--lg">
+            <div class="cds-modal__header">
+                <h3 class="cds-modal__title">Large Modal</h3>
+                <button class="cds-modal__close" onclick="hideModal('large')">&times;</button>
+            </div>
+            <div class="cds-modal__body">
+                <p>This is a larger modal with more content space.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+            <div class="cds-modal__footer">
+                <button class="cds-button cds-button--outline" onclick="hideModal('large')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast functionality
+        let toastId = 0;
+        function showToast(type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const id = ++toastId;
+
+            const messages = {
+                default: 'This is a default toast message',
+                success: 'Operation completed successfully!',
+                error: 'An error occurred. Please try again.',
+                warning: 'Warning: Please review your changes',
+                info: 'New updates are available'
+            };
+
+            toast.className = `cds-toast ${type !== 'default' ? `cds-toast--${type}` : ''}`;
+            toast.innerHTML = `
+                <div class="cds-toast__icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ'}</div>
+                <div class="cds-toast__content">${messages[type]}</div>
+                <button class="cds-toast__close" onclick="removeToast(${id})">&times;</button>
+            `;
+            toast.id = `toast-${id}`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('cds-toast--exiting');
+                setTimeout(() => toast.remove(), 200);
+            }, 3000);
+        }
+
+        function removeToast(id) {
+            const toast = document.getElementById(`toast-${id}`);
+            if (toast) {
+                toast.classList.add('cds-toast--exiting');
+                setTimeout(() => toast.remove(), 200);
+            }
+        }
+
+        // Modal functionality
+        function showModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            modal.classList.remove('cds-hidden');
+            setTimeout(() => modal.classList.add('cds-modal--open'), 10);
+        }
+
+        function hideModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            modal.classList.remove('cds-modal--open');
+            setTimeout(() => modal.classList.add('cds-hidden'), 200);
+        }
+    </script>
+</body>
+</html>

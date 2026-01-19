@@ -292,17 +292,22 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
     box-sizing: border-box;
-    overflow: auto; /* Allow scrolling for larger grids */
+    overflow: hidden; /* Prevent scrolling - grid should fit */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .word-grid {
     display: grid;
-    /* Columns set by JS, but we ensure full width/height */
+    /* Columns set by JS, but we ensure it fits within container */
     width: 100%;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     gap: 2px;
     user-select: none; /* Prevent highlighting */
     touch-action: none; /* Important for custom drag handling if implemented */
+    aspect-ratio: 1 / 1; /* Keep grid square */
 }
 
 .grid-cell {
@@ -311,12 +316,16 @@ body {
     justify-content: center;
     font-weight: 600;
     /* Responsive font sizing */
-    font-size: clamp(12px, 4vw, 24px); 
+    font-size: clamp(12px, 3vw, 20px);
     color: var(--text-main);
     border-radius: 4px;
     background: var(--bg-page);
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
+    aspect-ratio: 1 / 1; /* Square cells */
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
 }
 
 .grid-cell.selected {
@@ -673,6 +682,27 @@ body {
         max-width: calc(100% - 32px);
         font-size: 0.9rem;
         padding: 14px 20px;
+    }
+
+    /* Word Search Grid Mobile */
+    .grid-container {
+        max-width: 100%;
+        padding: 8px;
+        margin: 0;
+    }
+
+    .word-grid {
+        gap: 1px;
+    }
+
+    .grid-cell {
+        font-size: clamp(10px, 2.5vw, 16px);
+        border-radius: 2px;
+    }
+
+    .game-container {
+        gap: 16px;
+        padding: 0 8px;
     }
 }
 
