@@ -64,45 +64,57 @@
 	}
 </script>
 
-<div class="wordle-game">
-	<header>
-		<h1>Paròla</h1>
-		<p class="puzzle-number">Puzzle #{getPuzzleNumber()}</p>
+<div class="max-w-lg mx-auto p-4">
+	<header class="text-center mb-8">
+		<h1 class="text-4xl font-bold">Paròla</h1>
+		<p class="text-text-secondary text-sm">Puzzle #{getPuzzleNumber()}</p>
 	</header>
 
-	<div class="grid">
+	<div class="flex flex-col gap-1 mb-8">
 		{#each $wordleStore.guesses as guess}
-			<div class="row">
+			<div class="flex gap-1 justify-center">
 				{#each guess.result as letter}
-					<div class="cell {letter.status}">{letter.letter}</div>
+					<div class="w-16 h-16 border-2 flex items-center justify-center text-3xl font-bold uppercase
+						{letter.status === 'correct' ? 'bg-correct border-correct text-white' : ''}
+						{letter.status === 'present' ? 'bg-present border-present text-white' : ''}
+						{letter.status === 'absent' ? 'bg-absent border-absent text-white' : ''}">
+						{letter.letter}
+					</div>
 				{/each}
 			</div>
 		{/each}
 
 		{#if $wordleStore.gameState === 'playing'}
-			<div class="row">
+			<div class="flex gap-1 justify-center">
 				{#each Array(5) as _, i}
-					<div class="cell current">{$wordleStore.currentGuess[i] || ''}</div>
+					<div class="w-16 h-16 border-2 border-text-tertiary flex items-center justify-center text-3xl font-bold uppercase">
+						{$wordleStore.currentGuess[i] || ''}
+					</div>
 				{/each}
 			</div>
 		{/if}
 
 		{#each Array(emptyRows) as _}
-			<div class="row">
+			<div class="flex gap-1 justify-center">
 				{#each Array(5) as _}
-					<div class="cell empty"></div>
+					<div class="w-16 h-16 border-2 border-border flex items-center justify-center"></div>
 				{/each}
 			</div>
 		{/each}
 	</div>
 
-	<div class="keyboard">
+	<div class="flex flex-col gap-2">
 		{#each KEYBOARD_ROWS as row}
-			<div class="keyboard-row">
+			<div class="flex gap-1.5 justify-center">
 				{#each row as key}
 					<button
-						class="key {key.length > 1 ? 'wide' : ''} {$wordleStore.keyboardState[key] || ''}"
 						on:click={() => handleKeyClick(key)}
+						class="min-w-11 h-14 rounded font-bold text-sm transition-colors
+							{key.length > 1 ? 'min-w-16 text-xs' : ''}
+							{$wordleStore.keyboardState[key] === 'correct' ? 'bg-correct text-white' : ''}
+							{$wordleStore.keyboardState[key] === 'present' ? 'bg-present text-white' : ''}
+							{$wordleStore.keyboardState[key] === 'absent' ? 'bg-absent text-white' : ''}
+							{!$wordleStore.keyboardState[key] ? 'bg-border hover:opacity-80' : ''}"
 					>
 						{key}
 					</button>
@@ -112,204 +124,28 @@
 	</div>
 
 	{#if showModal}
-		<div class="modal-backdrop" on:click={() => showModal = false}>
-			<div class="modal" on:click|stopPropagation>
-				<h2>{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Prossima volta!'}</h2>
-				<p class="word-reveal">
+		<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" on:click={() => showModal = false}>
+			<div class="bg-surface rounded-lg p-8 max-w-md text-center" on:click|stopPropagation>
+				<h2 class="text-2xl font-bold mb-4">
+					{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Prossima volta!'}
+				</h2>
+				<p class="text-2xl mb-2">
 					<strong>{$wordleStore.targetWord}</strong> - {$wordleStore.targetWordData.translation}
 				</p>
-				<p class="definition">{$wordleStore.targetWordData.definition}</p>
-				<button class="share-btn" on:click={shareResults}>Share Results</button>
-				<button class="close-btn" on:click={() => showModal = false}>Close</button>
+				<p class="text-text-secondary mb-6">{$wordleStore.targetWordData.definition}</p>
+				<button
+					on:click={shareResults}
+					class="bg-success text-white px-6 py-3 rounded font-semibold hover:opacity-90 mr-2"
+				>
+					Share Results
+				</button>
+				<button
+					on:click={() => showModal = false}
+					class="bg-border px-6 py-3 rounded font-semibold hover:opacity-90"
+				>
+					Close
+				</button>
 			</div>
 		</div>
 	{/if}
 </div>
-
-<style>
-	.wordle-game {
-		max-width: 500px;
-		margin: 0 auto;
-		padding: 1rem;
-	}
-
-	header {
-		text-align: center;
-		margin-bottom: 2rem;
-	}
-
-	h1 {
-		font-size: 2.5rem;
-		font-weight: 700;
-		margin: 0;
-	}
-
-	.puzzle-number {
-		color: #666;
-		font-size: 0.9rem;
-	}
-
-	.grid {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-		margin-bottom: 2rem;
-	}
-
-	.row {
-		display: flex;
-		gap: 5px;
-		justify-content: center;
-	}
-
-	.cell {
-		width: 62px;
-		height: 62px;
-		border: 2px solid #d3d6da;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 2rem;
-		font-weight: 700;
-		text-transform: uppercase;
-	}
-
-	.cell.current {
-		border-color: #878a8c;
-	}
-
-	.cell.correct {
-		background: #6aaa64;
-		border-color: #6aaa64;
-		color: white;
-	}
-
-	.cell.present {
-		background: #c9b458;
-		border-color: #c9b458;
-		color: white;
-	}
-
-	.cell.absent {
-		background: #787c7e;
-		border-color: #787c7e;
-		color: white;
-	}
-
-	.keyboard {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.keyboard-row {
-		display: flex;
-		gap: 6px;
-		justify-content: center;
-	}
-
-	.key {
-		min-width: 43px;
-		height: 58px;
-		border: none;
-		border-radius: 4px;
-		background: #d3d6da;
-		font-weight: 700;
-		cursor: pointer;
-		font-size: 0.8rem;
-	}
-
-	.key.wide {
-		min-width: 65px;
-		font-size: 0.7rem;
-	}
-
-	.key:hover {
-		opacity: 0.8;
-	}
-
-	.key.correct {
-		background: #6aaa64;
-		color: white;
-	}
-
-	.key.present {
-		background: #c9b458;
-		color: white;
-	}
-
-	.key.absent {
-		background: #787c7e;
-		color: white;
-	}
-
-	.modal-backdrop {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 1000;
-	}
-
-	.modal {
-		background: white;
-		padding: 2rem;
-		border-radius: 8px;
-		max-width: 400px;
-		text-align: center;
-	}
-
-	.modal h2 {
-		margin-top: 0;
-	}
-
-	.word-reveal {
-		font-size: 1.5rem;
-		margin: 1rem 0;
-	}
-
-	.definition {
-		color: #666;
-		margin-bottom: 1.5rem;
-	}
-
-	.share-btn, .close-btn {
-		padding: 0.75rem 1.5rem;
-		border: none;
-		border-radius: 4px;
-		font-weight: 600;
-		cursor: pointer;
-		margin: 0.25rem;
-	}
-
-	.share-btn {
-		background: #6aaa64;
-		color: white;
-	}
-
-	.close-btn {
-		background: #d3d6da;
-	}
-
-	@media (max-width: 640px) {
-		.cell {
-			width: 52px;
-			height: 52px;
-			font-size: 1.5rem;
-		}
-
-		.key {
-			min-width: 36px;
-			height: 48px;
-		}
-
-		.key.wide {
-			min-width: 55px;
-		}
-	}
-</style>
