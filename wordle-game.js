@@ -8,6 +8,14 @@ export const LETTER_STATE = {
   PENDING: 'pending'
 };
 
+function getTodayUTC() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(now.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export class WordleGame {
   constructor() {
     this.maxGuesses = 6;
@@ -22,6 +30,12 @@ export class WordleGame {
   }
 
   startNewGame(useDaily = false) {
+    // Try to load saved state if this is a daily game
+    if (useDaily && this.loadGameState()) {
+      return;
+    }
+
+    // Start fresh game
     if (useDaily) {
       this.targetWordData = getDailyWord();
     } else {
@@ -36,6 +50,11 @@ export class WordleGame {
     this.keyboardState = {};
     this.initializeKeyboard();
     this.notifyStateChange();
+
+    // Save initial state for daily game
+    if (useDaily) {
+      this.saveGameState();
+    }
   }
 
   initializeKeyboard() {
@@ -90,6 +109,9 @@ export class WordleGame {
 
     this.currentGuess = '';
     this.notifyStateChange();
+
+    // Save state after each guess (for daily games)
+    this.saveGameState();
 
     return {
       success: true,
@@ -190,5 +212,59 @@ export class WordleGame {
     }).join('\n');
 
     return `${title}\n\n${grid}`;
+  }
+
+  saveGameState() {
+    const state = {
+      targetWord: this.targetWord,
+      targetWordData: this.targetWordData,
+      guesses: this.guesses,
+      currentGuess: this.currentGuess,
+      gameState: this.gameState,
+      keyboardState: this.keyboardState,
+      date: getTodayUTC()
+    };
+    localStorage.setItem('wordleGameState', JSON.stringify(state));
+  }
+
+  loadGameState() {
+    try {
+      const saved = localStorage.getItem('wordleGameState');
+      if (!saved) return false;
+
+      const state = JSON.parse(saved);
+
+      // Check if state is from today (UTC)
+      if (state.date !== getTodayUTC()) {
+        localStorage.removeItem('wordleGameState');
+        return false;
+      }
+
+      // Verify the saved word matches today's daily word
+      const todayWord = getDailyWord();
+      if (state.targetWord !== todayWord.word) {
+        localStorage.removeItem('wordleGameState');
+        return false;
+      }
+
+      // Restore state
+      this.targetWord = state.targetWord;
+      this.targetWordData = state.targetWordData;
+      this.guesses = state.guesses;
+      this.currentGuess = state.currentGuess;
+      this.gameState = state.gameState;
+      this.keyboardState = state.keyboardState;
+
+      this.notifyStateChange();
+      return true;
+    } catch (error) {
+      console.error('Failed to load game state:', error);
+      localStorage.removeItem('wordleGameState');
+      return false;
+    }
+  }
+
+  clearGameState() {
+    localStorage.removeItem('wordleGameState');
   }
 }

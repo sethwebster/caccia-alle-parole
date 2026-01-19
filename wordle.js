@@ -99,6 +99,15 @@ export class WordleUI {
   }
 
   startNewGame() {
+    // Clear any existing game state to force a fresh daily game
+    this.game.clearGameState();
+    this.game.startNewGame(true);
+    this.buildGrid();
+    this.buildKeyboard();
+  }
+
+  initialize() {
+    // Try to load saved state or start new game
     this.game.startNewGame(true);
     this.buildGrid();
     this.buildKeyboard();
@@ -318,8 +327,10 @@ export class WordleUI {
     if (container) {
       container.classList.remove('cds-hidden');
       container.style.display = 'flex';
-      if (this.game.gameState === 'playing' && this.game.guesses.length === 0) {
-        this.startNewGame();
+
+      // Initialize game (will restore state if available, or start new)
+      if (!this.game.targetWord) {
+        this.initialize();
       }
     }
   }
