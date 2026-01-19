@@ -28,6 +28,7 @@ export class WordleUI {
     this.elements.victoryModal = document.getElementById('wordle-victory-modal');
     this.elements.victoryClose = document.querySelector('#wordle-victory-modal .modal-close');
     this.elements.playAgainBtn = document.getElementById('wordle-play-again');
+    this.elements.modalShareBtn = document.getElementById('wordle-modal-share');
     this.elements.finalGuesses = document.getElementById('wordle-final-guesses');
     this.elements.finalWord = document.getElementById('wordle-final-word');
     this.elements.finalDefinition = document.getElementById('wordle-final-definition');
@@ -55,6 +56,7 @@ export class WordleUI {
     // Buttons
     this.elements.newGameBtn.addEventListener('click', () => this.startNewGame());
     this.elements.shareBtn.addEventListener('click', () => this.shareResults());
+    this.elements.modalShareBtn.addEventListener('click', () => this.shareResults());
     this.elements.playAgainBtn.addEventListener('click', () => {
       this.hideVictoryModal();
       this.startNewGame();

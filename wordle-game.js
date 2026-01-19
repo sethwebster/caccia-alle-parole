@@ -202,7 +202,13 @@ export class WordleGame {
   getShareText() {
     if (this.gameState === 'playing') return null;
 
-    const title = `Paròla ${this.guesses.length}/${this.maxGuesses}`;
+    const today = new Date();
+    const startDate = Date.UTC(2024, 0, 1);
+    const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+    const daysSinceStart = Math.floor((todayUTC - startDate) / (1000 * 60 * 60 * 24));
+    const puzzleNumber = daysSinceStart + 1;
+
+    const title = `Paròla #${puzzleNumber} ${this.guesses.length}/${this.maxGuesses}`;
     const grid = this.guesses.map(guess => {
       return guess.result.map(state => {
         if (state === LETTER_STATE.CORRECT) return '🟩';
@@ -211,7 +217,9 @@ export class WordleGame {
       }).join('');
     }).join('\n');
 
-    return `${title}\n\n${grid}`;
+    const url = window.location.origin + window.location.pathname + '#parola';
+
+    return `${title}\n\n${grid}\n\n${url}`;
   }
 
   saveGameState() {
