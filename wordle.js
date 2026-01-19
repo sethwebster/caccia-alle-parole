@@ -12,6 +12,8 @@ export class WordleUI {
     this.elements = {};
     this.shakeTimeout = null;
     this.messageTimeout = null;
+    this.isLockedUIApplied = false;
+    this.isPersistentMessage = false;
 
     this.initializeElements();
     this.attachEventListeners();
@@ -99,9 +101,20 @@ export class WordleUI {
   }
 
   startNewGame() {
-    this.game.startNewGame(true);
+    this.isLockedUIApplied = false; // Reset the flag when starting a new game
+    
+    // Build grid and keyboard first, before starting the game
     this.buildGrid();
     this.buildKeyboard();
+    
+    // Now start the game (this will trigger render)
+    this.game.startNewGame(true);
+    
+    // Check if game is locked and apply locked UI
+    const state = this.game.getGameState();
+    if (state.gameState === 'locked' || state.gameState === 'won' || state.gameState === 'lost') {
+      this.applyLockedUI();
+    }
   }
 
   buildGrid() {
@@ -158,6 +171,11 @@ export class WordleUI {
     this.renderCurrentGuess(state);
     this.renderKeyboard(state);
     this.updateShareButton(state);
+    
+    // Handle locked state
+    if (state.gameState === 'locked') {
+      this.applyLockedUI();
+    }
   }
 
   renderGuesses(state) {
@@ -241,11 +259,16 @@ export class WordleUI {
     }
   }
 
-  showMessage(text, type = 'info') {
-    // Clear any existing timeout
+  showMessage(text, type = 'info', persistent = false) {
+    // Clear any existing timeout (but only if we're not already showing a persistent message)
     if (this.messageTimeout) {
       clearTimeout(this.messageTimeout);
-      this.elements.message.classList.remove('show');
+      this.messageTimeout = null;
+    }
+    
+    // Don't override a persistent message with a temporary one
+    if (this.isPersistentMessage && !persistent) {
+      return;
     }
 
     // Small delay to allow re-triggering animation
@@ -253,11 +276,16 @@ export class WordleUI {
       this.elements.message.textContent = text;
       this.elements.message.className = `wordle-message wordle-message-${type}`;
       this.elements.message.classList.add('show');
+      this.isPersistentMessage = persistent;
 
-      this.messageTimeout = setTimeout(() => {
-        this.elements.message.classList.remove('show');
-        this.messageTimeout = null;
-      }, 2000);
+      // Only set timeout if not persistent
+      if (!persistent) {
+        this.messageTimeout = setTimeout(() => {
+          this.elements.message.classList.remove('show');
+          this.messageTimeout = null;
+          this.isPersistentMessage = false;
+        }, 2000);
+      }
     }, 10);
   }
 
@@ -311,14 +339,36 @@ export class WordleUI {
     });
   }
 
+  applyLockedUI() {
+    // Guard to prevent redundant operations
+    if (this.isLockedUIApplied) {
+      return;
+    }
+    
+    this.showMessage('Hai già giocato oggi! Torna domani per una nuova parola.', 'info', true);
+    
+    // Hide the new game button
+    if (this.elements.newGameBtn) {
+      this.elements.newGameBtn.style.display = 'none';
+    }
+    
+    // Disable keyboard
+    if (this.elements.keyboard) {
+      this.elements.keyboard.style.pointerEvents = 'none';
+      this.elements.keyboard.style.opacity = '0.5';
+    }
+    
+    this.isLockedUIApplied = true;
+  }
+
   show() {
     const container = document.getElementById('wordle-container');
     if (container) {
       container.classList.remove('hidden');
       container.style.display = 'flex';
-      if (this.game.gameState === 'playing' && this.game.guesses.length === 0) {
-        this.startNewGame();
-      }
+      // Always initialize the game when showing
+      // This will either start a fresh game or load the saved state if already played today
+      this.startNewGame();
     }
   }
 

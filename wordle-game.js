@@ -1,4 +1,5 @@
 import { getDailyWord, isValidWord, wordleWords } from './wordle-data.js';
+import { hasPlayedToday, markAsPlayedToday, saveGameState, loadGameState } from './daily-play-tracker.js';
 
 export const LETTER_STATE = {
   CORRECT: 'correct',
@@ -16,12 +17,41 @@ export class WordleGame {
     this.targetWordData = null;
     this.guesses = [];
     this.currentGuess = '';
-    this.gameState = 'playing'; // playing, won, lost
+    this.gameState = 'playing'; // playing, won, lost, locked
     this.keyboardState = {};
     this.onStateChange = null;
+    this.isDailyMode = false;
   }
 
   startNewGame(useDaily = false) {
+    this.isDailyMode = useDaily;
+    
+    // Check if already played today when in daily mode
+    if (useDaily && hasPlayedToday()) {
+      this.targetWordData = getDailyWord();
+      this.targetWord = this.targetWordData.word;
+      
+      // Load saved game state to display previous result
+      const savedState = loadGameState();
+      if (savedState) {
+        this.guesses = savedState.guesses;
+        this.keyboardState = savedState.keyboardState;
+        this.targetWordData = savedState.targetWordData;
+        this.targetWord = this.targetWordData.word;
+        // Keep gameState as the saved state (won/lost) to show the result
+        this.gameState = savedState.gameState;
+      } else {
+        // Fallback if no saved state (shouldn't happen normally)
+        this.guesses = [];
+        this.keyboardState = {};
+        this.initializeKeyboard();
+        this.gameState = 'locked';
+      }
+      
+      this.notifyStateChange();
+      return;
+    }
+    
     if (useDaily) {
       this.targetWordData = getDailyWord();
     } else {
@@ -84,8 +114,18 @@ export class WordleGame {
     const isCorrect = this.currentGuess === this.targetWord;
     if (isCorrect) {
       this.gameState = 'won';
+      // Mark as played today and save state if in daily mode
+      if (this.isDailyMode) {
+        markAsPlayedToday();
+        saveGameState(this.getGameState());
+      }
     } else if (this.guesses.length >= this.maxGuesses) {
       this.gameState = 'lost';
+      // Mark as played today and save state if in daily mode
+      if (this.isDailyMode) {
+        markAsPlayedToday();
+        saveGameState(this.getGameState());
+      }
     }
 
     this.currentGuess = '';
