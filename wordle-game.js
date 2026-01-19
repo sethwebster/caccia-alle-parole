@@ -1,4 +1,5 @@
 import { getDailyWord, isValidWord, wordleWords } from './wordle-data.js';
+import { hasPlayedToday, markAsPlayedToday } from './daily-play-tracker.js';
 
 export const LETTER_STATE = {
   CORRECT: 'correct',
@@ -16,12 +17,24 @@ export class WordleGame {
     this.targetWordData = null;
     this.guesses = [];
     this.currentGuess = '';
-    this.gameState = 'playing'; // playing, won, lost
+    this.gameState = 'playing'; // playing, won, lost, locked
     this.keyboardState = {};
     this.onStateChange = null;
+    this.isDailyMode = false;
   }
 
   startNewGame(useDaily = false) {
+    this.isDailyMode = useDaily;
+    
+    // Check if already played today when in daily mode
+    if (useDaily && hasPlayedToday()) {
+      this.gameState = 'locked';
+      this.targetWordData = getDailyWord();
+      this.targetWord = this.targetWordData.word;
+      this.notifyStateChange();
+      return;
+    }
+    
     if (useDaily) {
       this.targetWordData = getDailyWord();
     } else {
@@ -84,8 +97,16 @@ export class WordleGame {
     const isCorrect = this.currentGuess === this.targetWord;
     if (isCorrect) {
       this.gameState = 'won';
+      // Mark as played today if in daily mode
+      if (this.isDailyMode) {
+        markAsPlayedToday();
+      }
     } else if (this.guesses.length >= this.maxGuesses) {
       this.gameState = 'lost';
+      // Mark as played today if in daily mode
+      if (this.isDailyMode) {
+        markAsPlayedToday();
+      }
     }
 
     this.currentGuess = '';

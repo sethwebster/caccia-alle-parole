@@ -102,6 +102,13 @@ export class WordleUI {
     this.game.startNewGame(true);
     this.buildGrid();
     this.buildKeyboard();
+    
+    // Check if game is locked (already played today)
+    const state = this.game.getGameState();
+    if (state.gameState === 'locked') {
+      this.showLockedMessage();
+      this.disableInput();
+    }
   }
 
   buildGrid() {
@@ -158,6 +165,12 @@ export class WordleUI {
     this.renderCurrentGuess(state);
     this.renderKeyboard(state);
     this.updateShareButton(state);
+    
+    // Handle locked state
+    if (state.gameState === 'locked') {
+      this.showLockedMessage();
+      this.disableInput();
+    }
   }
 
   renderGuesses(state) {
@@ -241,7 +254,7 @@ export class WordleUI {
     }
   }
 
-  showMessage(text, type = 'info') {
+  showMessage(text, type = 'info', persistent = false) {
     // Clear any existing timeout
     if (this.messageTimeout) {
       clearTimeout(this.messageTimeout);
@@ -254,10 +267,13 @@ export class WordleUI {
       this.elements.message.className = `wordle-message wordle-message-${type}`;
       this.elements.message.classList.add('show');
 
-      this.messageTimeout = setTimeout(() => {
-        this.elements.message.classList.remove('show');
-        this.messageTimeout = null;
-      }, 2000);
+      // Only set timeout if not persistent
+      if (!persistent) {
+        this.messageTimeout = setTimeout(() => {
+          this.elements.message.classList.remove('show');
+          this.messageTimeout = null;
+        }, 2000);
+      }
     }, 10);
   }
 
@@ -309,6 +325,23 @@ export class WordleUI {
     }).catch(() => {
       this.showMessage('Errore nella copia', 'error');
     });
+  }
+
+  showLockedMessage() {
+    this.showMessage('Hai già giocato oggi! Torna domani per una nuova parola.', 'info', true);
+    
+    // Also hide the new game button
+    if (this.elements.newGameBtn) {
+      this.elements.newGameBtn.style.display = 'none';
+    }
+  }
+
+  disableInput() {
+    // Disable keyboard
+    if (this.elements.keyboard) {
+      this.elements.keyboard.style.pointerEvents = 'none';
+      this.elements.keyboard.style.opacity = '0.5';
+    }
   }
 
   show() {
