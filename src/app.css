@@ -1,0 +1,126 @@
+/* Tailwind CSS 4 - Must be first */
+@import "tailwindcss";
+
+/* CDS Design System - Fonts */
+@import "$lib/styles/fonts.css";
+
+/* CDS Design System - Tokens */
+@import "$lib/styles/tokens/colors.css";
+@import "$lib/styles/tokens/typography.css";
+@import "$lib/styles/tokens/spacing.css";
+@import "$lib/styles/tokens/elevation.css";
+
+/* CDS Design System - Components */
+@import "$lib/styles/components/buttons.css";
+@import "$lib/styles/components/cards.css";
+@import "$lib/styles/components/grid.css";
+@import "$lib/styles/components/inputs.css";
+@import "$lib/styles/components/modals.css";
+@import "$lib/styles/components/nav.css";
+@import "$lib/styles/components/toasts.css";
+
+/* CDS Design System - Utilities */
+@import "$lib/styles/utilities/layout.css";
+@import "$lib/styles/utilities/helpers.css";
+
+/* Base Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--cds-font-family-base);
+  font-size: 16px;
+  line-height: var(--cds-line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--cds-color-background);
+  color: var(--cds-color-text-primary);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--cds-shadow-focus);
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--cds-color-primary);
+  color: var(--cds-color-text-inverse);
+}
+
+/* Flexbox utilities */
+.cds-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cds-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cds-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.cds-flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.cds-items-center {
+  align-items: center;
+}
+
+.cds-items-start {
+  align-items: flex-start;
+}
+
+.cds-items-end {
+  align-items: flex-end;
+}
+
+.cds-justify-center {
+  justify-content: center;
+}
+
+.cds-justify-between {
+  justify-content: space-between;
+}
+
+.cds-justify-start {
+  justify-content: flex-start;
+}
+
+.cds-justify-end {
+  justify-content: flex-end;
+}
+
+.cds-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.cds-flex-1 {
+  flex: 1;
+}
+
+.cds-flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+/* Spacing shorthand aliases */
+.cds-spacing-2 { --cds-spacing-2: var(--cds-space-2); }
+.cds-spacing-12 { --cds-spacing-12: var(--cds-space-12); }
+.cds-spacing-8 { --cds-spacing-8: var(--cds-space-8); }

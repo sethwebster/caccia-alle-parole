@@ -1,0 +1,109 @@
+/**
+ * CDS Spacing Tokens
+ * 8-point grid system (0.5rem = 8px base)
+ */
+
+:root {
+  /* Base Unit */
+  --cds-space-base: 0.5rem; /* 8px */
+
+  /* Spacing Scale */
+  --cds-space-0: 0;
+  --cds-space-1: 0.25rem;   /* 4px */
+  --cds-space-2: 0.5rem;    /* 8px */
+  --cds-space-3: 0.75rem;   /* 12px */
+  --cds-space-4: 1rem;      /* 16px */
+  --cds-space-5: 1.25rem;   /* 20px */
+  --cds-space-6: 1.5rem;    /* 24px */
+  --cds-space-7: 1.75rem;   /* 28px */
+  --cds-space-8: 2rem;      /* 32px */
+  --cds-space-10: 2.5rem;   /* 40px */
+  --cds-space-12: 3rem;     /* 48px */
+  --cds-space-16: 4rem;     /* 64px */
+  --cds-space-20: 5rem;     /* 80px */
+  --cds-space-24: 6rem;     /* 96px */
+  --cds-space-32: 8rem;     /* 128px */
+
+  /* Semantic Spacing */
+  --cds-space-xs: var(--cds-space-1);
+  --cds-space-sm: var(--cds-space-2);
+  --cds-space-md: var(--cds-space-4);
+  --cds-space-lg: var(--cds-space-6);
+  --cds-space-xl: var(--cds-space-8);
+  --cds-space-2xl: var(--cds-space-12);
+
+  /* Component Spacing */
+  --cds-space-button-padding-x: var(--cds-space-6);
+  --cds-space-button-padding-y: var(--cds-space-3);
+  --cds-space-card-padding: var(--cds-space-6);
+  --cds-space-modal-padding: var(--cds-space-8);
+  --cds-space-input-padding-x: var(--cds-space-4);
+  --cds-space-input-padding-y: var(--cds-space-3);
+
+  /* Layout Spacing */
+  --cds-space-container-padding: var(--cds-space-4);
+  --cds-space-section-gap: var(--cds-space-12);
+  --cds-space-component-gap: var(--cds-space-6);
+
+  /* Border Radius */
+  --cds-radius-none: 0;
+  --cds-radius-sm: 0.25rem;   /* 4px */
+  --cds-radius-base: 0.5rem;  /* 8px */
+  --cds-radius-md: 0.75rem;   /* 12px */
+  --cds-radius-lg: 1rem;      /* 16px */
+  --cds-radius-xl: 1.5rem;    /* 24px */
+  --cds-radius-full: 9999px;
+
+  /* Component Radius */
+  --cds-radius-button: var(--cds-radius-md);
+  --cds-radius-card: var(--cds-radius-lg);
+  --cds-radius-modal: var(--cds-radius-xl);
+  --cds-radius-input: var(--cds-radius-base);
+  --cds-radius-toast: var(--cds-radius-md);
+}
+
+/* Spacing Utility Classes */
+
+/* Margin */
+.cds-m-0 { margin: var(--cds-space-0); }
+.cds-m-1 { margin: var(--cds-space-1); }
+.cds-m-2 { margin: var(--cds-space-2); }
+.cds-m-3 { margin: var(--cds-space-3); }
+.cds-m-4 { margin: var(--cds-space-4); }
+.cds-m-6 { margin: var(--cds-space-6); }
+.cds-m-8 { margin: var(--cds-space-8); }
+
+/* Margin Top */
+.cds-mt-0 { margin-top: var(--cds-space-0); }
+.cds-mt-1 { margin-top: var(--cds-space-1); }
+.cds-mt-2 { margin-top: var(--cds-space-2); }
+.cds-mt-3 { margin-top: var(--cds-space-3); }
+.cds-mt-4 { margin-top: var(--cds-space-4); }
+.cds-mt-6 { margin-top: var(--cds-space-6); }
+.cds-mt-8 { margin-top: var(--cds-space-8); }
+
+/* Margin Bottom */
+.cds-mb-0 { margin-bottom: var(--cds-space-0); }
+.cds-mb-1 { margin-bottom: var(--cds-space-1); }
+.cds-mb-2 { margin-bottom: var(--cds-space-2); }
+.cds-mb-3 { margin-bottom: var(--cds-space-3); }
+.cds-mb-4 { margin-bottom: var(--cds-space-4); }
+.cds-mb-6 { margin-bottom: var(--cds-space-6); }
+.cds-mb-8 { margin-bottom: var(--cds-space-8); }
+
+/* Padding */
+.cds-p-0 { padding: var(--cds-space-0); }
+.cds-p-1 { padding: var(--cds-space-1); }
+.cds-p-2 { padding: var(--cds-space-2); }
+.cds-p-3 { padding: var(--cds-space-3); }
+.cds-p-4 { padding: var(--cds-space-4); }
+.cds-p-6 { padding: var(--cds-space-6); }
+.cds-p-8 { padding: var(--cds-space-8); }
+
+/* Gap */
+.cds-gap-1 { gap: var(--cds-space-1); }
+.cds-gap-2 { gap: var(--cds-space-2); }
+.cds-gap-3 { gap: var(--cds-space-3); }
+.cds-gap-4 { gap: var(--cds-space-4); }
+.cds-gap-6 { gap: var(--cds-space-6); }
+.cds-gap-8 { gap: var(--cds-space-8); }
