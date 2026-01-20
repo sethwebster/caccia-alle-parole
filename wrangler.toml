@@ -1,5 +1,3 @@
 name = "caccia-parole"
 compatibility_date = "2025-01-01"
-
-[assets]
-directory = "build"
+pages_build_output_dir = ".svelte-kit/cloudflare"
