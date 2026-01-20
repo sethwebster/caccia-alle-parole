@@ -48,6 +48,12 @@
   background-color: var(--cds-color-gray-100);
 }
 
+.top-nav__logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
 .top-nav__title {
   font-family: var(--cds-font-family-display);
 }
@@ -152,6 +158,10 @@
 
   .top-nav__title {
     display: none;
+  }
+
+  .top-nav__logo-img {
+    height: 40px;
   }
 }
 
