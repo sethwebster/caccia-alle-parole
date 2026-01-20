@@ -12,3 +12,9 @@ main = ".svelte-kit/cloudflare/_worker.js"
 [assets]
 directory = ".svelte-kit/cloudflare"
 binding = "ASSETS"
+
+# Custom domain routes
+routes = [
+  { pattern = "cacciaparole.com", custom_domain = true },
+  { pattern = "www.cacciaparole.com", custom_domain = true }
+]
