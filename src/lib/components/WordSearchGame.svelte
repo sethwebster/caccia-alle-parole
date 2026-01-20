@@ -609,7 +609,7 @@
 		}
 
 		.grid-cell {
-			font-size: clamp(8px, 1.8vw, 12px);
+			font-size: clamp(14px, 3vw, 16px);
 			border-radius: 2px;
 		}
 
