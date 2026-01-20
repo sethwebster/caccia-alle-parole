@@ -48,18 +48,8 @@
 		wordSearchStore.setGame(selectedCategory, selectedDifficulty, placedWords, grid);
 	}
 
-	function handlePointerDown(row: number, col: number, e: PointerEvent) {
-		if (!isGameActive) return;
-		e.preventDefault();
-
-		isSelecting = true;
-		startCell = { row, col, letter: $wordSearchStore.grid[row][col].letter };
-		currentCell = startCell;
-		selectedCells = [startCell];
-	}
-
-	function handlePointerMove(e: PointerEvent) {
-		if (!isSelecting || !startCell || !isGameActive || !gridElement) return;
+	function getCellFromPointer(e: PointerEvent): { row: number; col: number } | null {
+		if (!gridElement) return null;
 
 		const rect = gridElement.getBoundingClientRect();
 		const x = e.clientX - rect.left;
@@ -70,17 +60,46 @@
 		const row = Math.floor(y / cellSize);
 
 		if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
-			if (!currentCell || currentCell.row !== row || currentCell.col !== col) {
-				currentCell = { row, col, letter: $wordSearchStore.grid[row][col].letter };
-				selectedCells = getCellsBetween(
-					startCell.row,
-					startCell.col,
-					currentCell.row,
-					currentCell.col,
-					$wordSearchStore.grid
-				);
-			}
+			return { row, col };
 		}
+		return null;
+	}
+
+	function handleGridPointerDown(e: PointerEvent) {
+		if (!isGameActive) return;
+
+		const cell = getCellFromPointer(e);
+		if (!cell) return;
+
+		e.preventDefault();
+		gridElement.setPointerCapture(e.pointerId);
+
+		isSelecting = true;
+		startCell = { row: cell.row, col: cell.col, letter: $wordSearchStore.grid[cell.row][cell.col].letter };
+		currentCell = startCell;
+		selectedCells = [startCell];
+	}
+
+	function handleGridPointerMove(e: PointerEvent) {
+		if (!isSelecting || !startCell || !isGameActive) return;
+
+		const cell = getCellFromPointer(e);
+		if (!cell) return;
+
+		if (!currentCell || currentCell.row !== cell.row || currentCell.col !== cell.col) {
+			currentCell = { row: cell.row, col: cell.col, letter: $wordSearchStore.grid[cell.row][cell.col].letter };
+			selectedCells = getCellsBetween(
+				startCell.row,
+				startCell.col,
+				currentCell.row,
+				currentCell.col,
+				$wordSearchStore.grid
+			);
+		}
+	}
+
+	function handleGridPointerUp() {
+		handlePointerUp();
 	}
 
 	function handlePointerUp() {
@@ -284,12 +303,13 @@
 					bind:this={gridElement}
 					class="word-grid"
 					style="grid-template-columns: repeat({gridSize}, 1fr);"
-					onpointermove={handlePointerMove}
+					onpointerdown={handleGridPointerDown}
+					onpointermove={handleGridPointerMove}
+					onpointerup={handleGridPointerUp}
 				>
 					{#each $wordSearchStore.grid as row, rowIndex}
 						{#each row as cell, colIndex}
 							<div
-								onpointerdown={(e) => handlePointerDown(rowIndex, colIndex, e)}
 								class="grid-cell"
 								class:selected={isCellSelected(rowIndex, colIndex)}
 								class:found={isCellInFoundWord(rowIndex, colIndex)}
