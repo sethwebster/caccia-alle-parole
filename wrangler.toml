@@ -1,4 +1,14 @@
+# Cloudflare Workers configuration for SvelteKit app
+# See DEPLOY.md for deployment instructions
+
 name = "caccia-parole"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".svelte-kit/cloudflare"
+
+# Entry point: SvelteKit adapter generates this worker file
+main = ".svelte-kit/cloudflare/_worker.js"
+
+# Static assets configuration (new unified Workers model)
+[assets]
+directory = ".svelte-kit/cloudflare"
+binding = "ASSETS"

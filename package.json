@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "bun run build && wrangler deploy",
+    "cf:tail": "wrangler tail"
   },
   "devDependencies": {
     "@sveltejs/adapter-cloudflare": "^7.2.5",
