@@ -21,11 +21,13 @@
 	let currentCell: SelectedCell | null = null;
 	let selectedCells: SelectedCell[] = [];
 	let showModal = false;
+	let gridElement: HTMLElement;
 
 	$: isGameActive = $wordSearchStore.category && $wordSearchStore.difficulty;
 	$: foundCount = $wordSearchStore.foundWords.size;
 	$: totalWords = $wordSearchStore.words.length;
 	$: isGameWon = isGameActive && foundCount === totalWords && totalWords > 0;
+	$: gridSize = $wordSearchStore.grid.length;
 
 	$: if (isGameWon && !showModal) {
 		setTimeout(() => {
@@ -44,8 +46,9 @@
 		wordSearchStore.setGame(selectedCategory, selectedDifficulty, placedWords, grid);
 	}
 
-	function handleMouseDown(row: number, col: number) {
+	function handlePointerDown(row: number, col: number, e: PointerEvent) {
 		if (!isGameActive) return;
+		e.preventDefault();
 
 		isSelecting = true;
 		startCell = { row, col, letter: $wordSearchStore.grid[row][col].letter };
@@ -53,20 +56,32 @@
 		selectedCells = [startCell];
 	}
 
-	function handleMouseEnter(row: number, col: number) {
-		if (!isSelecting || !startCell || !isGameActive) return;
+	function handlePointerMove(e: PointerEvent) {
+		if (!isSelecting || !startCell || !isGameActive || !gridElement) return;
 
-		currentCell = { row, col, letter: $wordSearchStore.grid[row][col].letter };
-		selectedCells = getCellsBetween(
-			startCell.row,
-			startCell.col,
-			currentCell.row,
-			currentCell.col,
-			$wordSearchStore.grid
-		);
+		const rect = gridElement.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+
+		const cellSize = rect.width / gridSize;
+		const col = Math.floor(x / cellSize);
+		const row = Math.floor(y / cellSize);
+
+		if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
+			if (!currentCell || currentCell.row !== row || currentCell.col !== col) {
+				currentCell = { row, col, letter: $wordSearchStore.grid[row][col].letter };
+				selectedCells = getCellsBetween(
+					startCell.row,
+					startCell.col,
+					currentCell.row,
+					currentCell.col,
+					$wordSearchStore.grid
+				);
+			}
+		}
 	}
 
-	function handleMouseUp() {
+	function handlePointerUp() {
 		if (!isSelecting || selectedCells.length === 0) {
 			isSelecting = false;
 			startCell = null;
@@ -89,14 +104,14 @@
 	}
 
 	function isCellSelected(row: number, col: number): boolean {
-		return selectedCells.some(c => c.row === row && c.col === col);
+		return selectedCells.some((c) => c.row === row && c.col === col);
 	}
 
 	function isCellInFoundWord(row: number, col: number): boolean {
 		if (!isGameActive) return false;
 
 		for (const foundWord of $wordSearchStore.foundWords) {
-			const placedWord = $wordSearchStore.words.find(w => w.word === foundWord);
+			const placedWord = $wordSearchStore.words.find((w) => w.word === foundWord);
 			if (!placedWord) continue;
 
 			const word = placedWord.word.toUpperCase();
@@ -163,111 +178,101 @@
 	}
 
 	onMount(() => {
-		const handleGlobalMouseUp = () => {
+		const handleGlobalPointerUp = () => {
 			if (isSelecting) {
-				handleMouseUp();
+				handlePointerUp();
 			}
 		};
 
-		window.addEventListener('mouseup', handleGlobalMouseUp);
-		return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+		window.addEventListener('pointerup', handleGlobalPointerUp);
+		return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
 	});
 </script>
 
-<div class="max-w-6xl mx-auto p-4">
-	<header class="text-center mb-8">
-		<h1 class="text-4xl font-bold mb-2">Caccia alle Parole</h1>
-		<p class="text-text-secondary">Find hidden Italian words in the grid</p>
+<div class="cds-container">
+	<header class="header">
+		<h1 class="cds-heading-1 cds-text-center">Caccia alle Parole</h1>
+		<p class="cds-text-lg cds-text-center cds-text-secondary">
+			Trova tutte le parole nascoste nella griglia
+		</p>
 	</header>
 
 	{#if !isGameActive}
-		<div class="max-w-2xl mx-auto bg-surface rounded-lg p-8 border-2 border-border">
-			<h2 class="text-2xl font-semibold mb-6">Start New Game</h2>
+		<div class="controls cds-card">
+			<h2 class="cds-heading-3 cds-mb-4">Nuova Partita</h2>
 
-			<div class="mb-6">
-				<label class="block text-sm font-semibold mb-2">Category</label>
-				<select
-					bind:value={selectedCategory}
-					class="w-full p-3 bg-background border-2 border-border rounded text-base"
-				>
-					<option value={null}>Select a category</option>
+			<div class="control-group">
+				<label class="control-label">Categoria</label>
+				<select bind:value={selectedCategory} class="category-select">
+					<option value={null}>Seleziona categoria...</option>
 					{#each categories as category}
-						<option value={category}>{category.charAt(0).toUpperCase() + category.slice(1)}</option>
+						<option value={category}
+							>{category.charAt(0).toUpperCase() + category.slice(1)}</option
+						>
 					{/each}
 				</select>
 			</div>
 
-			<div class="mb-6">
-				<label class="block text-sm font-semibold mb-2">Difficulty</label>
-				<div class="grid grid-cols-3 gap-2">
+			<div class="control-group">
+				<label class="control-label">Difficoltà</label>
+				<div class="difficulty-buttons">
 					{#each difficulties as diff}
 						<button
-							on:click={() => (selectedDifficulty = diff)}
-							class="p-3 rounded border-2 transition-colors font-semibold
-								{selectedDifficulty === diff
-									? 'bg-primary border-primary text-white'
-									: 'bg-background border-border hover:border-primary'}"
+							onclick={() => (selectedDifficulty = diff)}
+							class="difficulty-btn"
+							class:active={selectedDifficulty === diff}
 						>
-							{diff.charAt(0).toUpperCase() + diff.slice(1)}
+							{diff === 'easy' ? 'Facile' : diff === 'medium' ? 'Medio' : 'Difficile'}
 						</button>
 					{/each}
 				</div>
-				<p class="text-sm text-text-secondary mt-2">
+				<p class="cds-text-sm cds-text-secondary cds-mt-2">
 					{#if selectedDifficulty === 'easy'}
-						8x8 grid, 8 words
+						Griglia 8x8, 8 parole
 					{:else if selectedDifficulty === 'medium'}
-						12x12 grid, 10 words
+						Griglia 12x12, 10 parole
 					{:else if selectedDifficulty === 'hard'}
-						16x16 grid, 12 words
+						Griglia 16x16, 12 parole
 					{/if}
 				</p>
 			</div>
 
 			<button
-				on:click={startGame}
+				onclick={startGame}
 				disabled={!selectedCategory || !selectedDifficulty}
-				class="w-full bg-success text-white py-3 rounded font-semibold text-lg
-					disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+				class="cds-button cds-button--primary cds-w-full"
 			>
-				Start Game
+				Nuova Partita
 			</button>
 		</div>
 	{:else}
-		<div class="mb-4 flex justify-between items-center">
-			<div class="text-lg">
-				<span class="font-semibold">Words:</span>
-				<span class="text-success">{foundCount}</span> / {totalWords}
+		<div class="game-stats">
+			<div class="stat">
+				<span class="stat-label">Trovate</span>
+				<span class="stat-value">{foundCount}/{totalWords}</span>
 			</div>
-			<div class="text-lg">
-				<span class="font-semibold">Score:</span>
-				<span class="text-primary">{$wordSearchStore.score}</span>
+			<div class="stat">
+				<span class="stat-label">Punteggio</span>
+				<span class="stat-value">{$wordSearchStore.score}</span>
 			</div>
-			<button
-				on:click={resetGame}
-				class="bg-border px-4 py-2 rounded font-semibold hover:opacity-80"
-			>
-				New Game
-			</button>
+			<button onclick={resetGame} class="cds-button cds-button--outline"> Nuova Partita </button>
 		</div>
 
-		<div class="grid lg:grid-cols-[1fr_300px] gap-6">
-			<div class="flex justify-center">
+		<div class="game-container">
+			<div class="grid-container">
 				<div
-					class="inline-grid gap-1 select-none"
-					style="grid-template-columns: repeat({$wordSearchStore.grid.length}, minmax(0, 1fr));"
+					bind:this={gridElement}
+					class="word-grid"
+					style="grid-template-columns: repeat({gridSize}, 1fr);"
+					onpointermove={handlePointerMove}
 				>
 					{#each $wordSearchStore.grid as row, rowIndex}
 						{#each row as cell, colIndex}
 							<div
-								on:mousedown={() => handleMouseDown(rowIndex, colIndex)}
-								on:mouseenter={() => handleMouseEnter(rowIndex, colIndex)}
-								class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center border border-border
-									font-bold text-sm md:text-base cursor-pointer transition-colors
-									{isCellInFoundWord(rowIndex, colIndex)
-										? 'bg-success/20 text-success border-success'
-										: isCellSelected(rowIndex, colIndex)
-											? 'bg-primary/20 text-primary border-primary'
-											: 'bg-surface hover:bg-background'}"
+								onpointerdown={(e) => handlePointerDown(rowIndex, colIndex, e)}
+								class="grid-cell"
+								class:selected={isCellSelected(rowIndex, colIndex)}
+								class:found={isCellInFoundWord(rowIndex, colIndex)}
 							>
 								{cell.letter}
 							</div>
@@ -276,54 +281,317 @@
 				</div>
 			</div>
 
-			<div class="bg-surface rounded-lg p-4 border-2 border-border h-fit">
-				<h3 class="font-semibold mb-4 text-lg">Words to Find</h3>
-				<div class="space-y-2">
+			<div class="word-list-container cds-card">
+				<h3 class="cds-heading-4 cds-text-center cds-mb-3">Parole da Trovare</h3>
+				<ul class="word-list">
 					{#each $wordSearchStore.words as word}
-						<div
-							class="p-2 rounded border transition-all
-								{$wordSearchStore.foundWords.has(word.word)
-									? 'bg-success/10 border-success line-through text-text-secondary'
-									: 'border-border'}"
-						>
-							<div class="font-semibold">{word.word}</div>
-							<div class="text-sm text-text-secondary">{word.translation}</div>
-							{#if $wordSearchStore.foundWords.has(word.word)}
-								<div class="text-xs text-success mt-1">+{word.points} points</div>
-							{/if}
-						</div>
+						<li class="word-item" class:found={$wordSearchStore.foundWords.has(word.word)}>
+							<span class="word-text">{word.word}</span>
+							<span class="word-translation">{word.translation}</span>
+						</li>
 					{/each}
-				</div>
+				</ul>
 			</div>
 		</div>
 	{/if}
 
 	{#if showModal && isGameWon}
-		<div
-			class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-			on:click={() => (showModal = false)}
-		>
-			<div class="bg-surface rounded-lg p-8 max-w-md text-center" on:click|stopPropagation>
-				<h2 class="text-3xl font-bold mb-4">Complimenti!</h2>
-				<p class="text-xl mb-2">You found all {totalWords} words!</p>
-				<p class="text-2xl font-bold text-primary mb-6">
-					Final Score: {$wordSearchStore.score}
-				</p>
-				<div class="flex gap-2 justify-center">
-					<button
-						on:click={newGame}
-						class="bg-success text-white px-6 py-3 rounded font-semibold hover:opacity-90"
-					>
-						Play Again
-					</button>
-					<button
-						on:click={resetGame}
-						class="bg-border px-6 py-3 rounded font-semibold hover:opacity-90"
-					>
-						New Category
+		<div class="cds-modal" onclick={() => (showModal = false)}>
+			<div class="cds-modal__backdrop"></div>
+			<div class="cds-modal__content" onclick={(e) => e.stopPropagation()}>
+				<div class="cds-modal__header">
+					<h2 class="cds-modal__title">Complimenti!</h2>
+				</div>
+				<div class="cds-modal__body cds-text-center">
+					<p class="cds-text-lg">Hai trovato tutte le {totalWords} parole!</p>
+					<div class="cds-mt-4">
+						<p class="cds-text-base">
+							<strong>Punteggio Finale:</strong>
+							<span class="cds-text-primary-color cds-font-bold">{$wordSearchStore.score}</span>
+						</p>
+					</div>
+				</div>
+				<div class="cds-modal__footer">
+					<button onclick={newGame} class="cds-button cds-button--primary"> Gioca Ancora </button>
+					<button onclick={resetGame} class="cds-button cds-button--outline">
+						Nuova Categoria
 					</button>
 				</div>
 			</div>
 		</div>
 	{/if}
 </div>
+
+<style>
+	.header {
+		text-align: center;
+		margin-bottom: 32px;
+		padding: 24px 0;
+	}
+
+	/* Controls */
+	.controls {
+		max-width: 500px;
+		margin: 0 auto;
+		padding: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.control-group {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.control-label {
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--cds-color-text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.category-select {
+		width: 100%;
+		padding: 12px 16px;
+		border-radius: var(--cds-radius-md);
+		border: 2px solid var(--cds-color-border);
+		background: var(--cds-color-background);
+		font-family: inherit;
+		font-size: 1rem;
+		color: var(--cds-color-text-primary);
+		font-weight: 500;
+		cursor: pointer;
+		appearance: none;
+		background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+		background-repeat: no-repeat;
+		background-position: right 16px center;
+		background-size: 16px;
+	}
+
+	.difficulty-buttons {
+		display: flex;
+		gap: 8px;
+		background: var(--cds-color-background);
+		padding: 4px;
+		border-radius: var(--cds-radius-md);
+	}
+
+	.difficulty-btn {
+		flex: 1;
+		padding: 10px;
+		border: none;
+		background: transparent;
+		border-radius: var(--cds-radius-sm);
+		font-family: inherit;
+		font-weight: 600;
+		font-size: 0.9rem;
+		color: var(--cds-color-text-secondary);
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.difficulty-btn.active {
+		background: var(--cds-color-surface);
+		color: var(--cds-color-text-primary);
+		box-shadow: var(--cds-shadow-sm);
+	}
+
+	/* Stats */
+	.game-stats {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: var(--cds-space-4);
+		margin-bottom: var(--cds-space-4);
+	}
+
+	.stat {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.stat-label {
+		font-size: 0.75rem;
+		color: var(--cds-color-text-secondary);
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+
+	.stat-value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--cds-color-text-primary);
+	}
+
+	/* Game Container */
+	.game-container {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		align-items: center;
+		padding: var(--cds-space-4) 0;
+	}
+
+	.grid-container {
+		width: 100%;
+		max-width: 500px;
+		aspect-ratio: 1 / 1;
+		background: var(--cds-color-surface);
+		padding: 16px;
+		border-radius: var(--cds-radius-lg);
+		box-shadow: var(--cds-shadow-card);
+		box-sizing: border-box;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.word-grid {
+		display: grid;
+		position: absolute;
+		inset: 16px;
+		gap: 2px;
+		user-select: none;
+		touch-action: none;
+		box-sizing: border-box;
+	}
+
+	.grid-cell {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 600;
+		font-size: clamp(10px, 2vw, 16px);
+		line-height: 1;
+		color: var(--cds-color-text-primary);
+		border-radius: 3px;
+		background: var(--cds-color-background);
+		cursor: pointer;
+		transition: background 0.2s, transform 0.1s;
+		aspect-ratio: 1 / 1;
+		min-width: 0;
+		min-height: 0;
+		box-sizing: border-box;
+	}
+
+	.grid-cell.selected {
+		background: var(--cds-color-accent);
+		color: var(--cds-color-dark);
+		transform: scale(0.95);
+	}
+
+	.grid-cell.found {
+		background: var(--cds-color-secondary);
+		color: white;
+		animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	}
+
+	@keyframes popIn {
+		0% {
+			transform: scale(0.5);
+			opacity: 0;
+		}
+		100% {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+
+	/* Word List */
+	.word-list-container {
+		width: 100%;
+		max-width: 500px;
+		padding: 16px;
+	}
+
+	.word-list {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 8px;
+		padding: 0;
+		margin: 0;
+	}
+
+	.word-item {
+		background: var(--cds-color-background);
+		padding: 8px 14px;
+		border-radius: 20px;
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: var(--cds-color-text-primary);
+		cursor: default;
+		transition: all 0.2s;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.word-item.found {
+		background: var(--cds-color-secondary);
+		color: white;
+		text-decoration: line-through;
+		opacity: 0.7;
+	}
+
+	.word-translation {
+		font-size: 0.75rem;
+		opacity: 0.7;
+	}
+
+	/* Mobile */
+	@media (max-width: 640px) {
+		.grid-container {
+			max-width: 100%;
+			padding: 12px;
+		}
+
+		.word-grid {
+			inset: 12px;
+			gap: 1px;
+		}
+
+		.grid-cell {
+			font-size: clamp(8px, 1.8vw, 12px);
+			border-radius: 2px;
+		}
+
+		.game-container {
+			gap: 16px;
+			padding: var(--cds-space-2) 0;
+		}
+
+		.game-stats {
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+
+		.header {
+			padding: 16px 0;
+			margin-bottom: 24px;
+		}
+	}
+
+	/* Desktop layout */
+	@media (min-width: 769px) {
+		.game-container {
+			display: grid;
+			grid-template-columns: 1fr 280px;
+			align-items: start;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+
+		.grid-container {
+			max-width: 100%;
+		}
+
+		.word-list-container {
+			max-width: none;
+		}
+	}
+</style>
