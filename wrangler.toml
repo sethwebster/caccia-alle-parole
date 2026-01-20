@@ -1,7 +1,7 @@
 # Cloudflare Workers configuration for SvelteKit app
 # See DEPLOY.md for deployment instructions
 
-name = "caccia-parole"
+name = "caccia-alle-parole"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
