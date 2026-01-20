@@ -2,3 +2,11 @@ node_modules/
 .DS_Store
 *.log
 .env
+.svelte-kit/
+build/
+.vercel/
+.netlify/
+.wrangler/
+.output/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
