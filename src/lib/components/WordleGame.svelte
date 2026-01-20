@@ -124,7 +124,14 @@
 	</div>
 
 	{#if showModal}
-		<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" on:click={() => showModal = false}>
+		<div
+			class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+			on:click={() => showModal = false}
+			on:keydown={(e) => e.key === 'Escape' && (showModal = false)}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
 			<div class="bg-surface rounded-lg p-8 max-w-md text-center" on:click|stopPropagation>
 				<h2 class="text-2xl font-bold mb-4">
 					{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Prossima volta!'}

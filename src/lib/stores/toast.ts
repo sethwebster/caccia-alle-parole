@@ -10,6 +10,7 @@ export interface Toast {
 
 function createToastStore() {
   const { subscribe, update } = writable<Toast[]>([]);
+  const timeoutMap = new Map<string, ReturnType<typeof setTimeout>>();
 
   return {
     subscribe,
@@ -20,17 +21,29 @@ function createToastStore() {
       update(toasts => [...toasts, newToast]);
 
       if (toast.duration !== 0) {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
+          timeoutMap.delete(id);
           update(toasts => toasts.filter(t => t.id !== id));
         }, toast.duration || 3000);
+        timeoutMap.set(id, timeout);
       }
 
       return id;
     },
     remove: (id: string) => {
+      const timeout = timeoutMap.get(id);
+      if (timeout) {
+        clearTimeout(timeout);
+        timeoutMap.delete(id);
+      }
       update(toasts => toasts.filter(t => t.id !== id));
     },
     clear: () => {
+      // Clear all pending timeouts
+      for (const timeout of timeoutMap.values()) {
+        clearTimeout(timeout);
+      }
+      timeoutMap.clear();
       update(() => []);
     }
   };

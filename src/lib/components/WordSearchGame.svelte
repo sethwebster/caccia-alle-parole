@@ -205,8 +205,8 @@
 			<h2 class="cds-heading-3 cds-mb-4">Nuova Partita</h2>
 
 			<div class="control-group">
-				<label class="control-label">Categoria</label>
-				<select bind:value={selectedCategory} class="category-select">
+				<label for="category-select" class="control-label">Categoria</label>
+				<select id="category-select" bind:value={selectedCategory} class="category-select">
 					<option value={null}>Seleziona categoria...</option>
 					{#each categories as category}
 						<option value={category}
@@ -217,8 +217,8 @@
 			</div>
 
 			<div class="control-group">
-				<label class="control-label">Difficoltà</label>
-				<div class="difficulty-buttons">
+				<label id="difficulty-label" class="control-label">Difficoltà</label>
+				<div class="difficulty-buttons" role="group" aria-labelledby="difficulty-label">
 					{#each difficulties as diff}
 						<button
 							onclick={() => (selectedDifficulty = diff)}
@@ -302,7 +302,14 @@
 	{/if}
 
 	{#if showModal && isGameWon}
-		<div class="cds-modal" onclick={() => (showModal = false)}>
+		<div
+			class="cds-modal"
+			onclick={() => (showModal = false)}
+			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
 			<div class="cds-modal__backdrop"></div>
 			<div class="cds-modal__content" onclick={(e) => e.stopPropagation()}>
 				<div class="cds-modal__header">
