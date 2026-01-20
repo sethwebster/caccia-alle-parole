@@ -61,7 +61,8 @@ export function checkIfWordFound(
 	const upperWord = selectedWord.toUpperCase();
 
 	for (const placedWord of placedWords) {
-		const placedUpper = placedWord.word.toUpperCase();
+		// Remove spaces from multi-word entries for comparison
+		const placedUpper = placedWord.word.toUpperCase().replace(/\s+/g, '');
 
 		// Check forward and reverse
 		if (upperWord === placedUpper || upperWord === placedUpper.split('').reverse().join('')) {

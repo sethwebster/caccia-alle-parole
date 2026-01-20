@@ -102,10 +102,7 @@ export function generateGrid(
 
 	const grid = createEmptyGrid(gridSize);
 
-	// Filter out multi-word entries (words with spaces) as they can't be placed in the grid
-	const singleWords = words.filter(w => !w.word.includes(' '));
-
-	const shuffled = [...singleWords].sort(() => Math.random() - 0.5);
+	const shuffled = [...words].sort(() => Math.random() - 0.5);
 	const selectedWords = shuffled.slice(0, wordCount);
 
 	selectedWords.sort((a, b) => b.word.length - a.word.length);
@@ -113,7 +110,8 @@ export function generateGrid(
 	const placedWords: PlacedWord[] = [];
 
 	for (const wordData of selectedWords) {
-		const word = wordData.word.toUpperCase();
+		// Remove spaces from multi-word entries for grid placement
+		const word = wordData.word.toUpperCase().replace(/\s+/g, '');
 		let placed = false;
 		let attempts = 0;
 		const maxAttempts = 100;
