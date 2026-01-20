@@ -27,8 +27,8 @@ const DIRECTION_DELTAS: Record<Direction, [number, number]> = {
 	'diagonal-up': [-1, 1],
 	'horizontal-reverse': [0, -1],
 	'vertical-reverse': [-1, 0],
-	'diagonal-down-reverse': [-1, -1],
-	'diagonal-up-reverse': [1, -1]
+	'diagonal-down-reverse': [1, -1],
+	'diagonal-up-reverse': [-1, -1]
 };
 
 function createEmptyGrid(size: number): Cell[][] {

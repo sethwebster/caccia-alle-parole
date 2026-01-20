@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { wordSearchStore } from '$lib/stores/wordSearch';
 	import { wordDatabase } from '$lib/data/word-data';
-	import { generateGrid } from '$lib/utils/gridGenerator';
+	import { generateGrid, getDirectionDelta } from '$lib/utils/gridGenerator';
 	import {
 		getCellsBetween,
 		getWordFromCells,
@@ -24,6 +24,8 @@
 	let gridElement: HTMLElement;
 	let flashState: 'none' | 'success' | 'error' = 'none';
 	let flashCells: SelectedCell[] = [];
+	let flashTimeout: ReturnType<typeof setTimeout> | null = null;
+	let modalTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	$: isGameActive = $wordSearchStore.category && $wordSearchStore.difficulty;
 	$: foundCount = $wordSearchStore.foundWords.size;
@@ -32,8 +34,10 @@
 	$: gridSize = $wordSearchStore.grid.length;
 
 	$: if (isGameWon && !showModal) {
-		setTimeout(() => {
+		if (modalTimeout) clearTimeout(modalTimeout);
+		modalTimeout = setTimeout(() => {
 			showModal = true;
+			modalTimeout = null;
 		}, 500);
 	}
 
@@ -131,78 +135,33 @@
 
 		// Clear flash after animation
 		if (flashState !== 'none') {
-			setTimeout(() => {
+			if (flashTimeout) clearTimeout(flashTimeout);
+			flashTimeout = setTimeout(() => {
 				flashState = 'none';
 				flashCells = [];
+				flashTimeout = null;
 			}, 400);
 		}
 	}
 
-	function isCellSelected(row: number, col: number): boolean {
-		return selectedCells.some((c) => c.row === row && c.col === col);
-	}
+	// Pre-compute selected cells as Set for reactive tracking
+	$: selectedCellSet = new Set(selectedCells.map(c => `${c.row},${c.col}`));
 
-	function isCellFlashing(row: number, col: number): boolean {
-		return flashCells.some((c) => c.row === row && c.col === col);
-	}
+	// Pre-compute flash cells as Set for reactive tracking
+	$: flashCellSet = new Set(flashCells.map(c => `${c.row},${c.col}`));
 
-	function isCellInFoundWord(row: number, col: number): boolean {
-		if (!isGameActive) return false;
+	// Pre-compute found cells for performance
+	$: foundCellSet = new Set(
+		[...$wordSearchStore.foundWords].flatMap(foundWord => {
+			const placedWord = $wordSearchStore.words.find(w => w.word === foundWord);
+			if (!placedWord) return [];
 
-		for (const foundWord of $wordSearchStore.foundWords) {
-			const placedWord = $wordSearchStore.words.find((w) => w.word === foundWord);
-			if (!placedWord) continue;
-
-			const word = placedWord.word.toUpperCase();
-			let deltaRow = 0;
-			let deltaCol = 0;
-
-			switch (placedWord.direction) {
-				case 'horizontal':
-					deltaRow = 0;
-					deltaCol = 1;
-					break;
-				case 'horizontal-reverse':
-					deltaRow = 0;
-					deltaCol = -1;
-					break;
-				case 'vertical':
-					deltaRow = 1;
-					deltaCol = 0;
-					break;
-				case 'vertical-reverse':
-					deltaRow = -1;
-					deltaCol = 0;
-					break;
-				case 'diagonal-down':
-					deltaRow = 1;
-					deltaCol = 1;
-					break;
-				case 'diagonal-down-reverse':
-					deltaRow = -1;
-					deltaCol = -1;
-					break;
-				case 'diagonal-up':
-					deltaRow = -1;
-					deltaCol = 1;
-					break;
-				case 'diagonal-up-reverse':
-					deltaRow = 1;
-					deltaCol = -1;
-					break;
-			}
-
-			for (let i = 0; i < word.length; i++) {
-				const wordRow = placedWord.row + i * deltaRow;
-				const wordCol = placedWord.col + i * deltaCol;
-				if (wordRow === row && wordCol === col) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
+			const [deltaRow, deltaCol] = getDirectionDelta(placedWord.direction);
+			return Array.from({ length: placedWord.word.length }, (_, i) =>
+				`${placedWord.row + i * deltaRow},${placedWord.col + i * deltaCol}`
+			);
+		})
+	);
 
 	function resetGame() {
 		wordSearchStore.reset();
@@ -225,6 +184,11 @@
 
 		window.addEventListener('pointerup', handleGlobalPointerUp);
 		return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
+	});
+
+	onDestroy(() => {
+		if (flashTimeout) clearTimeout(flashTimeout);
+		if (modalTimeout) clearTimeout(modalTimeout);
 	});
 </script>
 
@@ -267,11 +231,11 @@
 				</div>
 				<p class="cds-text-sm cds-text-secondary cds-mt-2">
 					{#if selectedDifficulty === 'easy'}
-						Griglia 8x8, 8 parole
+						Griglia 10x10, 10 parole
 					{:else if selectedDifficulty === 'medium'}
-						Griglia 12x12, 10 parole
+						Griglia 14x14, 15 parole
 					{:else if selectedDifficulty === 'hard'}
-						Griglia 16x16, 12 parole
+						Griglia 18x18, 20 parole
 					{/if}
 				</p>
 			</div>
@@ -311,10 +275,10 @@
 						{#each row as cell, colIndex}
 							<div
 								class="grid-cell"
-								class:selected={isCellSelected(rowIndex, colIndex)}
-								class:found={isCellInFoundWord(rowIndex, colIndex)}
-								class:flash-success={flashState === 'success' && isCellFlashing(rowIndex, colIndex)}
-								class:flash-error={flashState === 'error' && isCellFlashing(rowIndex, colIndex)}
+								class:selected={selectedCellSet.has(`${rowIndex},${colIndex}`)}
+								class:found={foundCellSet.has(`${rowIndex},${colIndex}`)}
+								class:flash-success={flashState === 'success' && flashCellSet.has(`${rowIndex},${colIndex}`)}
+								class:flash-error={flashState === 'error' && flashCellSet.has(`${rowIndex},${colIndex}`)}
 							>
 								{cell.letter}
 							</div>
@@ -511,17 +475,22 @@
 		border-radius: 3px;
 		background: var(--cds-color-background);
 		cursor: pointer;
-		transition: background 0.2s, transform 0.1s;
+		transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
 		aspect-ratio: 1 / 1;
 		min-width: 0;
 		min-height: 0;
 		box-sizing: border-box;
 	}
 
+	.grid-cell:hover:not(.selected):not(.found) {
+		transform: translateY(-1px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
 	.grid-cell.selected {
-		background: #f59e0b;
-		color: #1a1a1b;
-		transform: scale(0.95);
+		background: #f59e0b !important;
+		color: #1a1a1b !important;
+		transform: scale(0.95) !important;
 	}
 
 	.grid-cell.found {

@@ -12,9 +12,9 @@ export interface DifficultyConfig {
 }
 
 export const DIFFICULTY_CONFIGS: Record<Difficulty, DifficultyConfig> = {
-	easy: { gridSize: 8, wordCount: 8 },
-	medium: { gridSize: 12, wordCount: 10 },
-	hard: { gridSize: 16, wordCount: 12 }
+	easy: { gridSize: 10, wordCount: 10 },
+	medium: { gridSize: 14, wordCount: 15 },
+	hard: { gridSize: 18, wordCount: 20 }
 };
 
 export type Direction =
