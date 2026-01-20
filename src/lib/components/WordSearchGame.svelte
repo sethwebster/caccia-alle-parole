@@ -22,6 +22,8 @@
 	let selectedCells: SelectedCell[] = [];
 	let showModal = false;
 	let gridElement: HTMLElement;
+	let flashState: 'none' | 'success' | 'error' = 'none';
+	let flashCells: SelectedCell[] = [];
 
 	$: isGameActive = $wordSearchStore.category && $wordSearchStore.difficulty;
 	$: foundCount = $wordSearchStore.foundWords.size;
@@ -93,18 +95,36 @@
 		const word = getWordFromCells(selectedCells);
 		const foundWord = checkIfWordFound(word, $wordSearchStore.words);
 
+		// Store cells for flash animation
+		flashCells = [...selectedCells];
+
 		if (foundWord && !$wordSearchStore.foundWords.has(foundWord.word)) {
 			wordSearchStore.markWordFound(foundWord.word);
+			flashState = 'success';
+		} else if (selectedCells.length > 1) {
+			flashState = 'error';
 		}
 
 		isSelecting = false;
 		startCell = null;
 		currentCell = null;
 		selectedCells = [];
+
+		// Clear flash after animation
+		if (flashState !== 'none') {
+			setTimeout(() => {
+				flashState = 'none';
+				flashCells = [];
+			}, 400);
+		}
 	}
 
 	function isCellSelected(row: number, col: number): boolean {
 		return selectedCells.some((c) => c.row === row && c.col === col);
+	}
+
+	function isCellFlashing(row: number, col: number): boolean {
+		return flashCells.some((c) => c.row === row && c.col === col);
 	}
 
 	function isCellInFoundWord(row: number, col: number): boolean {
@@ -273,6 +293,8 @@
 								class="grid-cell"
 								class:selected={isCellSelected(rowIndex, colIndex)}
 								class:found={isCellInFoundWord(rowIndex, colIndex)}
+								class:flash-success={flashState === 'success' && isCellFlashing(rowIndex, colIndex)}
+								class:flash-error={flashState === 'error' && isCellFlashing(rowIndex, colIndex)}
 							>
 								{cell.letter}
 							</div>
@@ -477,15 +499,50 @@
 	}
 
 	.grid-cell.selected {
-		background: var(--cds-color-accent);
-		color: var(--cds-color-dark);
+		background: #f59e0b;
+		color: #1a1a1b;
 		transform: scale(0.95);
 	}
 
 	.grid-cell.found {
 		background: var(--cds-color-secondary);
 		color: white;
-		animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	}
+
+	.grid-cell.flash-success {
+		background: #22c55e;
+		color: white;
+		animation: flashPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	}
+
+	.grid-cell.flash-error {
+		background: #ef4444;
+		color: white;
+		animation: shake 0.4s ease;
+	}
+
+	@keyframes flashPop {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.1);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes shake {
+		0%, 100% {
+			transform: translateX(0);
+		}
+		20%, 60% {
+			transform: translateX(-3px);
+		}
+		40%, 80% {
+			transform: translateX(3px);
+		}
 	}
 
 	@keyframes popIn {
