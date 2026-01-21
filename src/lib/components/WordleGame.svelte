@@ -88,6 +88,9 @@
 	.wordle-tile-evaluated {
 		border-color: transparent;
 		color: white;
+	}
+
+	.wordle-tile-animate {
 		animation: flip 0.5s ease-in;
 	}
 
@@ -168,10 +171,14 @@
 	</header>
 
 	<div class="flex flex-col gap-1.5 mb-8">
-		{#each $wordleStore.guesses as guess}
+		{#each $wordleStore.guesses as guess, rowIndex}
 			<div class="flex gap-1.5 justify-center">
-				{#each guess.result as letter}
-					<div class="wordle-tile wordle-tile-evaluated wordle-tile-{letter.status}">
+				{#each guess.result as letter, colIndex}
+					<div
+						class="wordle-tile wordle-tile-evaluated wordle-tile-{letter.status}"
+						class:wordle-tile-animate={rowIndex === $wordleStore.guesses.length - 1}
+						style="animation-delay: {colIndex * 0.1}s"
+					>
 						{letter.letter}
 					</div>
 				{/each}
