@@ -62,6 +62,14 @@
 			navigator.clipboard.writeText(text);
 		}
 	}
+
+	function clearStorage() {
+		localStorage.removeItem('wordleGameState');
+		// Check for old completion flags
+		const today = new Date().toISOString().split('T')[0];
+		localStorage.removeItem(`wordleCompleted_${today}`);
+		location.reload();
+	}
 </script>
 
 <style>
@@ -165,6 +173,7 @@
 	<header class="text-center mb-8 border-b pb-4" style="border-color: var(--wordle-empty);">
 		<h1 class="text-4xl font-bold tracking-wide">Paròla</h1>
 		<p class="text-sm" style="color: var(--cds-color-text-secondary);">Puzzle #{getPuzzleNumber()}</p>
+		<button on:click={clearStorage} class="text-xs mt-2 px-2 py-1 bg-red-500 text-white rounded">Clear Storage (Debug)</button>
 	</header>
 
 	<div class="flex flex-col gap-1.5 mb-8">

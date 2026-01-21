@@ -60,17 +60,24 @@ function createWordleStore() {
 
 	if (browser) {
 		const saved = localStorage.getItem('wordleGameState');
+		console.log('[Wordle] Initializing store for date:', today);
+		console.log('[Wordle] Saved state:', saved);
 		if (saved) {
 			try {
 				const parsed = JSON.parse(saved);
+				console.log('[Wordle] Parsed state:', parsed);
 				if (parsed.date === today) {
+					console.log('[Wordle] Date matches, restoring saved state');
 					Object.assign(initialState, parsed);
 					initialState.guesses = parsed.guesses || [];
+				} else {
+					console.log('[Wordle] Date mismatch, using fresh state');
 				}
 			} catch (e) {
 				console.error('Failed to parse saved state', e);
 			}
 		}
+		console.log('[Wordle] Final initial state:', initialState);
 	}
 
 	const { subscribe, set, update } = writable<WordleState>(initialState);
@@ -87,8 +94,13 @@ function createWordleStore() {
 	return {
 		subscribe,
 		addLetter: (letter: string) => update(state => {
-			if (state.gameState !== 'playing' || state.currentGuess.length >= 5) return state;
+			console.log('[Wordle] addLetter called:', letter, 'gameState:', state.gameState, 'currentGuess:', state.currentGuess);
+			if (state.gameState !== 'playing' || state.currentGuess.length >= 5) {
+				console.log('[Wordle] addLetter blocked');
+				return state;
+			}
 			const newState = { ...state, currentGuess: state.currentGuess + letter };
+			console.log('[Wordle] addLetter success, new currentGuess:', newState.currentGuess);
 			return newState;
 		}),
 		deleteLetter: () => update(state => {
@@ -97,14 +109,21 @@ function createWordleStore() {
 			return newState;
 		}),
 		submitGuess: () => update(state => {
-			if (state.gameState !== 'playing' || state.currentGuess.length !== 5) return state;
+			console.log('[Wordle] submitGuess called, gameState:', state.gameState, 'currentGuess:', state.currentGuess);
+			if (state.gameState !== 'playing' || state.currentGuess.length !== 5) {
+				console.log('[Wordle] submitGuess blocked - gameState or length issue');
+				return state;
+			}
 
 			const guess = state.currentGuess.toUpperCase();
+			console.log('[Wordle] Validating guess:', guess);
 
-			// Validate word
-			if (!validWords.includes(guess.toLowerCase())) {
+			// Validate word - validWords is a Set of uppercase words
+			if (!validWords.has(guess)) {
+				console.log('[Wordle] Invalid word:', guess);
 				return state; // Invalid word - could add toast notification
 			}
+			console.log('[Wordle] Valid word, processing guess');
 
 			const result = evaluateGuess(guess, state.targetWord);
 			const newGuess: WordleGuess = { word: guess, result };
