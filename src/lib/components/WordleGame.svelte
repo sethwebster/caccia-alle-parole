@@ -64,20 +64,114 @@
 	}
 </script>
 
+<style>
+	.wordle-tile {
+		width: 62px;
+		height: 62px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 2rem;
+		font-weight: bold;
+		text-transform: uppercase;
+		border: 2px solid var(--wordle-empty);
+		background-color: var(--wordle-tile-bg);
+		color: var(--cds-color-text-primary);
+		user-select: none;
+	}
+
+	.wordle-tile-active {
+		border-color: var(--cds-color-text-tertiary);
+		animation: pop 0.1s;
+	}
+
+	.wordle-tile-evaluated {
+		border-color: transparent;
+		color: white;
+		animation: flip 0.5s ease-in;
+	}
+
+	.wordle-tile-correct {
+		background-color: var(--wordle-correct);
+	}
+
+	.wordle-tile-present {
+		background-color: var(--wordle-present);
+	}
+
+	.wordle-tile-absent {
+		background-color: var(--wordle-absent);
+	}
+
+	.wordle-key {
+		min-width: 43px;
+		height: 58px;
+		border-radius: 4px;
+		font-weight: bold;
+		font-size: 0.875rem;
+		text-transform: uppercase;
+		cursor: pointer;
+		user-select: none;
+		border: none;
+		transition: all 0.1s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.wordle-key-wide {
+		min-width: 65px;
+		font-size: 0.75rem;
+	}
+
+	.wordle-key-default {
+		background-color: var(--wordle-keyboard-bg);
+		color: var(--cds-color-text-primary);
+	}
+
+	.wordle-key-default:hover {
+		opacity: 0.8;
+	}
+
+	.wordle-key-correct {
+		background-color: var(--wordle-correct);
+		color: white;
+	}
+
+	.wordle-key-present {
+		background-color: var(--wordle-present);
+		color: white;
+	}
+
+	.wordle-key-absent {
+		background-color: var(--wordle-absent);
+		color: white;
+	}
+
+	@keyframes pop {
+		0% { transform: scale(1); }
+		50% { transform: scale(1.1); }
+		100% { transform: scale(1); }
+	}
+
+	@keyframes flip {
+		0% { transform: rotateX(0); }
+		50% { transform: rotateX(90deg); }
+		100% { transform: rotateX(0); }
+	}
+</style>
+
 <div class="max-w-lg mx-auto p-4">
-	<header class="text-center mb-8">
-		<h1 class="text-4xl font-bold">Paròla</h1>
-		<p class="text-text-secondary text-sm">Puzzle #{getPuzzleNumber()}</p>
+	<header class="text-center mb-8 border-b pb-4" style="border-color: var(--wordle-empty);">
+		<h1 class="text-4xl font-bold tracking-wide">Paròla</h1>
+		<p class="text-sm" style="color: var(--cds-color-text-secondary);">Puzzle #{getPuzzleNumber()}</p>
 	</header>
 
-	<div class="flex flex-col gap-1 mb-8">
+	<div class="flex flex-col gap-1.5 mb-8">
 		{#each $wordleStore.guesses as guess}
-			<div class="flex gap-1 justify-center">
+			<div class="flex gap-1.5 justify-center">
 				{#each guess.result as letter}
-					<div class="w-16 h-16 border-2 flex items-center justify-center text-3xl font-bold uppercase
-						{letter.status === 'correct' ? 'bg-correct border-correct text-white' : ''}
-						{letter.status === 'present' ? 'bg-present border-present text-white' : ''}
-						{letter.status === 'absent' ? 'bg-absent border-absent text-white' : ''}">
+					<div class="wordle-tile wordle-tile-evaluated wordle-tile-{letter.status}">
 						{letter.letter}
 					</div>
 				{/each}
@@ -85,9 +179,9 @@
 		{/each}
 
 		{#if $wordleStore.gameState === 'playing'}
-			<div class="flex gap-1 justify-center">
+			<div class="flex gap-1.5 justify-center">
 				{#each Array(5) as _, i}
-					<div class="w-16 h-16 border-2 border-text-tertiary flex items-center justify-center text-3xl font-bold uppercase">
+					<div class="wordle-tile wordle-tile-active">
 						{$wordleStore.currentGuess[i] || ''}
 					</div>
 				{/each}
@@ -95,9 +189,9 @@
 		{/if}
 
 		{#each Array(emptyRows) as _}
-			<div class="flex gap-1 justify-center">
+			<div class="flex gap-1.5 justify-center">
 				{#each Array(5) as _}
-					<div class="w-16 h-16 border-2 border-border flex items-center justify-center"></div>
+					<div class="wordle-tile"></div>
 				{/each}
 			</div>
 		{/each}
@@ -109,12 +203,7 @@
 				{#each row as key}
 					<button
 						on:click={() => handleKeyClick(key)}
-						class="min-w-11 h-14 rounded font-bold text-sm transition-colors
-							{key.length > 1 ? 'min-w-16 text-xs' : ''}
-							{$wordleStore.keyboardState[key] === 'correct' ? 'bg-correct text-white' : ''}
-							{$wordleStore.keyboardState[key] === 'present' ? 'bg-present text-white' : ''}
-							{$wordleStore.keyboardState[key] === 'absent' ? 'bg-absent text-white' : ''}
-							{!$wordleStore.keyboardState[key] ? 'bg-border hover:opacity-80' : ''}"
+						class="wordle-key {key.length > 1 ? 'wordle-key-wide' : ''} wordle-key-{$wordleStore.keyboardState[key] || 'default'}"
 					>
 						{key}
 					</button>
