@@ -59,41 +59,25 @@ function createWordleStore() {
 	};
 
 	if (browser) {
-		// Check if game was completed today (prevents replay after clearing storage)
+		const saved = localStorage.getItem('wordleGameState');
+		if (saved) {
+			try {
+				const parsed = JSON.parse(saved);
+				if (parsed.date === today) {
+					Object.assign(initialState, parsed);
+					initialState.guesses = parsed.guesses || [];
+				}
+			} catch (e) {
+				console.error('Failed to parse saved state', e);
+			}
+		}
+
+		// Check completion flag - if game completed today but state missing, block new game
 		const completedKey = `wordleCompleted_${today}`;
 		const wasCompleted = localStorage.getItem(completedKey);
-
-		if (wasCompleted) {
-			// Game was already completed today - restore completed state or block new game
-			const saved = localStorage.getItem('wordleGameState');
-			if (saved) {
-				try {
-					const parsed = JSON.parse(saved);
-					if (parsed.date === today) {
-						Object.assign(initialState, parsed);
-						initialState.guesses = parsed.guesses || [];
-					}
-				} catch (e) {
-					console.error('Failed to parse saved state', e);
-				}
-			} else {
-				// State was cleared but completion flag exists - prevent new game
-				initialState.gameState = wasCompleted === 'won' ? 'won' : 'lost';
-			}
-		} else {
-			// No completion flag - check for saved state
-			const saved = localStorage.getItem('wordleGameState');
-			if (saved) {
-				try {
-					const parsed = JSON.parse(saved);
-					if (parsed.date === today) {
-						Object.assign(initialState, parsed);
-						initialState.guesses = parsed.guesses || [];
-					}
-				} catch (e) {
-					console.error('Failed to parse saved state', e);
-				}
-			}
+		if (wasCompleted && initialState.gameState === 'playing') {
+			// User cleared game state but already completed today - block replay
+			initialState.gameState = wasCompleted as 'won' | 'lost';
 		}
 	}
 
