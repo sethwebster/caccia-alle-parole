@@ -487,6 +487,7 @@
 		min-width: 0;
 		min-height: 0;
 		box-sizing: border-box;
+		text-transform: uppercase;
 	}
 
 	.grid-cell:hover:not(.selected):not(.found) {
