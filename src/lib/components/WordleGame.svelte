@@ -161,15 +161,15 @@
 <style>
 	/* Tile Styles - Wordle-inspired */
 	.tile {
-		border: 2px solid #d3d6da;
+		border: 2px solid var(--tile-border, #d3d6da);
 		border-radius: 4px;
-		transition: all 0.3s ease;
-		background-color: white;
-		color: #1a1a1b;
+		transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+		background-color: var(--tile-bg, white);
+		color: var(--tile-text, #1a1a1b);
 	}
 
 	.tile-filled {
-		border-color: #878a8c;
+		border-color: var(--tile-filled-border, #878a8c);
 		animation: pop 0.1s ease-in-out;
 	}
 
@@ -178,39 +178,39 @@
 	}
 
 	.tile-correct {
-		background-color: #6aaa64;
-		border-color: #6aaa64;
+		background-color: var(--tile-correct, #6aaa64);
+		border-color: var(--tile-correct, #6aaa64);
 		color: white;
 	}
 
 	.tile-present {
-		background-color: #c9b458;
-		border-color: #c9b458;
+		background-color: var(--tile-present, #c9b458);
+		border-color: var(--tile-present, #c9b458);
 		color: white;
 	}
 
 	.tile-absent {
-		background-color: #787c7e;
-		border-color: #787c7e;
+		background-color: var(--tile-absent, #787c7e);
+		border-color: var(--tile-absent, #787c7e);
 		color: white;
 	}
 
 	/* Keyboard Styles - Wordle-inspired */
 	.keyboard-key {
 		border-radius: 4px;
-		transition: all 0.15s ease;
+		transition: background-color 0.15s ease, transform 0.15s ease;
 		border: none;
 		cursor: pointer;
 		font-family: inherit;
 	}
 
 	.key-default {
-		background-color: #d3d6da;
-		color: #1a1a1b;
+		background-color: var(--key-default, #d3d6da);
+		color: var(--key-text, #1a1a1b);
 	}
 
 	.key-default:hover {
-		background-color: #c3c6ca;
+		background-color: var(--key-default-hover, #c3c6ca);
 	}
 
 	.key-default:active {
@@ -218,17 +218,17 @@
 	}
 
 	.key-correct {
-		background-color: #6aaa64;
+		background-color: var(--tile-correct, #6aaa64);
 		color: white;
 	}
 
 	.key-present {
-		background-color: #c9b458;
+		background-color: var(--tile-present, #c9b458);
 		color: white;
 	}
 
 	.key-absent {
-		background-color: #787c7e;
+		background-color: var(--tile-absent, #787c7e);
 		color: white;
 	}
 
