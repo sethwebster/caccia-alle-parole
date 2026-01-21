@@ -6,6 +6,10 @@ export interface SelectedCell {
 	letter: string;
 }
 
+function removeAccents(str: string): string {
+	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 export function getCellsBetween(
 	startRow: number,
 	startCol: number,
@@ -58,10 +62,10 @@ export function checkIfWordFound(
 	selectedWord: string,
 	placedWords: PlacedWord[]
 ): PlacedWord | null {
-	const upperWord = selectedWord.toUpperCase();
+	const upperWord = removeAccents(selectedWord.toUpperCase());
 
 	for (const placedWord of placedWords) {
-		const placedUpper = placedWord.word.toUpperCase();
+		const placedUpper = removeAccents(placedWord.word.toUpperCase());
 
 		// Check forward and reverse
 		if (upperWord === placedUpper || upperWord === placedUpper.split('').reverse().join('')) {

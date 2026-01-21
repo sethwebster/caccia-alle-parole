@@ -3,6 +3,10 @@ import { DIFFICULTY_CONFIGS } from '$lib/types';
 
 const ITALIAN_LETTERS = 'AAAAAAAAEEEEEEEEEEIIIIIIIIOOOOOOONNNNNNRRRRRLLLLTTTSSSCCCDDDUUUMMPPGGFFVVBHZQY';
 
+function removeAccents(str: string): string {
+	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 interface DirectionDef {
 	dx: number;
 	dy: number;
@@ -178,7 +182,7 @@ export function generateGrid(
 	const placedWords: PlacedWord[] = [];
 
 	for (const wordData of selectedWords) {
-		const word = wordData.word.toUpperCase();
+		const word = removeAccents(wordData.word.toUpperCase());
 		let placed = false;
 		let attempts = 0;
 		const maxAttempts = 100;
