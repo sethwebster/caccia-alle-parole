@@ -79,6 +79,14 @@
 
   /* Focus Ring */
   --cds-color-focus-ring: rgba(230, 57, 70, 0.3);
+
+  /* Wordle Game Colors */
+  --wordle-correct: #6AAA64;
+  --wordle-present: #C9B458;
+  --wordle-absent: #787C7E;
+  --wordle-empty: #D3D6DA;
+  --wordle-tile-bg: #FFFFFF;
+  --wordle-keyboard-bg: #D3D6DA;
 }
 
 /* Dark Mode Support (future) */
@@ -94,5 +102,13 @@
 
     --cds-color-border: #334155;
     --cds-color-border-hover: #475569;
+
+    /* Wordle Dark Mode */
+    --wordle-correct: #538D4E;
+    --wordle-present: #B59F3B;
+    --wordle-absent: #3A3A3C;
+    --wordle-empty: #3A3A3C;
+    --wordle-tile-bg: #121213;
+    --wordle-keyboard-bg: #818384;
   }
 }

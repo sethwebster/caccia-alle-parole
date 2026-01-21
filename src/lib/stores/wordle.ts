@@ -101,8 +101,8 @@ function createWordleStore() {
 
 			const guess = state.currentGuess.toUpperCase();
 
-			// Validate word
-			if (!validWords.includes(guess.toLowerCase())) {
+			// Validate word - validWords is a Set of uppercase words
+			if (!validWords.has(guess)) {
 				return state; // Invalid word - could add toast notification
 			}
 
