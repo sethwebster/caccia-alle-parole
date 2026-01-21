@@ -70,14 +70,14 @@
 		<p class="text-text-secondary text-sm">Puzzle #{getPuzzleNumber()}</p>
 	</header>
 
-	<div class="flex flex-col gap-1 mb-8">
+	<div class="flex flex-col gap-1.5 mb-8">
 		{#each $wordleStore.guesses as guess}
-			<div class="flex gap-1 justify-center">
+			<div class="flex gap-1.5 justify-center">
 				{#each guess.result as letter}
-					<div class="w-16 h-16 border-2 flex items-center justify-center text-3xl font-bold uppercase
-						{letter.status === 'correct' ? 'bg-correct border-correct text-white' : ''}
-						{letter.status === 'present' ? 'bg-present border-present text-white' : ''}
-						{letter.status === 'absent' ? 'bg-absent border-absent text-white' : ''}">
+					<div class="tile tile-revealed w-16 h-16 flex items-center justify-center text-2xl font-bold uppercase
+						{letter.status === 'correct' ? 'tile-correct' : ''}
+						{letter.status === 'present' ? 'tile-present' : ''}
+						{letter.status === 'absent' ? 'tile-absent' : ''}">
 						{letter.letter}
 					</div>
 				{/each}
@@ -85,9 +85,10 @@
 		{/each}
 
 		{#if $wordleStore.gameState === 'playing'}
-			<div class="flex gap-1 justify-center">
+			<div class="flex gap-1.5 justify-center">
 				{#each Array(5) as _, i}
-					<div class="w-16 h-16 border-2 border-text-tertiary flex items-center justify-center text-3xl font-bold uppercase">
+					<div class="tile w-16 h-16 flex items-center justify-center text-2xl font-bold uppercase
+						{$wordleStore.currentGuess[i] ? 'tile-filled' : ''}">
 						{$wordleStore.currentGuess[i] || ''}
 					</div>
 				{/each}
@@ -95,9 +96,9 @@
 		{/if}
 
 		{#each Array(emptyRows) as _}
-			<div class="flex gap-1 justify-center">
+			<div class="flex gap-1.5 justify-center">
 				{#each Array(5) as _}
-					<div class="w-16 h-16 border-2 border-border flex items-center justify-center"></div>
+					<div class="tile w-16 h-16 flex items-center justify-center"></div>
 				{/each}
 			</div>
 		{/each}
@@ -109,12 +110,12 @@
 				{#each row as key}
 					<button
 						on:click={() => handleKeyClick(key)}
-						class="min-w-11 h-14 rounded font-bold text-sm transition-colors
+						class="keyboard-key min-w-11 h-14 font-bold text-sm
 							{key.length > 1 ? 'min-w-16 text-xs' : ''}
-							{$wordleStore.keyboardState[key] === 'correct' ? 'bg-correct text-white' : ''}
-							{$wordleStore.keyboardState[key] === 'present' ? 'bg-present text-white' : ''}
-							{$wordleStore.keyboardState[key] === 'absent' ? 'bg-absent text-white' : ''}
-							{!$wordleStore.keyboardState[key] ? 'bg-border hover:opacity-80' : ''}"
+							{$wordleStore.keyboardState[key] === 'correct' ? 'key-correct' : ''}
+							{$wordleStore.keyboardState[key] === 'present' ? 'key-present' : ''}
+							{$wordleStore.keyboardState[key] === 'absent' ? 'key-absent' : ''}
+							{!$wordleStore.keyboardState[key] ? 'key-default' : ''}"
 					>
 						{key}
 					</button>
@@ -156,3 +157,103 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	/* Tile Styles - Wordle-inspired */
+	.tile {
+		border: 2px solid #d3d6da;
+		border-radius: 4px;
+		transition: all 0.3s ease;
+		background-color: white;
+		color: #1a1a1b;
+	}
+
+	.tile-filled {
+		border-color: #878a8c;
+		animation: pop 0.1s ease-in-out;
+	}
+
+	.tile-revealed {
+		animation: flip 0.5s ease-in-out;
+	}
+
+	.tile-correct {
+		background-color: #6aaa64;
+		border-color: #6aaa64;
+		color: white;
+	}
+
+	.tile-present {
+		background-color: #c9b458;
+		border-color: #c9b458;
+		color: white;
+	}
+
+	.tile-absent {
+		background-color: #787c7e;
+		border-color: #787c7e;
+		color: white;
+	}
+
+	/* Keyboard Styles - Wordle-inspired */
+	.keyboard-key {
+		border-radius: 4px;
+		transition: all 0.15s ease;
+		border: none;
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.key-default {
+		background-color: #d3d6da;
+		color: #1a1a1b;
+	}
+
+	.key-default:hover {
+		background-color: #c3c6ca;
+	}
+
+	.key-default:active {
+		transform: scale(0.95);
+	}
+
+	.key-correct {
+		background-color: #6aaa64;
+		color: white;
+	}
+
+	.key-present {
+		background-color: #c9b458;
+		color: white;
+	}
+
+	.key-absent {
+		background-color: #787c7e;
+		color: white;
+	}
+
+	/* Animations */
+	@keyframes pop {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.1);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes flip {
+		0% {
+			transform: rotateX(0);
+		}
+		50% {
+			transform: rotateX(-90deg);
+		}
+		100% {
+			transform: rotateX(0);
+		}
+	}
+</style>
