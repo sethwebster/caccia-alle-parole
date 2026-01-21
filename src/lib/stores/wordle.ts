@@ -71,14 +71,6 @@ function createWordleStore() {
 				console.error('Failed to parse saved state', e);
 			}
 		}
-
-		// Check completion flag - if game completed today but state missing, block new game
-		const completedKey = `wordleCompleted_${today}`;
-		const wasCompleted = localStorage.getItem(completedKey);
-		if (wasCompleted && initialState.gameState === 'playing') {
-			// User cleared game state but already completed today - block replay
-			initialState.gameState = wasCompleted as 'won' | 'lost';
-		}
 	}
 
 	const { subscribe, set, update } = writable<WordleState>(initialState);
@@ -89,12 +81,6 @@ function createWordleStore() {
 				...state,
 				guesses: state.guesses
 			}));
-
-			// Set completion flag when game ends
-			if (state.gameState === 'won' || state.gameState === 'lost') {
-				const completedKey = `wordleCompleted_${state.date}`;
-				localStorage.setItem(completedKey, state.gameState);
-			}
 		}
 	}
 
@@ -149,17 +135,6 @@ function createWordleStore() {
 		}),
 		reset: () => {
 			const today = new Date().toISOString().split('T')[0];
-
-			// Prevent reset if game was completed today
-			if (browser) {
-				const completedKey = `wordleCompleted_${today}`;
-				const wasCompleted = localStorage.getItem(completedKey);
-				if (wasCompleted) {
-					console.warn('Cannot reset - game already completed today');
-					return;
-				}
-			}
-
 			const todayWord = getTodayWord();
 			const newState: WordleState = {
 				targetWord: todayWord.word.toUpperCase(),
