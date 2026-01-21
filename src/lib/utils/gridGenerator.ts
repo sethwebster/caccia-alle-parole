@@ -20,6 +20,37 @@ const DIRECTIONS: DirectionDef[] = [
 	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' }
 ];
 
+// Weighted direction pool - more diagonal and backward entries for better distribution
+const WEIGHTED_DIRECTIONS: DirectionDef[] = [
+	// Forward directions (1x)
+	{ dx: 1, dy: 0, name: 'horizontal' },
+	{ dx: 0, dy: 1, name: 'vertical' },
+	// Backward directions (3x each)
+	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
+	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
+	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
+	{ dx: 0, dy: -1, name: 'vertical-reverse' },
+	{ dx: 0, dy: -1, name: 'vertical-reverse' },
+	{ dx: 0, dy: -1, name: 'vertical-reverse' },
+	// Diagonal directions (4x each)
+	{ dx: 1, dy: 1, name: 'diagonal-down' },
+	{ dx: 1, dy: 1, name: 'diagonal-down' },
+	{ dx: 1, dy: 1, name: 'diagonal-down' },
+	{ dx: 1, dy: 1, name: 'diagonal-down' },
+	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
+	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
+	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
+	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
+	{ dx: 1, dy: -1, name: 'diagonal-up' },
+	{ dx: 1, dy: -1, name: 'diagonal-up' },
+	{ dx: 1, dy: -1, name: 'diagonal-up' },
+	{ dx: 1, dy: -1, name: 'diagonal-up' },
+	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
+	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
+	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
+	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' }
+];
+
 const DIRECTION_DELTAS: Record<Direction, [number, number]> = {
 	'horizontal': [0, 1],
 	'vertical': [1, 0],
@@ -92,6 +123,43 @@ function calculatePoints(word: string, difficulty: Difficulty): number {
 	return Math.round(basePoints * difficultyMultiplier);
 }
 
+function createAlmostMatch(word: string): string {
+	// Create a word that's similar but not identical
+	// Change 1-2 letters to create an "almost" match
+	const chars = word.split('');
+	const numChanges = Math.random() < 0.5 ? 1 : 2;
+
+	for (let i = 0; i < numChanges; i++) {
+		const pos = Math.floor(Math.random() * chars.length);
+		const newChar = ITALIAN_LETTERS[Math.floor(Math.random() * ITALIAN_LETTERS.length)];
+		chars[pos] = newChar;
+	}
+
+	return chars.join('');
+}
+
+function tryPlaceDecoy(
+	grid: Cell[][],
+	word: string,
+	gridSize: number,
+	maxAttempts: number
+): boolean {
+	const decoyWord = createAlmostMatch(word);
+
+	for (let attempt = 0; attempt < maxAttempts; attempt++) {
+		const direction = WEIGHTED_DIRECTIONS[Math.floor(Math.random() * WEIGHTED_DIRECTIONS.length)];
+		const row = Math.floor(Math.random() * gridSize);
+		const col = Math.floor(Math.random() * gridSize);
+
+		if (canPlaceWord(grid, decoyWord, row, col, direction)) {
+			placeWord(grid, decoyWord, row, col, direction);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 export function generateGrid(
 	words: Word[],
 	difficulty: Difficulty
@@ -118,7 +186,7 @@ export function generateGrid(
 		while (!placed && attempts < maxAttempts) {
 			attempts++;
 
-			const direction = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+			const direction = WEIGHTED_DIRECTIONS[Math.floor(Math.random() * WEIGHTED_DIRECTIONS.length)];
 			const row = Math.floor(Math.random() * gridSize);
 			const col = Math.floor(Math.random() * gridSize);
 
@@ -133,6 +201,15 @@ export function generateGrid(
 				});
 				placed = true;
 			}
+		}
+	}
+
+	// For hard difficulty, add a couple "almost" matches as decoys
+	if (difficulty === 'hard' && placedWords.length > 0) {
+		const numDecoys = Math.min(2, Math.floor(placedWords.length / 3));
+		for (let i = 0; i < numDecoys; i++) {
+			const targetWord = placedWords[Math.floor(Math.random() * placedWords.length)].word;
+			tryPlaceDecoy(grid, targetWord, gridSize, 50);
 		}
 	}
 
