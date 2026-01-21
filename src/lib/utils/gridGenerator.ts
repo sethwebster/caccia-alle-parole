@@ -182,7 +182,8 @@ export function generateGrid(
 	const placedWords: PlacedWord[] = [];
 
 	for (const wordData of selectedWords) {
-		const word = removeAccents(wordData.word.toUpperCase());
+		// Remove spaces and accents from multi-word entries for grid placement
+		const word = removeAccents(wordData.word.toUpperCase()).replace(/\s+/g, '');
 		let placed = false;
 		let attempts = 0;
 		const maxAttempts = 100;

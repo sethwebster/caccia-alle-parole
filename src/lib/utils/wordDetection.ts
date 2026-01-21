@@ -65,7 +65,8 @@ export function checkIfWordFound(
 	const upperWord = removeAccents(selectedWord.toUpperCase());
 
 	for (const placedWord of placedWords) {
-		const placedUpper = removeAccents(placedWord.word.toUpperCase());
+		// Remove spaces and accents from multi-word entries for comparison
+		const placedUpper = removeAccents(placedWord.word.toUpperCase()).replace(/\s+/g, '');
 
 		// Check forward and reverse
 		if (upperWord === placedUpper || upperWord === placedUpper.split('').reverse().join('')) {
