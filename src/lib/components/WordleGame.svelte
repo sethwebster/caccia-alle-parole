@@ -234,12 +234,14 @@
 			tabindex="-1"
 		>
 			<div class="bg-surface rounded-lg p-8 max-w-md text-center" on:click|stopPropagation>
-				<h2 class="text-2xl font-bold mb-4">
-					{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Prossima volta!'}
-				</h2>
-				<p class="text-2xl mb-2">
-					<strong>{$wordleStore.targetWord}</strong> - {$wordleStore.targetWordData.translation}
-				</p>
+				<div class="bg-gradient-to-br from-success/20 to-primary/20 rounded-lg p-6 mb-6">
+					<h2 class="text-2xl font-bold mb-4">
+						{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Prossima volta!'}
+					</h2>
+					<p class="text-2xl mb-2">
+						<strong>{$wordleStore.targetWord}</strong> - {$wordleStore.targetWordData.translation}
+					</p>
+				</div>
 				<p class="text-text-secondary mb-6">{$wordleStore.targetWordData.definition}</p>
 				<button
 					on:click={shareResults}
