@@ -48,7 +48,7 @@ function createWordleStore() {
 	const today = new Date().toISOString().split('T')[0];
 	const todayWord = getTodayWord();
 
-	const initialState: WordleState = {
+	let state: WordleState = {
 		targetWord: todayWord.word.toUpperCase(),
 		targetWordData: todayWord,
 		guesses: [],
@@ -64,8 +64,11 @@ function createWordleStore() {
 			try {
 				const parsed = JSON.parse(saved);
 				if (parsed.date === today) {
-					Object.assign(initialState, parsed);
-					initialState.guesses = parsed.guesses || [];
+					state = {
+						...state,
+						...parsed,
+						guesses: parsed.guesses || []
+					};
 				}
 			} catch (e) {
 				console.error('Failed to parse saved state', e);
@@ -73,37 +76,49 @@ function createWordleStore() {
 		}
 	}
 
-	const { subscribe, set, update } = writable<WordleState>(initialState);
+	const store = writable<WordleState>(state);
+	const { subscribe, set } = store;
 
-	function save(state: WordleState) {
+	function save(newState: WordleState) {
 		if (browser) {
 			localStorage.setItem('wordleGameState', JSON.stringify({
-				...state,
-				guesses: state.guesses
+				...newState,
+				guesses: newState.guesses
 			}));
 		}
 	}
 
+	function updateState(newState: WordleState) {
+		state = newState;
+		set(newState);
+	}
+
 	return {
 		subscribe,
-		addLetter: (letter: string) => update(state => {
-			if (state.gameState !== 'playing' || state.currentGuess.length >= 5) return state;
-			const newState = { ...state, currentGuess: state.currentGuess + letter };
-			return newState;
-		}),
-		deleteLetter: () => update(state => {
-			if (state.gameState !== 'playing') return state;
-			const newState = { ...state, currentGuess: state.currentGuess.slice(0, -1) };
-			return newState;
-		}),
-		submitGuess: () => update(state => {
-			if (state.gameState !== 'playing' || state.currentGuess.length !== 5) return state;
+		addLetter: (letter: string) => {
+			if (state.gameState !== 'playing' || state.currentGuess.length >= 5) return;
+			const newState = {
+				...state,
+				currentGuess: state.currentGuess + letter
+			};
+			updateState(newState);
+		},
+		deleteLetter: () => {
+			if (state.gameState !== 'playing') return;
+			const newState = {
+				...state,
+				currentGuess: state.currentGuess.slice(0, -1)
+			};
+			updateState(newState);
+		},
+		submitGuess: () => {
+			if (state.gameState !== 'playing' || state.currentGuess.length !== 5) return;
 
 			const guess = state.currentGuess.toUpperCase();
 
 			// Validate word - validWords is a Set of uppercase words
 			if (!validWords.has(guess)) {
-				return state; // Invalid word - could add toast notification
+				return; // Invalid word - could add toast notification
 			}
 
 			const result = evaluateGuess(guess, state.targetWord);
@@ -131,8 +146,8 @@ function createWordleStore() {
 			};
 
 			save(newState);
-			return newState;
-		}),
+			updateState(newState);
+		},
 		reset: () => {
 			const today = new Date().toISOString().split('T')[0];
 			const todayWord = getTodayWord();
@@ -146,7 +161,7 @@ function createWordleStore() {
 				date: today
 			};
 			save(newState);
-			set(newState);
+			updateState(newState);
 		}
 	};
 }
