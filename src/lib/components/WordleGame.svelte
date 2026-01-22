@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { wordleStore } from '$lib/stores/wordle';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 
 	const KEYBOARD_ROWS = [
 		['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -9,6 +10,7 @@
 	];
 
 	let showModal = false;
+	let triggerConfetti = false;
 
 	$: emptyRows = Math.max(0, 6 - $wordleStore.guesses.length - ($wordleStore.gameState === 'playing' ? 1 : 0));
 
@@ -30,6 +32,9 @@
 	});
 
 	$: if ($wordleStore.gameState !== 'playing' && !showModal) {
+		if ($wordleStore.gameState === 'won') {
+			triggerConfetti = true;
+		}
 		setTimeout(() => { showModal = true; }, 500);
 	}
 
@@ -251,4 +256,6 @@
 			</div>
 		</div>
 	{/if}
+
+	<Confetti trigger={triggerConfetti} />
 </div>
