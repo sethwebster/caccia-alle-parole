@@ -10,6 +10,7 @@
 		type SelectedCell
 	} from '$lib/utils/wordDetection';
 	import type { Difficulty } from '$lib/types';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 
 	const categories = Object.keys(wordDatabase);
 	const difficulties: Difficulty[] = ['easy', 'medium', 'hard'];
@@ -26,6 +27,7 @@
 	let flashCells: SelectedCell[] = [];
 	let flashTimeout: ReturnType<typeof setTimeout> | null = null;
 	let modalTimeout: ReturnType<typeof setTimeout> | null = null;
+	let triggerConfetti = false;
 
 	$: isGameActive = $wordSearchStore.category && $wordSearchStore.difficulty;
 	$: foundCount = $wordSearchStore.foundWords.size;
@@ -34,6 +36,7 @@
 	$: gridSize = $wordSearchStore.grid.length;
 
 	$: if (isGameWon && !showModal) {
+		triggerConfetti = true;
 		if (modalTimeout) clearTimeout(modalTimeout);
 		modalTimeout = setTimeout(() => {
 			showModal = true;
@@ -333,6 +336,8 @@
 			</div>
 		</div>
 	{/if}
+
+	<Confetti trigger={triggerConfetti} />
 </div>
 
 <style>
