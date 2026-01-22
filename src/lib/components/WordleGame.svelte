@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
 	import { wordleStore } from '$lib/stores/wordle';
 
 	const KEYBOARD_ROWS = [
@@ -33,7 +33,7 @@
 		setTimeout(() => { showModal = true; }, 500);
 	}
 
-	async function handleKeyClick(key: string) {
+	function handleKeyClick(key: string) {
 		if (key === 'ENTER') {
 			wordleStore.submitGuess();
 		} else if (key === '⌫') {
@@ -41,7 +41,6 @@
 		} else {
 			wordleStore.addLetter(key);
 		}
-		await tick();
 	}
 
 	function getPuzzleNumber() {
