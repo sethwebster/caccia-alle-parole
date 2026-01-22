@@ -121,11 +121,28 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex: 1;
 	}
 
 	.wordle-key-wide {
 		min-width: 65px;
 		font-size: 0.75rem;
+		flex: 1.5;
+	}
+
+	/* Mobile responsive keyboard */
+	@media (max-width: 480px) {
+		.wordle-key {
+			min-width: 28px;
+			height: 48px;
+			font-size: 0.75rem;
+			padding: 0 4px;
+		}
+
+		.wordle-key-wide {
+			min-width: 48px;
+			font-size: 0.65rem;
+		}
 	}
 
 	.wordle-key-default {
@@ -162,6 +179,34 @@
 		0% { transform: rotateX(0); }
 		50% { transform: rotateX(90deg); }
 		100% { transform: rotateX(0); }
+	}
+
+	.keyboard-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		width: 100%;
+		max-width: 500px;
+		margin: 0 auto;
+		padding: 0 4px;
+	}
+
+	.keyboard-row {
+		display: flex;
+		gap: 0.375rem;
+		justify-content: center;
+		width: 100%;
+	}
+
+	@media (max-width: 480px) {
+		.keyboard-container {
+			gap: 0.25rem;
+			padding: 0 2px;
+		}
+
+		.keyboard-row {
+			gap: 0.25rem;
+		}
 	}
 </style>
 
@@ -205,9 +250,9 @@
 		{/each}
 	</div>
 
-	<div class="flex flex-col gap-2">
+	<div class="keyboard-container">
 		{#each KEYBOARD_ROWS as row}
-			<div class="flex gap-1.5 justify-center">
+			<div class="keyboard-row">
 				{#each row as key}
 					<button
 						on:click={() => handleKeyClick(key)}
