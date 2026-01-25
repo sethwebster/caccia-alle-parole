@@ -7,11 +7,32 @@ import { validWords } from '$lib/data/wordle-valid-words';
 const EPOCH_DATE = new Date('2024-01-01');
 const MAX_GUESSES = 6;
 
+// Seeded random number generator for deterministic shuffling
+function seededRandom(seed: number) {
+	const x = Math.sin(seed) * 10000;
+	return x - Math.floor(x);
+}
+
+// Fisher-Yates shuffle with a fixed seed for deterministic results
+function shuffleWithSeed<T>(array: T[], seed: number): T[] {
+	const shuffled = [...array];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(seededRandom(seed + i) * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+	return shuffled;
+}
+
+// Create a shuffled word list using a fixed seed
+// This ensures all users get the same shuffled order
+const SHUFFLE_SEED = 42; // Fixed seed for consistency across all users
+const shuffledWords = shuffleWithSeed(wordleWords, SHUFFLE_SEED);
+
 function getTodayWord() {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 	const dayNumber = Math.floor((today.getTime() - EPOCH_DATE.getTime()) / (1000 * 60 * 60 * 24));
-	return wordleWords[dayNumber % wordleWords.length];
+	return shuffledWords[dayNumber % shuffledWords.length];
 }
 
 function evaluateGuess(guess: string, target: string) {
