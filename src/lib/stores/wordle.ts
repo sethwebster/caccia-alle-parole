@@ -11,14 +11,15 @@ const MAX_GUESSES = 6;
 // Uses parameters from Numerical Recipes: a=1664525, c=1013904223, m=2^32
 class SeededRandom {
 	private seed: number;
+	private static readonly MODULUS = 2 ** 32; // 2^32 = 4294967296
 
 	constructor(seed: number) {
 		this.seed = seed;
 	}
 
 	next(): number {
-		this.seed = (this.seed * 1664525 + 1013904223) % 4294967296;
-		return this.seed / 4294967296;
+		this.seed = (this.seed * 1664525 + 1013904223) % SeededRandom.MODULUS;
+		return this.seed / SeededRandom.MODULUS;
 	}
 }
 
