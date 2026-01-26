@@ -138,7 +138,7 @@
 			aria-modal="true"
 			tabindex="-1"
 		>
-			<div class="bg-[var(--cds-color-surface)] rounded-xl shadow-2xl p-6 w-full max-w-sm relative" on:click|stopPropagation>
+			<div class="bg-[var(--cds-color-surface)] rounded-xl shadow-2xl p-6 w-full max-w-sm relative max-h-[90vh] overflow-y-auto" on:click|stopPropagation>
                 <button 
                     class="absolute top-4 right-4 text-[var(--cds-color-text-secondary)] hover:text-[var(--cds-color-text-primary)]"
                     on:click={() => $wordleUI.showModal = false}
@@ -148,33 +148,81 @@
                     </svg>
                 </button>
 
-				<div class="text-center mb-6">
-					<h2 class="text-3xl font-bold mb-1 uppercase tracking-wider">
-						{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Game Over'}
-					</h2>
-                    <p class="text-sm text-[var(--cds-color-text-secondary)]">Puzzle #{getPuzzleNumber()}</p>
-				</div>
+				{#if $wordleStore.gameState === 'playing'}
+					<div class="text-center mb-6">
+						<h2 class="text-2xl font-bold mb-4 uppercase tracking-wider">Come Giocare</h2>
+						<div class="text-left space-y-4 text-[var(--cds-color-text-primary)]">
+							<p>Indovina la <strong>PARÒLA</strong> in 6 tentativi.</p>
+							<ul class="list-disc pl-5 space-y-2 text-sm">
+								<li>Ogni tentativo deve essere una parola valida di 5 lettere.</li>
+								<li>Premi il tasto Invio per inviare.</li>
+								<li>Dopo ogni tentativo, il colore delle tessere cambierà per mostrare quanto sei vicino.</li>
+							</ul>
+							
+							<div class="space-y-3 mt-6 border-t pt-4 border-[var(--cds-color-border)]">
+								<p class="text-xs font-bold uppercase text-[var(--cds-color-text-secondary)]">Esempi</p>
+								<div>
+									<div class="flex gap-1 mb-1">
+										<div class="wordle-tile wordle-tile-correct w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">C</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">A</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">N</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">E</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">S</div>
+									</div>
+									<p class="text-sm"><strong>C</strong> è nella parola e nella posizione corretta.</p>
+								</div>
+								<div>
+									<div class="flex gap-1 mb-1">
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">P</div>
+										<div class="wordle-tile wordle-tile-present w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">I</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">Z</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">Z</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">A</div>
+									</div>
+									<p class="text-sm"><strong>I</strong> è nella parola ma nella posizione sbagliata.</p>
+								</div>
+								<div>
+									<div class="flex gap-1 mb-1">
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">M</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">O</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">N</div>
+										<div class="wordle-tile w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">D</div>
+										<div class="wordle-tile wordle-tile-absent w-8 h-8 text-lg" style="width: 2rem; height: 2rem;">O</div>
+									</div>
+									<p class="text-sm"><strong>O</strong> non è presente nella parola.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				{:else}
+					<div class="text-center mb-6">
+						<h2 class="text-3xl font-bold mb-1 uppercase tracking-wider">
+							{$wordleStore.gameState === 'won' ? 'Complimenti!' : 'Game Over'}
+						</h2>
+						<p class="text-sm text-[var(--cds-color-text-secondary)]">Puzzle #{getPuzzleNumber()}</p>
+					</div>
 
-                <div class="flex flex-col items-center gap-4 mb-8">
-                    <div class="bg-[var(--cds-color-surface-elevated)] border border-[var(--cds-color-border)] rounded-lg p-4 w-full text-center shadow-sm">
-                         <h3 class="text-xs uppercase tracking-wide text-[var(--cds-color-text-secondary)] mb-1">Parola del Giorno</h3>
-                         <p class="text-2xl font-bold text-[var(--cds-color-text-primary)] mb-1">{$wordleStore.targetWord}</p>
-                         <p class="text-lg text-[var(--cds-color-primary)]">{$wordleStore.targetWordData.translation}</p>
-                         <p class="text-sm mt-2 text-[var(--cds-color-text-secondary)] italic">"{$wordleStore.targetWordData.definition}"</p>
-                    </div>
-                </div>
-				
-				<div class="flex gap-3">
-					<button
-						on:click={shareResults}
-						class="flex-1 bg-[var(--wordle-correct)] text-white py-3 rounded-full font-bold uppercase tracking-wide hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-					>
-                        Share
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.287.696.345 1.084m-1.256-1.146a2.25 2.25 0 0 1 1.139-1.92m0 0c.349-.196.744-.29 1.14-.258m-1.528 1.932a2.25 2.25 0 0 1-.384 2.158m-1.808-4.088a2.25 2.25 0 0 1 2.158.384m-2.158-.384a2.25 2.25 0 0 0-2.316 2.592m2.62-3.132a2.25 2.25 0 0 0-2.31 2.95" />
-                        </svg>
-					</button>
-				</div>
+					<div class="flex flex-col items-center gap-4 mb-8">
+						<div class="bg-[var(--cds-color-surface-elevated)] border border-[var(--cds-color-border)] rounded-lg p-4 w-full text-center shadow-sm">
+							<h3 class="text-xs uppercase tracking-wide text-[var(--cds-color-text-secondary)] mb-1">Parola del Giorno</h3>
+							<p class="text-2xl font-bold text-[var(--cds-color-text-primary)] mb-1">{$wordleStore.targetWord}</p>
+							<p class="text-lg text-[var(--cds-color-primary)]">{$wordleStore.targetWordData.translation}</p>
+							<p class="text-sm mt-2 text-[var(--cds-color-text-secondary)] italic">"{$wordleStore.targetWordData.definition}"</p>
+						</div>
+					</div>
+					
+					<div class="flex gap-3">
+						<button
+							on:click={shareResults}
+							class="flex-1 bg-[var(--wordle-correct)] text-white py-3 rounded-full font-bold uppercase tracking-wide hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+						>
+							Share
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.287.696.345 1.084m-1.256-1.146a2.25 2.25 0 0 1 1.139-1.92m0 0c.349-.196.744-.29 1.14-.258m-1.528 1.932a2.25 2.25 0 0 1-.384 2.158m-1.808-4.088a2.25 2.25 0 0 1 2.158.384m-2.158-.384a2.25 2.25 0 0 0-2.316 2.592m2.62-3.132a2.25 2.25 0 0 0-2.31 2.95" />
+							</svg>
+						</button>
+					</div>
+				{/if}
 			</div>
 		</div>
 	{/if}
