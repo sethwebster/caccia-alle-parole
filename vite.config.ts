@@ -6,5 +6,8 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit()
-	]
+	],
+	server: {
+		allowedHosts: ['motivelessly-stalactiform-tracie.ngrok-free.dev']
+	}
 });

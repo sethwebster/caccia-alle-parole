@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { wordleUI, getPuzzleNumber } from '$lib/stores/wordle';
 
 	let menuOpen = $state(false);
 
@@ -17,20 +18,46 @@
 		<div class="top-nav__inner">
 			<div class="top-nav__brand">
 				<a href="/" class="top-nav__logo" onclick={closeMenu}>
-					🇮🇹 <span class="top-nav__title">Giochi di Parole</span>
+					{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
+						<img class="top-nav__logo-img" src="/caccia-parole-logo.png" alt="Caccia alle Parole" />
+					{:else}
+						<img class="top-nav__logo-img" src="/caccia-parole-logo.png" alt="Caccia alle Parole" />
+						<span class="top-nav__title">Giochi di Parole</span>
+					{/if}
 				</a>
 			</div>
 
-			<button
-				class="top-nav__toggle"
-				class:active={menuOpen}
-				onclick={toggleMenu}
-				aria-label="Menu"
-			>
-				<span></span>
-				<span></span>
-				<span></span>
-			</button>
+			{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
+				<a href="/parola" class="top-nav__center" onclick={closeMenu} aria-label="Parolé puzzle number">
+					<span class="top-nav__title top-nav__parole-title font-serif tracking-wider uppercase font-bold">
+						<span class="top-nav__parole-name">Parolé</span>
+						<span class="top-nav__parole-number">#{getPuzzleNumber()}</span>
+					</span>
+				</a>
+			{/if}
+
+			<div class="flex items-center gap-2">
+				{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
+					<button 
+						class="text-xl font-bold px-3 py-1 hover:bg-black/5 rounded transition-colors"
+						onclick={() => $wordleUI.showModal = true}
+						aria-label="How to play"
+					>
+						?
+					</button>
+				{/if}
+
+				<button
+					class="top-nav__toggle"
+					class:active={menuOpen}
+					onclick={toggleMenu}
+					aria-label="Menu"
+				>
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+			</div>
 
 			<div class="top-nav__menu" class:active={menuOpen}>
 				<a
@@ -47,7 +74,7 @@
 					class:active={$page.url.pathname === '/parola'}
 					onclick={closeMenu}
 				>
-					Paròla
+					Parolé
 				</a>
 				<a
 					href="/caccia"

@@ -3,9 +3,16 @@ import { browser } from '$app/environment';
 import type { WordleState, WordleGuess, KeyboardState } from '$lib/types';
 import { wordleWords } from '$lib/data/wordle-data';
 import { validWords } from '$lib/data/wordle-valid-words';
+import { toast } from '$lib/stores/toast';
 
-const EPOCH_DATE = new Date('2024-01-01');
+const EPOCH_DATE = new Date('2026-01-26');
 const MAX_GUESSES = 6;
+
+export function getPuzzleNumber() {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	return Math.floor((today.getTime() - EPOCH_DATE.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+}
 
 // Linear Congruential Generator (LCG) for deterministic random number generation
 // Uses parameters from Numerical Recipes: a=1664525, c=1013904223, m=2^32
@@ -130,13 +137,19 @@ function createWordleStore() {
 			return newState;
 		}),
 		submitGuess: () => update(state => {
-			if (state.gameState !== 'playing' || state.currentGuess.length !== 5) return state;
+			if (state.gameState !== 'playing') return state;
+			
+			if (state.currentGuess.length !== 5) {
+				toast('Not enough letters', 'default', 1000);
+				return state;
+			}
 
 			const guess = state.currentGuess.toUpperCase();
 
 			// Validate word - validWords is a Set of uppercase words
 			if (!validWords.has(guess)) {
-				return state; // Invalid word - could add toast notification
+				toast('Not in word list', 'default', 1000);
+				return state;
 			}
 
 			const result = evaluateGuess(guess, state.targetWord);
@@ -185,3 +198,4 @@ function createWordleStore() {
 }
 
 export const wordleStore = createWordleStore();
+export const wordleUI = writable({ showModal: false });
