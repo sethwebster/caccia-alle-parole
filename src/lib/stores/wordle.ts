@@ -3,6 +3,7 @@ import { browser } from '$app/environment';
 import type { WordleState, WordleGuess, KeyboardState } from '$lib/types';
 import { wordleWords } from '$lib/data/wordle-data';
 import { validWords } from '$lib/data/wordle-valid-words';
+import { toast } from '$lib/stores/toast';
 
 const EPOCH_DATE = new Date('2024-01-01');
 const MAX_GUESSES = 6;
@@ -130,13 +131,19 @@ function createWordleStore() {
 			return newState;
 		}),
 		submitGuess: () => update(state => {
-			if (state.gameState !== 'playing' || state.currentGuess.length !== 5) return state;
+			if (state.gameState !== 'playing') return state;
+			
+			if (state.currentGuess.length !== 5) {
+				toast('Not enough letters', 'default', 1000);
+				return state;
+			}
 
 			const guess = state.currentGuess.toUpperCase();
 
 			// Validate word - validWords is a Set of uppercase words
 			if (!validWords.has(guess)) {
-				return state; // Invalid word - could add toast notification
+				toast('Not in word list', 'default', 1000);
+				return state;
 			}
 
 			const result = evaluateGuess(guess, state.targetWord);
