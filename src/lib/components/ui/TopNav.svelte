@@ -19,12 +19,22 @@
 			<div class="top-nav__brand">
 				<a href="/" class="top-nav__logo" onclick={closeMenu}>
 					{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
-						🇮🇹 <span class="top-nav__title font-serif tracking-wider uppercase text-xl font-bold">Paròla #{getPuzzleNumber()}</span>
+						<img class="top-nav__logo-img" src="/caccia-parole-logo.png" alt="Caccia alle Parole" />
 					{:else}
-						🇮🇹 <span class="top-nav__title">Giochi di Parole</span>
+						<img class="top-nav__logo-img" src="/caccia-parole-logo.png" alt="Caccia alle Parole" />
+						<span class="top-nav__title">Giochi di Parole</span>
 					{/if}
 				</a>
 			</div>
+
+			{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
+				<a href="/parola" class="top-nav__center" onclick={closeMenu} aria-label="Parolé puzzle number">
+					<span class="top-nav__title top-nav__parole-title font-serif tracking-wider uppercase font-bold">
+						<span class="top-nav__parole-name">Parolé</span>
+						<span class="top-nav__parole-number">#{getPuzzleNumber()}</span>
+					</span>
+				</a>
+			{/if}
 
 			<div class="flex items-center gap-2">
 				{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
@@ -64,7 +74,7 @@
 					class:active={$page.url.pathname === '/parola'}
 					onclick={closeMenu}
 				>
-					Paròla
+					Parolé
 				</a>
 				<a
 					href="/caccia"

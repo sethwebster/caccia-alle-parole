@@ -48,20 +48,13 @@
 		}
 	}
 
-	function getPuzzleNumber() {
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
-		const epochDate = new Date('2026-01-26');
-		return Math.floor((today.getTime() - epochDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-	}
-
 	function shareResults() {
 		const puzzleNumber = getPuzzleNumber();
 		const emoji = $wordleStore.guesses.map(guess =>
 			guess.result.map(r => r.status === 'correct' ? '🟩' : r.status === 'present' ? '🟨' : '⬜').join('')
 		).join('\n');
 
-		const text = `Paròla ${puzzleNumber} ${$wordleStore.gameState === 'won' ? $wordleStore.guesses.length : 'X'}/6\n\n${emoji}`;
+		const text = `Parolé ${puzzleNumber} ${$wordleStore.gameState === 'won' ? $wordleStore.guesses.length : 'X'}/6\n\n${emoji}`;
 
 		if (navigator.clipboard) {
 			navigator.clipboard.writeText(text);

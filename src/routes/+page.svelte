@@ -18,7 +18,7 @@
 			</a>
 			<a href="/parola" class="mode-card">
 				<div class="mode-icon">🔤</div>
-				<h3 class="cds-card__title">Paròla</h3>
+				<h3 class="cds-card__title">Parolé</h3>
 				<p class="cds-text-sm cds-text-secondary-color">Indovina la parola del giorno in 6 tentativi</p>
 			</a>
 		</div>

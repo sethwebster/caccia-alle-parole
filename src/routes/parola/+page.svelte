@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Paròla - Daily Italian Word Puzzle</title>
+	<title>Parolé - Daily Italian Word Puzzle</title>
 </svelte:head>
 
 <WordleGame />
