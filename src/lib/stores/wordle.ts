@@ -138,7 +138,7 @@ function createWordleStore() {
 		}),
 		submitGuess: () => update(state => {
 			if (state.gameState !== 'playing') return state;
-			
+
 			if (state.currentGuess.length !== 5) {
 				toast('Not enough letters', 'default', 1000);
 				return state;
