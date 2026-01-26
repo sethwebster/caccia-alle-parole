@@ -34,6 +34,12 @@ npm install react-native-css
 npm install canvas-confetti @types/canvas-confetti
 npm install @react-native-async-storage/async-storage
 npm install react-native-gesture-handler react-native-reanimated
+
+# Icons (Expo Vector Icons - included with expo by default)
+npx expo install @expo/vector-icons
+
+# Utilities
+npm install clsx tailwind-merge
 ```
 
 ### 1.3 Configure NativeWind v5 + Tailwind 4
@@ -70,6 +76,80 @@ app/
 ├── index.tsx                # Home/game selector
 ├── caccia.tsx               # Word Search game
 └── parola.tsx               # Wordle game
+```
+
+### 1.5 Configure ESLint + TypeScript
+
+**Install dependencies:**
+```bash
+npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+npm install -D eslint-plugin-react eslint-plugin-react-native
+npm install -D eslint-plugin-react-hooks prettier eslint-config-prettier
+```
+
+**`.eslintrc.js`:**
+```javascript
+module.exports = {
+  root: true,
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2021,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:react-native/all',
+    'prettier'
+  ],
+  plugins: ['@typescript-eslint', 'react', 'react-native', 'react-hooks'],
+  rules: {
+    'react/react-in-jsx-scope': 'off', // Not needed in React 17+
+    'react/prop-types': 'off', // Use TypeScript instead
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'react-native/no-inline-styles': 'warn'
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  },
+  env: {
+    browser: true,
+    node: true,
+    es2021: true,
+    'react-native/react-native': true
+  }
+};
+```
+
+**`.prettierrc.js`:**
+```javascript
+module.exports = {
+  semi: true,
+  singleQuote: true,
+  trailingComma: 'es5',
+  printWidth: 100,
+  tabWidth: 2,
+  arrowParens: 'avoid'
+};
+```
+
+**`package.json` scripts:**
+```json
+{
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+  }
+}
 ```
 
 ---
@@ -475,25 +555,74 @@ export default function ParolaPage() {
 ```typescript
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Head } from 'expo-router';
 import { TopNav } from '@/components/ui/TopNav';
 import { Toast } from '@/components/ui/Toast';
 import { ToastProvider } from '@/lib/stores/toast';
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
 
 export default function RootLayout() {
+  // Initialize Plausible analytics (web only)
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      // Plausible script loaded via Head component below
+      // Track page views automatically via expo-router navigation
+    }
+  }, []);
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ToastProvider>
-        <TopNav />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="caccia" />
-          <Stack.Screen name="parola" />
-        </Stack>
-        <Toast />
-      </ToastProvider>
-    </GestureHandlerRootView>
+    <>
+      <Head>
+        <title>Caccia alle Parole - Italian Word Games</title>
+        <meta name="description" content="Learn Italian with word search and Wordle games" />
+        {Platform.OS === 'web' && (
+          <>
+            <script
+              defer
+              data-domain="cacciaparole.com"
+              src="https://plausible.projects.sethwebster.com/js/script.hash.js"
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`
+              }}
+            />
+          </>
+        )}
+      </Head>
+
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ToastProvider>
+          <TopNav />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="caccia" />
+            <Stack.Screen name="parola" />
+          </Stack>
+          <Toast />
+        </ToastProvider>
+      </GestureHandlerRootView>
+    </>
   );
 }
+```
+
+**Plausible Custom Events (Optional):**
+```typescript
+// Track custom events in game components
+import { Platform } from 'react-native';
+
+const trackEvent = (eventName: string, props?: Record<string, any>) => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    window.plausible?.(eventName, { props });
+  }
+};
+
+// Usage examples:
+trackEvent('game_started', { game: 'word_search', difficulty: 'hard' });
+trackEvent('game_won', { game: 'wordle', guesses: 4 });
+trackEvent('word_found', { category: 'animals', wordLength: 7 });
 ```
 
 ---
@@ -683,7 +812,77 @@ export default function RootLayout() {
 <Pressable className="cds-button cds-button--primary" />
 ```
 
-### 4.3 Component-Specific Styles
+### 4.3 Font Loading Best Practices
+
+**Strategy: System fonts with web font fallback**
+
+**`app/_layout.tsx`:**
+```typescript
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+// Prevent auto-hiding splash screen
+SplashScreen.preventAutoHideAsync();
+
+export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    // Only load custom fonts if needed for branding
+    // Default to system fonts for performance
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+    // ... rest of layout
+  );
+}
+```
+
+**`global.css` - System font stack:**
+```css
+@theme {
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono',
+               Consolas, 'Courier New', monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+```
+
+**Benefits:**
+- ✅ No flash of unstyled text (FOUT)
+- ✅ Faster initial load
+- ✅ Native look and feel per platform
+- ✅ Smaller bundle size
+
+**Optional: Custom web fonts (if brand requirements exist)**
+```typescript
+// Only if absolutely necessary
+const [fontsLoaded] = useFonts({
+  'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
+  'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
+});
+```
+
+### 4.4 Component-Specific Styles
 
 **Option A: Inline className (preferred)**
 ```typescript
@@ -862,7 +1061,7 @@ await Clipboard.setStringAsync(shareText);
 
 ## Phase 6: Build & Deployment
 
-### 6.1 Web Build (Replaces Cloudflare Workers)
+### 6.1 Web Build (Cloudflare Workers Deployment)
 
 **Build command:**
 ```bash
@@ -871,15 +1070,53 @@ npx expo export --platform web
 
 **Output:** `dist/` directory with static HTML/JS/CSS
 
-**Deployment options:**
-1. **Cloudflare Pages:** Deploy `dist/` directory
-2. **Vercel:** `vercel --prod`
-3. **Netlify:** `netlify deploy --prod --dir=dist`
+**Cloudflare Workers Configuration:**
+
+Create `wrangler.toml`:
+```toml
+name = "caccia-parole"
+compatibility_date = "2026-01-26"
+compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = "./dist"
+
+[[routes]]
+pattern = "cacciaparole.com/*"
+zone_name = "cacciaparole.com"
+
+[[routes]]
+pattern = "www.cacciaparole.com/*"
+zone_name = "cacciaparole.com"
+```
+
+Create `_worker.js` (if custom headers/redirects needed):
+```javascript
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    // Redirect www to non-www
+    if (url.hostname === 'www.cacciaparole.com') {
+      return Response.redirect(`https://cacciaparole.com${url.pathname}`, 301);
+    }
+
+    // Serve static assets
+    return env.ASSETS.fetch(request);
+  }
+};
+```
+
+**Deploy:**
+```bash
+npm run build
+wrangler deploy
+```
 
 **Custom domain setup (cacciaparole.com):**
-- Configure DNS to point to hosting provider
-- Add domain in hosting dashboard
-- Enable HTTPS
+- Domain already configured in existing Cloudflare account
+- Routes automatically apply to domain
+- HTTPS enabled by default
 
 ### 6.2 Native Build (Optional - Future Enhancement)
 
@@ -1004,7 +1241,127 @@ eas build --platform ios
 - Tablet: 768×1024 (iPad)
 - Desktop: 1920×1080
 
-### 7.3 User Experience Validation
+### 7.3 Testing Setup (Vitest + React Testing Library)
+
+**Install dependencies:**
+```bash
+npm install -D vitest @testing-library/react-native @testing-library/jest-native
+npm install -D @vitest/ui happy-dom
+```
+
+**`vitest.config.ts`:**
+```typescript
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+    setupFiles: './test/setup.ts',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: ['**/*.d.ts', '**/node_modules/**', '**/dist/**']
+    }
+  },
+  resolve: {
+    alias: {
+      '@': '/lib'
+    }
+  }
+});
+```
+
+**`test/setup.ts`:**
+```typescript
+import '@testing-library/jest-native/extend-expect';
+import { cleanup } from '@testing-library/react-native';
+import { afterEach } from 'vitest';
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});
+
+// Mock AsyncStorage
+global.AsyncStorage = {
+  getItem: async () => null,
+  setItem: async () => {},
+  removeItem: async () => {},
+  clear: async () => {}
+};
+```
+
+**Example test: `lib/utils/gridGenerator.test.ts`:**
+```typescript
+import { describe, it, expect } from 'vitest';
+import { generateGrid } from './gridGenerator';
+
+describe('gridGenerator', () => {
+  it('generates 10x10 grid for easy difficulty', () => {
+    const result = generateGrid({ category: 'animals', difficulty: 'easy' });
+    expect(result.grid).toHaveLength(10);
+    expect(result.grid[0]).toHaveLength(10);
+  });
+
+  it('places all words in grid', () => {
+    const result = generateGrid({ category: 'colors', difficulty: 'easy' });
+    expect(result.words).toHaveLength(10);
+    result.words.forEach(word => {
+      expect(word.row).toBeGreaterThanOrEqual(0);
+      expect(word.col).toBeGreaterThanOrEqual(0);
+    });
+  });
+});
+```
+
+**Example component test: `components/WordleGame.test.tsx`:**
+```typescript
+import { render, fireEvent } from '@testing-library/react-native';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { WordleGame } from './WordleGame';
+
+describe('WordleGame', () => {
+  beforeEach(() => {
+    // Reset store state
+  });
+
+  it('renders 6 guess rows', () => {
+    const { getAllByTestId } = render(<WordleGame />);
+    const rows = getAllByTestId('wordle-row');
+    expect(rows).toHaveLength(6);
+  });
+
+  it('accepts letter input via keyboard', () => {
+    const { getByText } = render(<WordleGame />);
+    const qKey = getByText('Q');
+    fireEvent.press(qKey);
+    // Assert state updated
+  });
+});
+```
+
+**Run tests:**
+```bash
+npm test              # Run all tests
+npm run test:ui       # Open Vitest UI
+npm run test:coverage # Generate coverage report
+```
+
+**`package.json` scripts:**
+```json
+{
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
+  }
+}
+```
+
+### 7.4 User Experience Validation
 
 **Word Search:**
 1. Start new game → verify grid generation
@@ -1043,7 +1400,67 @@ eas build --platform ios
 
 ---
 
-## Phase 8: Migration Execution Order
+## Phase 8: Git Strategy (Gitflow)
+
+### Branch Structure
+```
+main              # Production-ready code
+├── develop       # Integration branch
+    ├── feature/expo-setup
+    ├── feature/state-management
+    ├── feature/word-search-game
+    ├── feature/wordle-game
+    ├── feature/ui-components
+    └── feature/styling-animations
+```
+
+### Workflow
+```bash
+# 1. Create develop branch from main
+git checkout -b develop
+
+# 2. Create feature branches from develop
+git checkout -b feature/expo-setup develop
+
+# 3. Work on feature, commit frequently
+git add .
+git commit -m "feat: configure Expo Router"
+
+# 4. Merge feature into develop
+git checkout develop
+git merge --no-ff feature/expo-setup
+
+# 5. When ready for production
+git checkout main
+git merge --no-ff develop
+git tag -a v2.0.0 -m "Expo migration complete"
+git push origin main --tags
+```
+
+### Commit Message Convention
+```
+feat: add Wordle keyboard component
+fix: correct grid cell selection on touch
+refactor: extract grid generation to util
+test: add Wordle game unit tests
+docs: update migration progress
+style: format with Prettier
+perf: optimize grid rendering with memo
+chore: configure ESLint
+```
+
+### Feature Branches
+1. `feature/expo-setup` - Initial project setup, dependencies, config
+2. `feature/data-migration` - Copy pure logic files, types, utils
+3. `feature/state-management` - Zustand stores, toast context
+4. `feature/word-search-game` - WordSearchGame component
+5. `feature/wordle-game` - WordleGame component
+6. `feature/ui-components` - TopNav, Modal, Button, Card, etc.
+7. `feature/styling-animations` - NativeWind config, animations
+8. `feature/testing` - Vitest setup, test suites
+9. `feature/deployment` - Cloudflare Workers config, CI/CD
+
+## Phase 9: Migration Execution Order
 
 ### Week 1: Foundation
 **Day 1-2: Project Setup**
@@ -1385,15 +1802,22 @@ wrangler pages deploy dist
 
 ---
 
-## Questions to Resolve
+## Configuration Decisions ✅
 
-1. **Hosting preference:** Cloudflare Pages, Vercel, or Netlify?
-2. **Native apps:** Build immediately or web-only first?
-3. **Analytics:** Add Expo Analytics or third-party?
-4. **Error tracking:** Sentry, Bugsnag, or none?
-5. **Font loading:** System fonts or custom web fonts?
-6. **Icon pack:** Expo Vector Icons or custom SVG?
-7. **Testing framework:** Jest + React Testing Library or none?
-8. **Linting:** ESLint config preference?
-9. **Git strategy:** New repo or new branch?
-10. **Data migration:** Keep existing localStorage keys or new format?
+1. **Hosting:** Cloudflare Workers (Pages retired, use Workers with static assets)
+2. **Native apps:** Web-first, incremental mobile migration later
+3. **Analytics:** Plausible at https://plausible.projects.sethwebster.com
+   ```html
+   <script defer data-domain="cacciaparole.com"
+           src="https://plausible.projects.sethwebster.com/js/script.hash.js"></script>
+   <script>window.plausible = window.plausible || function() {
+     (window.plausible.q = window.plausible.q || []).push(arguments)
+   }</script>
+   ```
+4. **Error tracking:** None for now
+5. **Font loading:** Best practices (system fonts with web font fallback)
+6. **Icon pack:** Recommended standard (Expo Vector Icons)
+7. **Testing framework:** Vitest + React Testing Library
+8. **Linting:** ESLint standards
+9. **Git strategy:** Gitflow (feature branches, develop, main)
+10. **Data migration:** Fresh start (no real data exists yet)
