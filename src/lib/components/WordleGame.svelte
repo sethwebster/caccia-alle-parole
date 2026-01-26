@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { wordleStore } from '$lib/stores/wordle';
+	import { wordleStore, wordleUI } from '$lib/stores/wordle';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 
@@ -10,7 +10,6 @@
 		['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫']
 	];
 
-	let showModal = false;
 	let triggerConfetti = false;
 
 	$: emptyRows = Math.max(0, 6 - $wordleStore.guesses.length - ($wordleStore.gameState === 'playing' ? 1 : 0));
@@ -32,11 +31,11 @@
 		return () => window.removeEventListener('keydown', handleKeydown);
 	});
 
-	$: if ($wordleStore.gameState !== 'playing' && !showModal) {
+	$: if ($wordleStore.gameState !== 'playing' && !$wordleUI.showModal) {
 		if ($wordleStore.gameState === 'won') {
 			triggerConfetti = true;
 		}
-		setTimeout(() => { showModal = true; }, 1500);
+		setTimeout(() => { $wordleUI.showModal = true; }, 1500);
 	}
 
 	function handleKeyClick(key: string) {
@@ -70,24 +69,7 @@
 	}
 </script>
 
-<div class="flex flex-col h-[100dvh] max-w-md mx-auto w-full bg-[var(--cds-color-background)] overflow-hidden">
-	<header class="flex-none flex items-center justify-between px-4 h-14 border-b" style="border-color: var(--wordle-empty);">
-		<div class="w-8">
-			<!-- Empty for balance or could be menu -->
-            <a href="/" class="text-xl no-underline" style="color: var(--cds-color-text-primary);" aria-label="Home">
-                ⌂
-            </a>
-		</div>
-		<div class="text-center">
-			<h1 class="text-2xl font-bold tracking-wider uppercase font-serif">Paròla</h1>
-		</div>
-		<div class="w-8 flex justify-end">
-			<button class="text-xl font-bold" style="color: var(--cds-color-text-primary);" on:click={() => showModal = true} aria-label="Stats">
-				?
-			</button>
-		</div>
-	</header>
-
+<div class="flex flex-col h-[calc(100dvh-80px)] max-w-md mx-auto w-full bg-[var(--cds-color-background)] overflow-hidden">
 	<div class="flex-1 flex items-center justify-center p-2 min-h-0">
 		<div class="grid grid-rows-6 gap-1.5 w-full max-h-full aspect-[5/6] max-w-[350px]">
 			{#each $wordleStore.guesses as guess, rowIndex}
@@ -147,11 +129,11 @@
 		</div>
 	</div>
 
-	{#if showModal}
+	{#if $wordleUI.showModal}
 		<div
 			class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-			on:click={() => showModal = false}
-			on:keydown={(e) => e.key === 'Escape' && (showModal = false)}
+			on:click={() => $wordleUI.showModal = false}
+			on:keydown={(e) => e.key === 'Escape' && ($wordleUI.showModal = false)}
 			role="dialog"
 			aria-modal="true"
 			tabindex="-1"
@@ -159,7 +141,7 @@
 			<div class="bg-[var(--cds-color-surface)] rounded-xl shadow-2xl p-6 w-full max-w-sm relative" on:click|stopPropagation>
                 <button 
                     class="absolute top-4 right-4 text-[var(--cds-color-text-secondary)] hover:text-[var(--cds-color-text-primary)]"
-                    on:click={() => showModal = false}
+                    on:click={() => $wordleUI.showModal = false}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />

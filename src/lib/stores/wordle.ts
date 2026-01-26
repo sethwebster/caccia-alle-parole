@@ -192,3 +192,4 @@ function createWordleStore() {
 }
 
 export const wordleStore = createWordleStore();
+export const wordleUI = writable({ showModal: false });
