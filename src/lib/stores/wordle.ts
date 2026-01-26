@@ -5,7 +5,7 @@ import { wordleWords } from '$lib/data/wordle-data';
 import { validWords } from '$lib/data/wordle-valid-words';
 import { toast } from '$lib/stores/toast';
 
-const EPOCH_DATE = new Date('2024-01-01');
+const EPOCH_DATE = new Date('2026-01-26');
 const MAX_GUESSES = 6;
 
 // Linear Congruential Generator (LCG) for deterministic random number generation

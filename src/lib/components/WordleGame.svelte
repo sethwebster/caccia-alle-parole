@@ -51,7 +51,7 @@
 	function getPuzzleNumber() {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
-		const epochDate = new Date('2024-01-01');
+		const epochDate = new Date('2026-01-26');
 		return Math.floor((today.getTime() - epochDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 	}
 
