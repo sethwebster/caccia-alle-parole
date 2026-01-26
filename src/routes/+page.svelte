@@ -21,6 +21,21 @@
 				<h3 class="cds-card__title">Parolé</h3>
 				<p class="cds-text-sm cds-text-secondary-color">Indovina la parola del giorno in 6 tentativi</p>
 			</a>
+			<a href="/paroliere" class="mode-card">
+				<div class="mode-icon">🎲</div>
+				<h3 class="cds-card__title">Paroliere</h3>
+				<p class="cds-text-sm cds-text-secondary-color">Trova più parole possibili in 3 minuti</p>
+			</a>
+			<a href="/impiccato" class="mode-card">
+				<div class="mode-icon">🎭</div>
+				<h3 class="cds-card__title">Impiccato</h3>
+				<p class="cds-text-sm cds-text-secondary-color">Indovina la parola italiana lettera per lettera</p>
+			</a>
+			<a href="/anagrammi" class="mode-card">
+				<div class="mode-icon">🔀</div>
+				<h3 class="cds-card__title">Anagrammi</h3>
+				<p class="cds-text-sm cds-text-secondary-color">Riordina le lettere per formare la parola</p>
+			</a>
 		</div>
 	</div>
 </div>
@@ -44,7 +59,7 @@
 		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 		gap: 16px;
 		width: 100%;
-		max-width: 700px;
+		max-width: 1200px;
 	}
 
 	.mode-card {
