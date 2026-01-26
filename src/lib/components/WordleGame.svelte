@@ -106,8 +106,8 @@
 		</div>
 	</div>
 
-	<div class="flex-none p-2 w-full max-w-[500px] mx-auto" style="padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));">
-		<div class="flex flex-col gap-2 w-full">
+	<div class="flex-none p-2 w-full max-w-[500px] mx-auto" style="padding-bottom: calc(0.25rem + env(safe-area-inset-bottom));">
+		<div class="flex flex-col gap-1.5 w-full">
 			{#each KEYBOARD_ROWS as row}
 				<div class="flex gap-1.5 justify-center w-full">
 					{#each row as key}
@@ -237,7 +237,7 @@
 	}
 
 	.wordle-key {
-		height: 58px;
+		height: 48px;
 		border-radius: 4px;
 		font-weight: bold;
 		font-size: 0.875rem;
@@ -252,9 +252,9 @@
         touch-action: manipulation;
 	}
 
-    @media (max-height: 650px) {
+    @media (min-width: 640px) {
         .wordle-key {
-            height: 48px;
+            height: 58px;
         }
     }
 

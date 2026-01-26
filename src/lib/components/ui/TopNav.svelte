@@ -18,8 +18,8 @@
 		<div class="top-nav__inner">
 			<div class="top-nav__brand">
 				<a href="/" class="top-nav__logo" onclick={closeMenu}>
-					{#if $page.url.pathname === '/parola'}
-						<span class="top-nav__title font-serif tracking-wider uppercase text-xl">Paròla</span>
+					{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
+						<span class="top-nav__title font-serif tracking-wider uppercase text-2xl font-bold">Paròla</span>
 					{:else}
 						🇮🇹 <span class="top-nav__title">Giochi di Parole</span>
 					{/if}
@@ -27,7 +27,7 @@
 			</div>
 
 			<div class="flex items-center gap-2">
-				{#if $page.url.pathname === '/parola'}
+				{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
 					<button 
 						class="text-xl font-bold px-3 py-1 hover:bg-black/5 rounded transition-colors"
 						onclick={() => $wordleUI.showModal = true}
