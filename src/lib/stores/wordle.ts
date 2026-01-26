@@ -8,6 +8,12 @@ import { toast } from '$lib/stores/toast';
 const EPOCH_DATE = new Date('2026-01-26');
 const MAX_GUESSES = 6;
 
+export function getPuzzleNumber() {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	return Math.floor((today.getTime() - EPOCH_DATE.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+}
+
 // Linear Congruential Generator (LCG) for deterministic random number generation
 // Uses parameters from Numerical Recipes: a=1664525, c=1013904223, m=2^32
 class SeededRandom {

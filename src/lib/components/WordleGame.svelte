@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { wordleStore, wordleUI } from '$lib/stores/wordle';
+	import { wordleStore, wordleUI, getPuzzleNumber } from '$lib/stores/wordle';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 

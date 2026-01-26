@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { wordleUI } from '$lib/stores/wordle';
+	import { wordleUI, getPuzzleNumber } from '$lib/stores/wordle';
 
 	let menuOpen = $state(false);
 
@@ -19,7 +19,7 @@
 			<div class="top-nav__brand">
 				<a href="/" class="top-nav__logo" onclick={closeMenu}>
 					{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
-						<span class="top-nav__title font-serif tracking-wider uppercase text-2xl font-bold">Paròla</span>
+						🇮🇹 <span class="top-nav__title font-serif tracking-wider uppercase text-xl font-bold">Paròla #{getPuzzleNumber()}</span>
 					{:else}
 						🇮🇹 <span class="top-nav__title">Giochi di Parole</span>
 					{/if}
