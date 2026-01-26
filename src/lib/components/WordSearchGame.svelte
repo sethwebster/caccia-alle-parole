@@ -313,16 +313,18 @@
 			<div class="cds-modal__backdrop"></div>
 			<div class="cds-modal__content" onclick={(e) => e.stopPropagation()}>
 				<div class="cds-modal__header">
-					<h2 class="cds-modal__title">Complimenti!</h2>
+					<div class="celebration-box">
+						<h2 class="cds-modal__title">Complimenti!</h2>
+						<p class="cds-text-lg">Hai trovato tutte le {totalWords} parole!</p>
+						<div class="cds-mt-4">
+							<p class="cds-text-base">
+								<strong>Punteggio Finale:</strong>
+								<span class="cds-text-primary-color cds-font-bold">{$wordSearchStore.score}</span>
+							</p>
+						</div>
+					</div>
 				</div>
 				<div class="cds-modal__body cds-text-center">
-					<p class="cds-text-lg">Hai trovato tutte le {totalWords} parole!</p>
-					<div class="cds-mt-4">
-						<p class="cds-text-base">
-							<strong>Punteggio Finale:</strong>
-							<span class="cds-text-primary-color cds-font-bold">{$wordSearchStore.score}</span>
-						</p>
-					</div>
 				</div>
 				<div class="cds-modal__footer">
 					<button onclick={newGame} class="cds-button cds-button--primary"> Gioca Ancora </button>
@@ -594,6 +596,12 @@
 	.word-translation {
 		font-size: 0.75rem;
 		opacity: 0.7;
+	}
+
+	.celebration-box {
+		background: linear-gradient(to bottom right, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.2));
+		border-radius: var(--cds-radius-md);
+		padding: var(--cds-space-6);
 	}
 
 	/* Mobile */
