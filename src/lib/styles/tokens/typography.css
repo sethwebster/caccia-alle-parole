@@ -5,10 +5,10 @@
 
 :root {
   /* Font Families */
-  --cds-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+  --cds-font-family-base: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
                           'Helvetica Neue', Arial, sans-serif;
-  --cds-font-family-display: 'Poppins', var(--cds-font-family-base);
-  --cds-font-family-mono: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+  --cds-font-family-display: 'Outfit', var(--cds-font-family-base);
+  --cds-font-family-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
 
   /* Font Weights */
   --cds-font-weight-regular: 400;

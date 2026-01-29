@@ -1,90 +1,236 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { wordleUI, getPuzzleNumber } from '$lib/stores/wordle';
+  import { page } from "$app/stores";
+  import { wordleUI } from "$lib/stores/wordle";
+  import { fade } from "svelte/transition";
 
-	let menuOpen = $state(false);
+  let menuOpen = $state(false);
 
-	function toggleMenu() {
-		menuOpen = !menuOpen;
-	}
+  function toggleMenu() {
+    menuOpen = !menuOpen;
+  }
 
-	function closeMenu() {
-		menuOpen = false;
-	}
+  function closeMenu() {
+    menuOpen = false;
+  }
 </script>
 
-<nav class="top-nav">
-	<div class="cds-container">
-		<div class="top-nav__inner">
-			<div class="top-nav__brand">
-				<a href="/" class="top-nav__logo" onclick={closeMenu}>
-					{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
-						<img class="top-nav__logo-img" src="/caccia-parole-logo.png" alt="Caccia alle Parole" />
-					{:else}
-						<img class="top-nav__logo-img" src="/caccia-parole-logo.png" alt="Caccia alle Parole" />
-						<span class="top-nav__title">Giochi di Parole</span>
-					{/if}
-				</a>
-			</div>
+<nav class="premium-nav">
+  <div class="cds-container">
+    <div class="nav-content">
+      <a href="/" class="brand" onclick={closeMenu}>
+        <img
+          src="/caccia-parole-logo.png"
+          alt="Caccia Paròle Logo"
+          class="brand-logo"
+        />
+        <span class="brand-name">Caccia Paròle</span>
+      </a>
 
-			{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
-				<a href="/parola" class="top-nav__center" onclick={closeMenu} aria-label="Parolé puzzle number">
-					<span class="top-nav__title top-nav__parole-title font-serif tracking-wider uppercase font-bold">
-						<span class="top-nav__parole-name">Parolé</span>
-						<span class="top-nav__parole-number">#{getPuzzleNumber()}</span>
-					</span>
-				</a>
-			{/if}
+      <div class="nav-actions">
+        <div class="links desktop-only">
+          <a href="/parola" class:active={$page.url.pathname === "/parola"}
+            >Paròle</a
+          >
+          <a href="/caccia" class:active={$page.url.pathname === "/caccia"}
+            >Caccia</a
+          >
+          <a
+            href="/paroliere"
+            class:active={$page.url.pathname === "/paroliere"}>Paroliere</a
+          >
+        </div>
 
-			<div class="flex items-center gap-2">
-				{#if $page.url.pathname.replace(/\/$/, '') === '/parola'}
-					<button 
-						class="text-xl font-bold px-3 py-1 hover:bg-black/5 rounded transition-colors"
-						onclick={() => $wordleUI.showModal = true}
-						aria-label="How to play"
-					>
-						?
-					</button>
-				{/if}
+        {#if $page.url.pathname.includes("/parola")}
+          <button
+            class="icon-btn"
+            onclick={() => ($wordleUI.showModal = true)}
+            aria-label="Come giocare"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><circle cx="12" cy="12" r="10" /><path
+                d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+              /><path d="M12 17h.01" /></svg
+            >
+          </button>
+        {/if}
 
-				<button
-					class="top-nav__toggle"
-					class:active={menuOpen}
-					onclick={toggleMenu}
-					aria-label="Menu"
-				>
-					<span></span>
-					<span></span>
-					<span></span>
-				</button>
-			</div>
+        <button
+          class="menu-toggle"
+          class:open={menuOpen}
+          onclick={toggleMenu}
+          aria-label="Menu"
+        >
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-			<div class="top-nav__menu" class:active={menuOpen}>
-				<a
-					href="/"
-					class="top-nav__link"
-					class:active={$page.url.pathname === '/'}
-					onclick={closeMenu}
-				>
-					Home
-				</a>
-				<a
-					href="/parola"
-					class="top-nav__link"
-					class:active={$page.url.pathname === '/parola'}
-					onclick={closeMenu}
-				>
-					Parolé
-				</a>
-				<a
-					href="/caccia"
-					class="top-nav__link"
-					class:active={$page.url.pathname === '/caccia'}
-					onclick={closeMenu}
-				>
-					Caccia
-				</a>
-			</div>
-		</div>
-	</div>
+  {#if menuOpen}
+    <div class="mobile-menu" transition:fade={{ duration: 200 }}>
+      <div class="mobile-links">
+        <a href="/" onclick={closeMenu}>Home</a>
+        <a href="/parola" onclick={closeMenu}>Paròle</a>
+        <a href="/caccia" onclick={closeMenu}>Caccia alle Paròle</a>
+        <a href="/paroliere" onclick={closeMenu}>Paroliere</a>
+        <a href="/impiccato" onclick={closeMenu}>Impiccato</a>
+        <a href="/anagrammi" onclick={closeMenu}>Anagrammi</a>
+      </div>
+    </div>
+  {/if}
 </nav>
+
+<style>
+  .premium-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    height: 72px;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .brand-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .brand-name {
+    font-family: var(--cds-font-family-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-name span {
+    color: var(--cds-color-primary);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .links a {
+    text-decoration: none;
+    color: var(--cds-color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .links a:hover,
+  .links a.active {
+    color: var(--cds-color-primary);
+  }
+
+  .menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .bar {
+    width: 24px;
+    height: 2px;
+    background: var(--cds-color-text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 2px;
+  }
+
+  .menu-toggle.open .bar:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .menu-toggle.open .bar:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 90;
+    padding: 40px 20px;
+  }
+
+  .mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .mobile-links a {
+    font-family: var(--cds-font-family-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--cds-color-text-primary);
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none;
+    }
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--cds-color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover {
+    background: var(--cds-color-gray-100);
+    color: var(--cds-color-primary);
+  }
+</style>

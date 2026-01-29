@@ -1,184 +1,666 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { paroliereStore, type Cell } from '$lib/stores/paroliere';
-	import { validWords } from '$lib/data/wordle-valid-words';
+  import { onMount, onDestroy } from "svelte";
+  import { paroliereStore, type Cell } from "$lib/stores/paroliere";
+  import { validWords } from "$lib/data/wordle-valid-words";
+  import Confetti from "$lib/components/ui/Confetti.svelte";
+  import { fade, fly, scale } from "svelte/transition";
 
-	let showModal = false;
-	let isDragging = false;
+  let showModal = false;
+  let isDragging = false;
+  let triggerConfetti = false;
 
-	$: if ($paroliereStore.gameState === 'finished' && !showModal) {
-		setTimeout(() => { showModal = true; }, 500);
-	}
+  $effect(() => {
+    if ($paroliereStore.gameState === "finished" && !showModal) {
+      if ($paroliereStore.score > 20) triggerConfetti = true;
+      setTimeout(() => {
+        showModal = true;
+      }, 500);
+    }
+  });
 
-	function isValidWord(word: string): boolean {
-		return validWords.has(word.toUpperCase());
-	}
+  function isValidWord(word: string): boolean {
+    return validWords.has(word.toUpperCase());
+  }
 
-	function formatTime(seconds: number): string {
-		const mins = Math.floor(seconds / 60);
-		const secs = seconds % 60;
-		return `${mins}:${secs.toString().padStart(2, '0')}`;
-	}
+  function formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }
 
-	function handleCellClick(row: number, col: number) {
-		paroliereStore.selectCell({ letter: $paroliereStore.grid[row][col], row, col });
-	}
+  function handleMouseDown(row: number, col: number) {
+    isDragging = true;
+    paroliereStore.clearSelection();
+    paroliereStore.selectCell({
+      letter: $paroliereStore.grid[row][col],
+      row,
+      col,
+    });
+  }
 
-	function handleMouseDown(row: number, col: number) {
-		isDragging = true;
-		paroliereStore.clearSelection();
-		paroliereStore.selectCell({ letter: $paroliereStore.grid[row][col], row, col });
-	}
+  function handleMouseEnter(row: number, col: number) {
+    if (isDragging) {
+      paroliereStore.selectCell({
+        letter: $paroliereStore.grid[row][col],
+        row,
+        col,
+      });
+    }
+  }
 
-	function handleMouseEnter(row: number, col: number) {
-		if (isDragging) {
-			paroliereStore.selectCell({ letter: $paroliereStore.grid[row][col], row, col });
-		}
-	}
+  function handleMouseUp() {
+    if (isDragging) {
+      isDragging = false;
+      if ($paroliereStore.currentWord.length >= 3) {
+        paroliereStore.submitWord(isValidWord);
+      } else {
+        paroliereStore.clearSelection();
+      }
+    }
+  }
 
-	function handleMouseUp() {
-		if (isDragging) {
-			isDragging = false;
-			if ($paroliereStore.currentWord.length >= 3) {
-				paroliereStore.submitWord(isValidWord);
-			} else {
-				paroliereStore.clearSelection();
-			}
-		}
-	}
+  function isCellSelected(row: number, col: number): boolean {
+    return $paroliereStore.currentPath.some(
+      (c) => c.row === row && c.col === col,
+    );
+  }
 
-	function isCellSelected(row: number, col: number): boolean {
-		return $paroliereStore.currentPath.some(c => c.row === row && c.col === col);
-	}
+  onMount(() => {
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  });
 
-	onMount(() => {
-		window.addEventListener('mouseup', handleMouseUp);
-		return () => {
-			window.removeEventListener('mouseup', handleMouseUp);
-		};
-	});
-
-	onDestroy(() => {
-		paroliereStore.endGame();
-	});
+  onDestroy(() => {
+    paroliereStore.endGame();
+  });
 </script>
 
-<div class="max-w-2xl mx-auto p-4">
-	<header class="text-center mb-6">
-		<h1 class="text-4xl font-bold mb-2">Paroliere</h1>
-		<p class="text-text-secondary">Trova più parole possibili in 3 minuti!</p>
-	</header>
+<div class="game-container">
+  <!-- Game Header -->
+  <header class="game-header">
+    <a href="/" class="back-btn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+        />
+      </svg>
+    </a>
+    <div class="header-center">
+      <h1>Paroliere+</h1>
+      {#if $paroliereStore.gameState === "playing"}
+        <span class="game-info">Sfida a Tempo</span>
+      {/if}
+    </div>
+    <button class="settings-btn" onclick={() => paroliereStore.endGame()}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+        />
+      </svg>
+    </button>
+  </header>
 
-	{#if $paroliereStore.gameState === 'setup'}
-		<div class="text-center">
-			<div class="bg-surface rounded-lg p-8 mb-4">
-				<h2 class="text-2xl font-bold mb-4">Come si gioca</h2>
-				<ul class="text-left space-y-2 max-w-md mx-auto">
-					<li>✓ Trascina il mouse tra lettere adiacenti</li>
-					<li>✓ Le parole devono essere lunghe almeno 3 lettere</li>
-					<li>✓ Più lunga è la parola, più punti ottieni</li>
-					<li>✓ Hai 3 minuti per trovare più parole possibili</li>
-				</ul>
-			</div>
-			<button
-				on:click={() => paroliereStore.startGame()}
-				class="bg-success text-white px-8 py-4 rounded-lg text-xl font-semibold hover:opacity-90 transition-opacity"
-			>
-				Inizia Partita
-			</button>
-		</div>
-	{:else}
-		<div class="flex justify-between items-center mb-6 bg-surface rounded-lg p-4">
-			<div class="text-center flex-1">
-				<div class="text-sm text-text-secondary">Tempo</div>
-				<div class="text-2xl font-bold" class:text-error={$paroliereStore.timeLeft < 30}>
-					{formatTime($paroliereStore.timeLeft)}
-				</div>
-			</div>
-			<div class="text-center flex-1">
-				<div class="text-sm text-text-secondary">Punteggio</div>
-				<div class="text-2xl font-bold text-success">{$paroliereStore.score}</div>
-			</div>
-			<div class="text-center flex-1">
-				<div class="text-sm text-text-secondary">Parole</div>
-				<div class="text-2xl font-bold">{$paroliereStore.foundWords.size}</div>
-			</div>
-		</div>
+  {#if $paroliereStore.gameState === "setup"}
+    <div class="setup-screen" in:fade>
+      <div class="setup-card" in:fly={{ y: 20, duration: 600 }}>
+        <div class="brand-icon">🎭</div>
+        <h2>Pronto per la Sfida?</h2>
+        <p class="setup-desc">
+          Trova più parole possibili collegando le lettere adiacenti in 3
+          minuti.
+        </p>
 
-		<div class="mb-6">
-			<div class="bg-surface rounded-lg p-4 mb-4">
-				<div class="text-center text-2xl font-bold h-8 tracking-wide">
-					{$paroliereStore.currentWord || ' '}
-				</div>
-			</div>
+        <div class="rules-box">
+          <div class="rule-item">
+            <span class="rule-icon">✨</span>
+            <span>Trascina tra lettere adiacenti</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-icon">📏</span>
+            <span>Minimo 3 lettere per parola</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-icon">💎</span>
+            <span>Paròle lunghe = Più punti</span>
+          </div>
+        </div>
 
-			<div class="grid grid-cols-4 gap-2 max-w-md mx-auto select-none">
-				{#each $paroliereStore.grid as row, i}
-					{#each row as letter, j}
-						<button
-							on:mousedown={() => handleMouseDown(i, j)}
-							on:mouseenter={() => handleMouseEnter(i, j)}
-							class="aspect-square bg-surface rounded-lg flex items-center justify-center text-3xl font-bold transition-all border-2
-								{isCellSelected(i, j) ? 'bg-primary text-white border-primary scale-105' : 'border-border hover:border-primary'}"
-							class:cursor-grabbing={isDragging}
-						>
-							{letter}
-						</button>
-					{/each}
-				{/each}
-			</div>
-		</div>
+        <button onclick={() => paroliereStore.startGame()} class="start-btn">
+          Inizia Partita
+        </button>
+      </div>
+    </div>
+  {:else}
+    <div class="game-layout" in:fade>
+      <div class="stats-bar">
+        <div class="stat-pill" class:warning={$paroliereStore.timeLeft < 30}>
+          <span class="pill-label">Tempo</span>
+          <span class="pill-value">{formatTime($paroliereStore.timeLeft)}</span>
+        </div>
+        <div class="stat-pill score">
+          <span class="pill-label">Punteggio</span>
+          <span class="pill-value">{$paroliereStore.score}</span>
+        </div>
+        <div class="stat-pill ghost">
+          <span class="pill-label">Parole</span>
+          <span class="pill-value">{$paroliereStore.foundWords.size}</span>
+        </div>
+      </div>
 
-		{#if $paroliereStore.foundWords.size > 0}
-			<div class="bg-surface rounded-lg p-4">
-				<h3 class="font-bold mb-2">Parole Trovate ({$paroliereStore.foundWords.size})</h3>
-				<div class="flex flex-wrap gap-2">
-					{#each Array.from($paroliereStore.foundWords).sort() as word}
-						<span class="bg-success/10 text-success px-3 py-1 rounded-full text-sm font-medium uppercase">
-							{word}
-						</span>
-					{/each}
-				</div>
-			</div>
-		{/if}
-	{/if}
+      <div class="board-area">
+        <div
+          class="active-word-display"
+          class:has-content={!!$paroliereStore.currentWord}
+        >
+          {$paroliereStore.currentWord || "Seleziona le lettere"}
+        </div>
+
+        <div class="grid-board">
+          {#each $paroliereStore.grid as row, i}
+            {#each row as letter, j}
+              <button
+                onmousedown={() => handleMouseDown(i, j)}
+                onmouseenter={() => handleMouseEnter(i, j)}
+                class="tile"
+                class:is-selected={isCellSelected(i, j)}
+                class:grabbing={isDragging}
+              >
+                <div class="tile-content">{letter}</div>
+              </button>
+            {/each}
+          {/each}
+        </div>
+
+        {#if $paroliereStore.foundWords.size > 0}
+          <div class="found-words-panel" in:fade>
+            <h3>Parole Trovate</h3>
+            <div class="word-chips">
+              {#each Array.from($paroliereStore.foundWords).sort() as word}
+                <span class="word-chip" in:scale>
+                  {word}
+                </span>
+              {/each}
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+  {/if}
 </div>
 
 {#if showModal}
-	<div
-		class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-		on:click={() => showModal = false}
-		on:keydown={(e) => e.key === 'Escape' && (showModal = false)}
-		role="dialog"
-		aria-modal="true"
-		tabindex="-1"
-	>
-		<div class="bg-surface rounded-lg p-8 max-w-md text-center" on:click|stopPropagation>
-			<h2 class="text-3xl font-bold mb-4">Partita Finita!</h2>
-			<div class="space-y-4 mb-6">
-				<div>
-					<div class="text-text-secondary">Punteggio Finale</div>
-					<div class="text-4xl font-bold text-success">{$paroliereStore.score}</div>
-				</div>
-				<div>
-					<div class="text-text-secondary">Parole Trovate</div>
-					<div class="text-2xl font-bold">{$paroliereStore.foundWords.size}</div>
-				</div>
-			</div>
-			<div class="flex gap-2 justify-center">
-				<button
-					on:click={() => { showModal = false; paroliereStore.startGame(); }}
-					class="bg-success text-white px-6 py-3 rounded font-semibold hover:opacity-90"
-				>
-					Gioca Ancora
-				</button>
-				<button
-					on:click={() => showModal = false}
-					class="bg-border px-6 py-3 rounded font-semibold hover:opacity-90"
-				>
-					Chiudi
-				</button>
-			</div>
-		</div>
-	</div>
+  <div
+    class="modal-backdrop"
+    onclick={() => (showModal = false)}
+    role="dialog"
+    aria-modal="true"
+    transition:fade
+  >
+    <div
+      class="modal-content"
+      onclick={(e) => e.stopPropagation()}
+      transition:scale={{ duration: 400, start: 0.8 }}
+    >
+      <div class="reward-icon">🏆</div>
+      <h2>Partita Finita!</h2>
+
+      <div class="results-grid">
+        <div class="result-item">
+          <span class="label">Punteggio</span>
+          <span class="value success">{$paroliereStore.score}</span>
+        </div>
+        <div class="result-item">
+          <span class="label">Parole</span>
+          <span class="value">{$paroliereStore.foundWords.size}</span>
+        </div>
+      </div>
+
+      <div class="modal-btns">
+        <button
+          onclick={() => {
+            showModal = false;
+            paroliereStore.startGame();
+          }}
+          class="share-btn"
+        >
+          Gioca Ancora
+        </button>
+        <button onclick={() => (showModal = false)} class="back-link">
+          Torna al Menu
+        </button>
+      </div>
+    </div>
+  </div>
 {/if}
+
+<Confetti trigger={triggerConfetti} />
+
+<style>
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--cds-color-background);
+    overflow: hidden;
+  }
+
+  /* Header */
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--cds-color-border);
+    background: white;
+    flex-shrink: 0;
+  }
+
+  .back-btn,
+  .settings-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: var(--cds-color-text-secondary);
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .back-btn:hover,
+  .settings-btn:hover {
+    background: var(--cds-color-gray-100);
+    color: var(--cds-color-text-primary);
+  }
+  .back-btn svg,
+  .settings-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-center h1 {
+    font-family: var(--cds-font-family-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .game-info {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--cds-color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Setup Screen */
+  .setup-screen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .setup-card {
+    background: white;
+    padding: 40px;
+    border-radius: 32px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--cds-shadow-card);
+    border: 1px solid var(--cds-color-border);
+    text-align: center;
+  }
+
+  .brand-icon {
+    font-size: 3.5rem;
+    margin-bottom: 24px;
+  }
+  .setup-card h2 {
+    font-family: var(--cds-font-family-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .setup-desc {
+    color: var(--cds-color-text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+  }
+
+  .rules-box {
+    background: var(--cds-color-gray-50);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .rule-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .rule-icon {
+    font-size: 1.25rem;
+  }
+
+  .start-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--cds-gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--cds-shadow-button);
+    transition: all 0.2s;
+  }
+
+  .start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cds-shadow-button-hover);
+  }
+
+  /* Game Layout */
+  .game-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-bottom: 1px solid var(--cds-color-border);
+  }
+
+  .stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    background: var(--cds-color-gray-50);
+    padding: 8px 12px;
+    border-radius: 16px;
+    border: 1px solid var(--cds-color-border);
+  }
+
+  .pill-label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--cds-color-text-tertiary);
+    text-transform: uppercase;
+  }
+  .pill-value {
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+  .stat-pill.score {
+    background: var(--cds-color-primary-light);
+    border-color: var(--cds-color-primary-light);
+    color: var(--cds-color-primary);
+  }
+  .stat-pill.warning {
+    border-color: var(--cds-color-error);
+    color: var(--cds-color-error);
+  }
+
+  .board-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+    min-height: 0;
+  }
+
+  .active-word-display {
+    width: 100%;
+    height: 60px;
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--cds-font-family-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cds-color-text-tertiary);
+    border: 1px solid var(--cds-color-border);
+  }
+
+  .active-word-display.has-content {
+    color: var(--cds-color-primary);
+    background: var(--cds-color-primary-light);
+    border-color: var(--cds-color-primary);
+  }
+
+  .grid-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 1;
+  }
+
+  .tile {
+    aspect-ratio: 1;
+    background: white;
+    border-radius: 16px;
+    border: 2px solid var(--cds-color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+    position: relative;
+  }
+
+  .tile.is-selected {
+    background: var(--cds-color-primary);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: var(--cds-shadow-button-hover);
+  }
+
+  .tile:not(.is-selected):hover {
+    border-color: var(--cds-color-primary-light);
+    background: var(--cds-color-gray-50);
+  }
+
+  .grabbing {
+    cursor: grabbing !important;
+  }
+
+  /* Found Words */
+  .found-words-panel {
+    width: 100%;
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--cds-color-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .found-words-panel h3 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--cds-color-text-tertiary);
+    margin-bottom: 12px;
+  }
+
+  .word-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow-y: auto;
+    align-content: flex-start;
+  }
+  .word-chip {
+    padding: 6px 12px;
+    background: var(--cds-color-secondary-light);
+    color: var(--cds-color-secondary-active);
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--cds-color-surface-overlay);
+    backdrop-filter: var(--cds-blur-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .modal-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 32px;
+    padding: 48px 32px;
+    text-align: center;
+    box-shadow: var(--cds-shadow-modal);
+  }
+
+  .reward-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+  .modal-content h2 {
+    font-family: var(--cds-font-family-display);
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .result-item {
+    background: var(--cds-color-gray-50);
+    padding: 16px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .result-item .label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--cds-color-text-tertiary);
+    text-transform: uppercase;
+  }
+  .result-item .value {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .result-item .value.success {
+    color: var(--cds-color-success);
+  }
+
+  .modal-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .share-btn {
+    background: var(--cds-gradient-primary);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: var(--cds-shadow-button);
+    transition: all 0.2s;
+  }
+  .share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cds-shadow-button-hover);
+  }
+
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--cds-color-text-tertiary);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .back-link:hover {
+    color: var(--cds-color-text-primary);
+  }
+
+  @media (max-height: 750px) {
+    .tile {
+      font-size: 1.5rem;
+      border-radius: 12px;
+    }
+    .setup-card {
+      padding: 30px;
+    }
+    .reward-icon {
+      font-size: 3rem;
+    }
+  }
+</style>

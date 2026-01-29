@@ -4,41 +4,48 @@
  */
 
 :root {
-  /* Shadow Levels (0-5) */
+  /* Shadow Levels (0-5) - Refined for depth */
   --cds-shadow-none: none;
 
-  --cds-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --cds-shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
 
-  --cds-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-                     0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --cds-shadow-base: 0 1px 3px 0 rgba(15, 23, 42, 0.1),
+                     0 1px 2px -1px rgba(15, 23, 42, 0.06);
 
-  --cds-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                   0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --cds-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1),
+                   0 2px 4px -2px rgba(15, 23, 42, 0.06);
 
-  --cds-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                   0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --cds-shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1),
+                   0 4px 6px -4px rgba(15, 23, 42, 0.05);
 
-  --cds-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-                   0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --cds-shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1),
+                   0 8px 10px -6px rgba(15, 23, 42, 0.05);
 
-  --cds-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --cds-shadow-2xl: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+
+  /* Glassmorphism & Blurs */
+  --cds-blur-sm: blur(4px);
+  --cds-blur-md: blur(8px);
+  --cds-blur-lg: blur(12px);
+  --cds-blur-xl: blur(16px);
 
   /* Semantic Shadows */
-  --cds-shadow-card: var(--cds-shadow-base);
-  --cds-shadow-card-hover: var(--cds-shadow-lg);
-  --cds-shadow-button: var(--cds-shadow-sm);
-  --cds-shadow-button-hover: var(--cds-shadow-md);
-  --cds-shadow-modal: var(--cds-shadow-2xl);
-  --cds-shadow-toast: var(--cds-shadow-lg);
+  --cds-shadow-card: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+  --cds-shadow-card-hover: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+  --cds-shadow-button: 0 4px 12px rgba(99, 102, 241, 0.2);
+  --cds-shadow-button-hover: 0 6px 18px rgba(99, 102, 241, 0.3);
+  --cds-shadow-modal: 0 30px 60px -12px rgba(15, 23, 42, 0.3);
+  --cds-shadow-toast: 0 10px 30px -5px rgba(15, 23, 42, 0.2);
   --cds-shadow-dropdown: var(--cds-shadow-xl);
 
-  /* Inner Shadow */
-  --cds-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  /* Inner Shadow & Glow */
+  --cds-shadow-inner: inset 0 2px 4px 0 rgba(15, 23, 42, 0.05);
+  --cds-glow-primary: 0 0 15px rgba(99, 102, 241, 0.4);
 
   /* Focus Shadow */
-  --cds-shadow-focus: 0 0 0 3px var(--cds-color-focus-ring);
-  --cds-shadow-focus-error: 0 0 0 3px rgba(230, 57, 70, 0.2);
-  --cds-shadow-focus-success: 0 0 0 3px rgba(106, 170, 100, 0.2);
+  --cds-shadow-focus: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  --cds-shadow-focus-error: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  --cds-shadow-focus-success: 0 0 0 3px rgba(16, 185, 129, 0.2);
 
   /* Elevation z-index */
   --cds-z-base: 0;

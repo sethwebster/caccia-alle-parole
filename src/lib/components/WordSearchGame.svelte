@@ -1,664 +1,825 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { wordSearchStore } from '$lib/stores/wordSearch';
-	import { wordDatabase } from '$lib/data/word-data';
-	import { generateGrid, getDirectionDelta } from '$lib/utils/gridGenerator';
-	import {
-		getCellsBetween,
-		getWordFromCells,
-		checkIfWordFound,
-		type SelectedCell
-	} from '$lib/utils/wordDetection';
-	import type { Difficulty } from '$lib/types';
-	import Confetti from '$lib/components/ui/Confetti.svelte';
+  import { onMount, onDestroy } from "svelte";
+  import { wordSearchStore } from "$lib/stores/wordSearch";
+  import { wordDatabase } from "$lib/data/word-data";
+  import { generateGrid } from "$lib/utils/gridGenerator";
+  import {
+    getCellsBetween,
+    getWordFromCells,
+    checkIfWordFound,
+    type SelectedCell,
+  } from "$lib/utils/wordDetection";
+  import type { Difficulty } from "$lib/types";
+  import Confetti from "$lib/components/ui/Confetti.svelte";
+  import { fade, fly, scale } from "svelte/transition";
 
-	const categories = Object.keys(wordDatabase);
-	const difficulties: Difficulty[] = ['easy', 'medium', 'hard'];
+  const categories = Object.keys(wordDatabase);
+  const difficulties: Difficulty[] = ["easy", "medium", "hard"];
 
-	let selectedCategory: string | null = $wordSearchStore.category;
-	let selectedDifficulty: Difficulty | null = $wordSearchStore.difficulty;
-	let isSelecting = false;
-	let startCell: SelectedCell | null = null;
-	let currentCell: SelectedCell | null = null;
-	let selectedCells: SelectedCell[] = [];
-	let showModal = false;
-	let gridElement: HTMLElement;
-	let flashState: 'none' | 'success' | 'error' = 'none';
-	let flashCells: SelectedCell[] = [];
-	let flashTimeout: ReturnType<typeof setTimeout> | null = null;
-	let modalTimeout: ReturnType<typeof setTimeout> | null = null;
-	let triggerConfetti = false;
+  let selectedCategory = $state<string | null>($wordSearchStore.category);
+  let selectedDifficulty = $state<Difficulty | null>($wordSearchStore.difficulty);
+  let isSelecting = $state(false);
+  let startCell = $state<SelectedCell | null>(null);
+  let currentCell = $state<SelectedCell | null>(null);
+  let selectedCells = $state<SelectedCell[]>([]);
+  let showModal = $state(false);
+  let gridElement: HTMLElement;
+  let flashState = $state<"none" | "success" | "error">("none");
+  let flashCells = $state<SelectedCell[]>([]);
+  let flashTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
+  let modalTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
+  let triggerConfetti = $state(false);
 
-	$: isGameActive = $wordSearchStore.category && $wordSearchStore.difficulty;
-	$: foundCount = $wordSearchStore.foundWords.size;
-	$: totalWords = $wordSearchStore.words.length;
-	$: isGameWon = isGameActive && foundCount === totalWords && totalWords > 0;
-	$: gridSize = $wordSearchStore.grid.length;
+  let isGameActive = $derived(
+    !!($wordSearchStore.category && $wordSearchStore.difficulty),
+  );
+  let foundCount = $derived($wordSearchStore.foundWords.size);
+  let totalWords = $derived($wordSearchStore.words.length);
+  let isGameWon = $derived(
+    isGameActive && foundCount === totalWords && totalWords > 0,
+  );
+  let gridSize = $derived($wordSearchStore.grid.length);
 
-	$: if (isGameWon && !showModal) {
-		triggerConfetti = true;
-		if (modalTimeout) clearTimeout(modalTimeout);
-		modalTimeout = setTimeout(() => {
-			showModal = true;
-			modalTimeout = null;
-		}, 500);
-	}
+  $effect(() => {
+    if (isGameWon && !showModal) {
+      triggerConfetti = true;
+      if (modalTimeout) clearTimeout(modalTimeout);
+      modalTimeout = setTimeout(() => {
+        showModal = true;
+        modalTimeout = null;
+      }, 500);
+    }
+  });
 
-	function startGame() {
-		if (!selectedCategory || !selectedDifficulty) return;
+  function startGame() {
+    if (!selectedCategory || !selectedDifficulty) return;
+    const categoryWords =
+      wordDatabase[selectedCategory as keyof typeof wordDatabase];
+    if (!categoryWords) return;
+    const { grid, placedWords } = generateGrid(
+      categoryWords,
+      selectedDifficulty,
+    );
+    wordSearchStore.setGame(
+      selectedCategory,
+      selectedDifficulty,
+      placedWords,
+      grid,
+    );
+  }
 
-		const categoryWords = wordDatabase[selectedCategory as keyof typeof wordDatabase];
-		if (!categoryWords) return;
+  function getCellFromPointer(
+    e: PointerEvent,
+  ): { row: number; col: number } | null {
+    if (!gridElement) return null;
+    const rect = gridElement.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cellSize = rect.width / gridSize;
+    const col = Math.floor(x / cellSize);
+    const row = Math.floor(y / cellSize);
+    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
+      return { row, col };
+    }
+    return null;
+  }
 
-		const { grid, placedWords } = generateGrid(categoryWords, selectedDifficulty);
+  function handleGridPointerDown(e: PointerEvent) {
+    if (!isGameActive) return;
+    const cell = getCellFromPointer(e);
+    if (!cell) return;
+    e.preventDefault();
+    gridElement.setPointerCapture(e.pointerId);
+    isSelecting = true;
+    startCell = {
+      row: cell.row,
+      col: cell.col,
+      letter: $wordSearchStore.grid[cell.row][cell.col].letter,
+    };
+    currentCell = startCell;
+    selectedCells = [startCell];
+  }
 
-		wordSearchStore.setGame(selectedCategory, selectedDifficulty, placedWords, grid);
-	}
+  function handleGridPointerMove(e: PointerEvent) {
+    if (!isSelecting || !startCell) return;
+    const cell = getCellFromPointer(e);
+    if (!cell) return;
+    if (
+      !currentCell ||
+      cell.row !== currentCell.row ||
+      cell.col !== currentCell.col
+    ) {
+      currentCell = {
+        row: cell.row,
+        col: cell.col,
+        letter: $wordSearchStore.grid[cell.row][cell.col].letter,
+      };
+      selectedCells = getCellsBetween(
+        startCell,
+        currentCell,
+        $wordSearchStore.grid,
+      );
+    }
+  }
 
-	function getCellFromPointer(e: PointerEvent): { row: number; col: number } | null {
-		if (!gridElement) return null;
+  function handlePointerUp() {
+    if (!isSelecting) return;
+    isSelecting = false;
+    if (selectedCells.length > 1) {
+      const word = getWordFromCells(selectedCells);
+      const isFound = checkIfWordFound(word, $wordSearchStore.words);
+      if (isFound && !$wordSearchStore.foundWords.has(word)) {
+        wordSearchStore.markWordAsFound(word);
+        triggerFlash("success", [...selectedCells]);
+      } else {
+        triggerFlash("error", [...selectedCells]);
+      }
+    }
+    startCell = null;
+    currentCell = null;
+    selectedCells = [];
+  }
 
-		const rect = gridElement.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+  function triggerFlash(state: "success" | "error", cells: SelectedCell[]) {
+    flashState = state;
+    flashCells = cells;
+    if (flashTimeout) clearTimeout(flashTimeout);
+    flashTimeout = setTimeout(() => {
+      flashState = "none";
+      flashCells = [];
+      flashTimeout = null;
+    }, 400);
+  }
 
-		const cellSize = rect.width / gridSize;
-		const col = Math.floor(x / cellSize);
-		const row = Math.floor(y / cellSize);
+  let selectedCellSet = $derived(
+    new Set(selectedCells.map((c) => `${c.row},${c.col}`)),
+  );
+  let flashCellSet = $derived(
+    new Set(flashCells.map((c) => `${c.row},${c.col}`)),
+  );
+  let foundCellSet = $derived(
+    new Set(
+      Array.from($wordSearchStore.foundWords)
+        .map((word) => {
+          const wordData = $wordSearchStore.words.find((w) => w.word === word);
+          return wordData ? wordData.cells : [];
+        })
+        .flat()
+        .map((c) => `${c.row},${c.col}`),
+    ),
+  );
 
-		if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
-			return { row, col };
-		}
-		return null;
-	}
+  function resetGame() {
+    wordSearchStore.reset();
+    selectedCategory = null;
+    selectedDifficulty = null;
+    showModal = false;
+  }
 
-	function handleGridPointerDown(e: PointerEvent) {
-		if (!isGameActive) return;
+  function selectCategory(category: string) {
+    selectedCategory = category;
+  }
 
-		const cell = getCellFromPointer(e);
-		if (!cell) return;
+  function selectDifficulty(difficulty: Difficulty) {
+    selectedDifficulty = difficulty;
+  }
 
-		e.preventDefault();
-		gridElement.setPointerCapture(e.pointerId);
+  onMount(() => {
+    const handleGlobalPointerUp = () => {
+      if (isSelecting) handlePointerUp();
+    };
+    window.addEventListener("pointerup", handleGlobalPointerUp);
+    return () => window.removeEventListener("pointerup", handleGlobalPointerUp);
+  });
 
-		isSelecting = true;
-		startCell = { row: cell.row, col: cell.col, letter: $wordSearchStore.grid[cell.row][cell.col].letter };
-		currentCell = startCell;
-		selectedCells = [startCell];
-	}
-
-	function handleGridPointerMove(e: PointerEvent) {
-		if (!isSelecting || !startCell || !isGameActive) return;
-
-		const cell = getCellFromPointer(e);
-		if (!cell) return;
-
-		if (!currentCell || currentCell.row !== cell.row || currentCell.col !== cell.col) {
-			currentCell = { row: cell.row, col: cell.col, letter: $wordSearchStore.grid[cell.row][cell.col].letter };
-			selectedCells = getCellsBetween(
-				startCell.row,
-				startCell.col,
-				currentCell.row,
-				currentCell.col,
-				$wordSearchStore.grid
-			);
-		}
-	}
-
-	function handleGridPointerUp() {
-		handlePointerUp();
-	}
-
-	function handlePointerUp() {
-		if (!isSelecting || selectedCells.length === 0) {
-			isSelecting = false;
-			startCell = null;
-			currentCell = null;
-			selectedCells = [];
-			return;
-		}
-
-		const word = getWordFromCells(selectedCells);
-		const foundWord = checkIfWordFound(word, $wordSearchStore.words);
-
-		// Store cells for flash animation
-		flashCells = [...selectedCells];
-
-		if (foundWord && !$wordSearchStore.foundWords.has(foundWord.word)) {
-			wordSearchStore.markWordFound(foundWord.word);
-			flashState = 'success';
-		} else if (selectedCells.length > 1) {
-			flashState = 'error';
-		}
-
-		isSelecting = false;
-		startCell = null;
-		currentCell = null;
-		selectedCells = [];
-
-		// Clear flash after animation
-		if (flashState !== 'none') {
-			if (flashTimeout) clearTimeout(flashTimeout);
-			flashTimeout = setTimeout(() => {
-				flashState = 'none';
-				flashCells = [];
-				flashTimeout = null;
-			}, 400);
-		}
-	}
-
-	// Pre-compute selected cells as Set for reactive tracking
-	$: selectedCellSet = new Set(selectedCells.map(c => `${c.row},${c.col}`));
-
-	// Pre-compute flash cells as Set for reactive tracking
-	$: flashCellSet = new Set(flashCells.map(c => `${c.row},${c.col}`));
-
-	// Pre-compute found cells for performance
-	$: foundCellSet = new Set(
-		[...$wordSearchStore.foundWords].flatMap(foundWord => {
-			const placedWord = $wordSearchStore.words.find(w => w.word === foundWord);
-			if (!placedWord) return [];
-
-			const [deltaRow, deltaCol] = getDirectionDelta(placedWord.direction);
-			return Array.from({ length: placedWord.word.length }, (_, i) =>
-				`${placedWord.row + i * deltaRow},${placedWord.col + i * deltaCol}`
-			);
-		})
-	);
-
-	function resetGame() {
-		wordSearchStore.reset();
-		selectedCategory = null;
-		selectedDifficulty = null;
-		showModal = false;
-	}
-
-	function newGame() {
-		showModal = false;
-		startGame();
-	}
-
-	onMount(() => {
-		const handleGlobalPointerUp = () => {
-			if (isSelecting) {
-				handlePointerUp();
-			}
-		};
-
-		window.addEventListener('pointerup', handleGlobalPointerUp);
-		return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
-	});
-
-	onDestroy(() => {
-		if (flashTimeout) clearTimeout(flashTimeout);
-		if (modalTimeout) clearTimeout(modalTimeout);
-	});
+  onDestroy(() => {
+    if (flashTimeout) clearTimeout(flashTimeout);
+    if (modalTimeout) clearTimeout(modalTimeout);
+  });
 </script>
 
-<div class="cds-container">
-	<header class="header">
-		<h1 class="cds-heading-1 cds-text-center">Caccia alle Parole</h1>
-		<p class="cds-text-lg cds-text-center cds-text-secondary">
-			Trova tutte le parole nascoste nella griglia
-		</p>
-	</header>
+<div class="game-container">
+  <header class="game-header">
+    <a href="/" class="back-btn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+        />
+      </svg>
+    </a>
+    <div class="header-center">
+      <h1>Caccia</h1>
+      {#if isGameActive}
+        <span class="game-info">{selectedCategory} • {selectedDifficulty}</span>
+      {/if}
+    </div>
+    <button class="settings-btn" onclick={resetGame}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+        />
+      </svg>
+    </button>
+  </header>
 
-	{#if !isGameActive}
-		<div class="controls cds-card">
-			<h2 class="cds-heading-3 cds-mb-4">Nuova Partita</h2>
+  {#if !isGameActive}
+    <div class="setup-screen" in:fade>
+      <div class="setup-card" in:fly={{ y: 20, duration: 600 }}>
+        <h2>Nuova Caccia</h2>
+        <div class="setup-form">
+          <div class="form-group">
+            <label>Scegli una categoria</label>
+            <div class="options-grid">
+              {#each categories as category}
+                <button
+                  class="option-btn"
+                  class:active={selectedCategory === category}
+                  onclick={() => selectCategory(category)}
+                >
+                  {category}
+                </button>
+              {/each}
+            </div>
+          </div>
 
-			<div class="control-group">
-				<label for="category-select" class="control-label">Categoria</label>
-				<select id="category-select" bind:value={selectedCategory} class="category-select">
-					<option value={null}>Seleziona categoria...</option>
-					{#each categories as category}
-						<option value={category}
-							>{category.charAt(0).toUpperCase() + category.slice(1)}</option
-						>
-					{/each}
-				</select>
-			</div>
+          <div class="form-group">
+            <label>Livello di difficoltà</label>
+            <div class="options-grid cols-3">
+              {#each difficulties as difficulty}
+                <button
+                  class="option-btn capitalize"
+                  class:active={selectedDifficulty === difficulty}
+                  onclick={() => selectDifficulty(difficulty)}
+                >
+                  {difficulty}
+                </button>
+              {/each}
+            </div>
+          </div>
 
-			<div class="control-group">
-				<label id="difficulty-label" class="control-label">Difficoltà</label>
-				<div class="difficulty-buttons" role="group" aria-labelledby="difficulty-label">
-					{#each difficulties as diff}
-						<button
-							onclick={() => (selectedDifficulty = diff)}
-							class="difficulty-btn"
-							class:active={selectedDifficulty === diff}
-						>
-							{diff === 'easy' ? 'Facile' : diff === 'medium' ? 'Medio' : 'Difficile'}
-						</button>
-					{/each}
-				</div>
-				<p class="cds-text-sm cds-text-secondary cds-mt-2">
-					{#if selectedDifficulty === 'easy'}
-						Griglia 10x10, 10 parole
-					{:else if selectedDifficulty === 'medium'}
-						Griglia 14x14, 15 parole
-					{:else if selectedDifficulty === 'hard'}
-						Griglia 18x18, 20 parole
-					{/if}
-				</p>
-			</div>
+          <button
+            class="start-btn"
+            disabled={!selectedCategory || !selectedDifficulty}
+            onclick={startGame}
+          >
+            Inizia Partita
+          </button>
+        </div>
+      </div>
+    </div>
+  {:else}
+    <div class="game-layout">
+      <div class="stats-bar">
+        <div class="stat-pill">
+          <span class="pill-label">Paròle</span>
+          <span class="pill-value">{foundCount}/{totalWords}</span>
+        </div>
+        <div class="stat-pill score">
+          <span class="pill-label">Punteggio</span>
+          <span class="pill-value">{$wordSearchStore.score}</span>
+        </div>
+      </div>
 
-			<button
-				onclick={startGame}
-				disabled={!selectedCategory || !selectedDifficulty}
-				class="cds-button cds-button--primary cds-w-full"
-			>
-				Nuova Partita
-			</button>
-		</div>
-	{:else}
-		<div class="game-stats">
-			<div class="stat">
-				<span class="stat-label">Trovate</span>
-				<span class="stat-value">{foundCount}/{totalWords}</span>
-			</div>
-			<div class="stat">
-				<span class="stat-label">Punteggio</span>
-				<span class="stat-value">{$wordSearchStore.score}</span>
-			</div>
-			<button onclick={resetGame} class="cds-button cds-button--outline"> Nuova Partita </button>
-		</div>
+      <div class="board-area">
+        <div class="grid-wrapper">
+          <div
+            bind:this={gridElement}
+            class="word-grid"
+            style="grid-template-columns: repeat({gridSize}, 1fr);"
+            onpointerdown={handleGridPointerDown}
+            onpointermove={handleGridPointerMove}
+            onpointerup={handlePointerUp}
+          >
+            {#each $wordSearchStore.grid as row, rowIndex}
+              {#each row as cell, colIndex}
+                <div
+                  class="cell"
+                  class:is-selected={selectedCellSet.has(
+                    `${rowIndex},${colIndex}`,
+                  )}
+                  class:is-found={foundCellSet.has(`${rowIndex},${colIndex}`)}
+                  class:is-success={flashState === "success" &&
+                    flashCellSet.has(`${rowIndex},${colIndex}`)}
+                  class:is-error={flashState === "error" &&
+                    flashCellSet.has(`${rowIndex},${colIndex}`)}
+                >
+                  {cell.letter}
+                </div>
+              {/each}
+            {/each}
+          </div>
+        </div>
 
-		<div class="game-container">
-			<div class="grid-container">
-				<div
-					bind:this={gridElement}
-					class="word-grid"
-					style="grid-template-columns: repeat({gridSize}, 1fr);"
-					onpointerdown={handleGridPointerDown}
-					onpointermove={handleGridPointerMove}
-					onpointerup={handleGridPointerUp}
-				>
-					{#each $wordSearchStore.grid as row, rowIndex}
-						{#each row as cell, colIndex}
-							<div
-								class="grid-cell"
-								class:selected={selectedCellSet.has(`${rowIndex},${colIndex}`)}
-								class:found={foundCellSet.has(`${rowIndex},${colIndex}`)}
-								class:flash-success={flashState === 'success' && flashCellSet.has(`${rowIndex},${colIndex}`)}
-								class:flash-error={flashState === 'error' && flashCellSet.has(`${rowIndex},${colIndex}`)}
-							>
-								{cell.letter}
-							</div>
-						{/each}
-					{/each}
-				</div>
-			</div>
-
-			<div class="word-list-container cds-card">
-				<h3 class="cds-heading-4 cds-text-center cds-mb-3">Parole da Trovare</h3>
-				<ul class="word-list">
-					{#each $wordSearchStore.words as word}
-						<li class="word-item" class:found={$wordSearchStore.foundWords.has(word.word)}>
-							<span class="word-text">{word.word}</span>
-							<span class="word-translation">{word.translation}</span>
-						</li>
-					{/each}
-				</ul>
-			</div>
-		</div>
-	{/if}
-
-	{#if showModal && isGameWon}
-		<div
-			class="cds-modal"
-			onclick={() => (showModal = false)}
-			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
-			role="dialog"
-			aria-modal="true"
-			tabindex="-1"
-		>
-			<div class="cds-modal__backdrop"></div>
-			<div class="cds-modal__content" onclick={(e) => e.stopPropagation()}>
-				<div class="cds-modal__header">
-					<div class="celebration-box">
-						<h2 class="cds-modal__title">Complimenti!</h2>
-						<p class="cds-text-lg">Hai trovato tutte le {totalWords} parole!</p>
-						<div class="cds-mt-4">
-							<p class="cds-text-base">
-								<strong>Punteggio Finale:</strong>
-								<span class="cds-text-primary-color cds-font-bold">{$wordSearchStore.score}</span>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="cds-modal__body cds-text-center">
-				</div>
-				<div class="cds-modal__footer">
-					<button onclick={newGame} class="cds-button cds-button--primary"> Gioca Ancora </button>
-					<button onclick={resetGame} class="cds-button cds-button--outline">
-						Nuova Categoria
-					</button>
-				</div>
-			</div>
-		</div>
-	{/if}
-
-	<Confetti trigger={triggerConfetti} />
+        <div class="word-list-panel">
+          <div class="panel-header">
+            <h3>Lista Paròle</h3>
+            <span class="count">{foundCount} di {totalWords}</span>
+          </div>
+          <div class="word-chips">
+            {#each $wordSearchStore.words as word}
+              <div
+                class="word-chip"
+                class:found={$wordSearchStore.foundWords.has(word.word)}
+              >
+                <span class="word-it">{word.word}</span>
+                <span class="word-en">{word.translation}</span>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 
+{#if showModal}
+  <div class="modal-backdrop" transition:fade onclick={resetGame}>
+    <div
+      class="modal-content"
+      transition:scale={{ duration: 400, start: 0.8 }}
+      onclick={(e) => e.stopPropagation()}
+    >
+      <div class="result-icon">🏆</div>
+      <h2>Partita Terminata!</h2>
+      <p class="result-msg">
+        Hai trovato tutte le parole in {selectedCategory}!
+      </p>
+
+      <div class="stats-card">
+        <div class="stat-row">
+          <span class="label">Punteggio Finale</span>
+          <span class="value success">{$wordSearchStore.score}</span>
+        </div>
+        <div class="stat-row">
+          <span class="label">Difficoltà</span>
+          <span class="value capitalize">{selectedDifficulty}</span>
+        </div>
+      </div>
+
+      <div class="modal-btns">
+        <button class="primary-btn" onclick={startGame}>Rigioca</button>
+        <button class="ghost-btn" onclick={resetGame}>Nuova Partita</button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+<Confetti trigger={triggerConfetti} />
+
 <style>
-	.header {
-		text-align: center;
-		margin-bottom: 32px;
-		padding: 24px 0;
-	}
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--cds-color-background);
+    overflow: hidden;
+  }
 
-	/* Controls */
-	.controls {
-		max-width: 500px;
-		margin: 0 auto;
-		padding: 24px;
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: white;
+    border-bottom: 1px solid var(--cds-color-border);
+    flex-shrink: 0;
+  }
 
-	.control-group {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
+  .header-center h1 {
+    font-family: var(--cds-font-family-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  .game-info {
+    font-size: 0.7rem;
+    color: var(--cds-color-text-tertiary);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
 
-	.control-label {
-		font-size: 0.8rem;
-		font-weight: 600;
-		color: var(--cds-color-text-secondary);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
+  .back-btn,
+  .settings-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: var(--cds-color-text-secondary);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  .back-btn:hover,
+  .settings-btn:hover {
+    background: var(--cds-color-gray-100);
+  }
 
-	.category-select {
-		width: 100%;
-		padding: 12px 16px;
-		border-radius: var(--cds-radius-md);
-		border: 2px solid var(--cds-color-border);
-		background: var(--cds-color-background);
-		font-family: inherit;
-		font-size: 1rem;
-		color: var(--cds-color-text-primary);
-		font-weight: 500;
-		cursor: pointer;
-		appearance: none;
-		background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-		background-repeat: no-repeat;
-		background-position: right 16px center;
-		background-size: 16px;
-	}
+  /* Setup Screen */
+  .setup-screen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .setup-card {
+    background: white;
+    padding: 32px;
+    border-radius: 24px;
+    width: 100%;
+    box-shadow: var(--cds-shadow-card);
+    border: 1px solid var(--cds-color-border);
+  }
+  .setup-card h2 {
+    font-family: var(--cds-font-family-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    text-align: center;
+  }
 
-	.difficulty-buttons {
-		display: flex;
-		gap: 8px;
-		background: var(--cds-color-background);
-		padding: 4px;
-		border-radius: var(--cds-radius-md);
-	}
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--cds-color-text-secondary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
 
-	.difficulty-btn {
-		flex: 1;
-		padding: 10px;
-		border: none;
-		background: transparent;
-		border-radius: var(--cds-radius-sm);
-		font-family: inherit;
-		font-weight: 600;
-		font-size: 0.9rem;
-		color: var(--cds-color-text-secondary);
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .options-grid.cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-	.difficulty-btn.active {
-		background: var(--cds-color-surface);
-		color: var(--cds-color-text-primary);
-		box-shadow: var(--cds-shadow-sm);
-	}
+  .option-btn {
+    padding: 12px;
+    border: 1px solid var(--cds-color-border);
+    border-radius: 12px;
+    background: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .option-btn:hover {
+    border-color: var(--cds-color-primary);
+    background: var(--cds-color-gray-50);
+  }
+  .option-btn.active {
+    background: var(--cds-color-primary);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--cds-shadow-sm);
+  }
 
-	/* Stats */
-	.game-stats {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: var(--cds-space-4);
-		margin-bottom: var(--cds-space-4);
-	}
+  .start-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--cds-gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--cds-shadow-button);
+    margin-top: 12px;
+  }
+  .start-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
 
-	.stat {
-		display: flex;
-		flex-direction: column;
-	}
+  /* Game Layout */
+  .game-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
 
-	.stat-label {
-		font-size: 0.75rem;
-		color: var(--cds-color-text-secondary);
-		font-weight: 600;
-		text-transform: uppercase;
-	}
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-bottom: 1px solid var(--cds-color-border);
+  }
 
-	.stat-value {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: var(--cds-color-text-primary);
-	}
+  .stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+    background: var(--cds-color-gray-50);
+    padding: 8px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--cds-color-border);
+  }
+  .pill-label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--cds-color-text-tertiary);
+    text-transform: uppercase;
+  }
+  .pill-value {
+    font-weight: 800;
+    font-size: 1rem;
+  }
+  .stat-pill.score {
+    background: var(--cds-color-primary-light);
+    color: var(--cds-color-primary);
+    border-color: var(--cds-color-primary-light);
+  }
 
-	/* Game Container */
-	.game-container {
-		display: flex;
-		flex-direction: column;
-		gap: 24px;
-		align-items: center;
-		padding: var(--cds-space-4) 0;
-	}
+  .board-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+    min-height: 0;
+    overflow: hidden;
+  }
 
-	.grid-container {
-		width: 100%;
-		max-width: 500px;
-		aspect-ratio: 1 / 1;
-		background: var(--cds-color-surface);
-		padding: 16px;
-		border-radius: var(--cds-radius-lg);
-		box-shadow: var(--cds-shadow-card);
-		box-sizing: border-box;
-		overflow: hidden;
-		position: relative;
-	}
+  .grid-wrapper {
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 50vh;
+  }
 
-	.word-grid {
-		display: grid;
-		position: absolute;
-		inset: 16px;
-		gap: 2px;
-		user-select: none;
-		touch-action: none;
-		box-sizing: border-box;
-	}
+  .word-grid {
+    display: grid;
+    gap: 4px;
+    background: white;
+    border-radius: 12px;
+    padding: 4px;
+    border: 1px solid var(--cds-color-border);
+    box-shadow: var(--cds-shadow-sm);
+    width: 100%;
+    max-width: min(480px, 100%);
+    max-height: 50vh;
+    aspect-ratio: 1;
+    user-select: none;
+    touch-action: none;
+  }
 
-	.grid-cell {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: 600;
-		font-size: clamp(10px, 2vw, 16px);
-		line-height: 1;
-		color: var(--cds-color-text-primary);
-		border-radius: 3px;
-		background: var(--cds-color-background);
-		cursor: pointer;
-		transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-		aspect-ratio: 1 / 1;
-		min-width: 0;
-		min-height: 0;
-		box-sizing: border-box;
-		text-transform: uppercase;
-	}
+  .cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    border-radius: 6px;
+    background: white;
+    color: var(--cds-color-text-primary);
+    transition: all 0.1s;
+    border: 1px solid transparent;
+    text-transform: uppercase;
+  }
 
-	.grid-cell:hover:not(.selected):not(.found) {
-		transform: translateY(-1px);
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
+  .cell.is-selected {
+    background: var(--cds-color-primary-light);
+    color: var(--cds-color-primary);
+    border-color: var(--cds-color-primary);
+    z-index: 1;
+  }
+  .cell.is-found {
+    background: var(--cds-color-secondary-light);
+    color: var(--cds-color-secondary-active);
+    animation: cell-pop 0.3s;
+  }
+  .cell.is-success {
+    background: var(--cds-color-success);
+    color: white;
+    border-color: transparent;
+  }
+  .cell.is-error {
+    background: var(--cds-color-error-light);
+    color: var(--cds-color-error);
+    animation: cell-shake 0.3s;
+  }
 
-	.grid-cell.selected {
-		background: #f59e0b !important;
-		color: #1a1a1b !important;
-		transform: scale(0.95) !important;
-	}
+  .word-list-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid var(--cds-color-border);
+    min-height: 160px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .panel-header h3 {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--cds-color-text-tertiary);
+    margin: 0;
+  }
+  .panel-header .count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--cds-color-primary);
+  }
 
-	.grid-cell.found {
-		background: var(--cds-color-secondary);
-		color: white;
-	}
+  .word-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow-y: auto;
+    align-content: flex-start;
+  }
+  .word-chip {
+    padding: 6px 12px;
+    background: var(--cds-color-gray-50);
+    border: 1px solid var(--cds-color-border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: all 0.2s;
+  }
+  .word-chip.found {
+    background: var(--cds-color-success-light);
+    border-color: var(--cds-color-success-light);
+    opacity: 0.6;
+  }
+  .word-chip.found .word-it {
+    text-decoration: line-through;
+  }
 
-	.grid-cell.flash-success {
-		background: #22c55e;
-		color: white;
-		animation: flashPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-	}
+  .word-it {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+  .word-en {
+    font-size: 0.65rem;
+    color: var(--cds-color-text-tertiary);
+    font-weight: 600;
+  }
 
-	.grid-cell.flash-error {
-		background: #ef4444;
-		color: white;
-		animation: shake 0.4s ease;
-	}
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--cds-color-surface-overlay);
+    backdrop-filter: var(--cds-blur-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+  }
+  .modal-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 32px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: var(--cds-shadow-modal);
+  }
+  .result-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+  .modal-content h2 {
+    font-family: var(--cds-font-family-display);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .result-msg {
+    color: var(--cds-color-text-secondary);
+    margin-bottom: 24px;
+  }
 
-	@keyframes flashPop {
-		0% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.1);
-		}
-		100% {
-			transform: scale(1);
-		}
-	}
+  .stats-card {
+    background: var(--cds-color-gray-50);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 32px;
+    border: 1px solid var(--cds-color-border);
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .stat-row:not(:last-child) {
+    border-bottom: 1px solid var(--cds-color-border);
+  }
+  .stat-row .label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cds-color-text-secondary);
+  }
+  .stat-row .value {
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+  .stat-row .value.success {
+    color: var(--cds-color-success);
+  }
 
-	@keyframes shake {
-		0%, 100% {
-			transform: translateX(0);
-		}
-		20%, 60% {
-			transform: translateX(-3px);
-		}
-		40%, 80% {
-			transform: translateX(3px);
-		}
-	}
+  .modal-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .primary-btn {
+    background: var(--cds-gradient-primary);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: var(--cds-shadow-button);
+  }
+  .ghost-btn {
+    background: none;
+    border: none;
+    color: var(--cds-color-text-tertiary);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 8px;
+  }
 
-	@keyframes popIn {
-		0% {
-			transform: scale(0.5);
-			opacity: 0;
-		}
-		100% {
-			transform: scale(1);
-			opacity: 1;
-		}
-	}
+  @keyframes cell-pop {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes cell-shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
+  }
 
-	/* Word List */
-	.word-list-container {
-		width: 100%;
-		max-width: 500px;
-		padding: 16px;
-	}
-
-	.word-list {
-		list-style: none;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 8px;
-		padding: 0;
-		margin: 0;
-	}
-
-	.word-item {
-		background: var(--cds-color-background);
-		padding: 8px 14px;
-		border-radius: 20px;
-		font-size: 0.9rem;
-		font-weight: 500;
-		color: var(--cds-color-text-primary);
-		cursor: default;
-		transition: all 0.2s;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 2px;
-	}
-
-	.word-item.found {
-		background: var(--cds-color-secondary);
-		color: white;
-		text-decoration: line-through;
-		opacity: 0.7;
-	}
-
-	.word-translation {
-		font-size: 0.75rem;
-		opacity: 0.7;
-	}
-
-	.celebration-box {
-		background: linear-gradient(to bottom right, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.2));
-		border-radius: var(--cds-radius-md);
-		padding: var(--cds-space-6);
-	}
-
-	/* Mobile */
-	@media (max-width: 640px) {
-		.grid-container {
-			max-width: 100%;
-			padding: 12px;
-		}
-
-		.word-grid {
-			inset: 12px;
-			gap: 1px;
-		}
-
-		.grid-cell {
-			font-size: clamp(14px, 3vw, 16px);
-			border-radius: 2px;
-		}
-
-		.game-container {
-			gap: 16px;
-			padding: var(--cds-space-2) 0;
-		}
-
-		.game-stats {
-			flex-wrap: wrap;
-			gap: 12px;
-		}
-
-		.header {
-			padding: 16px 0;
-			margin-bottom: 24px;
-		}
-	}
-
-	/* Desktop layout */
-	@media (min-width: 769px) {
-		.game-container {
-			display: grid;
-			grid-template-columns: 1fr 280px;
-			align-items: start;
-			max-width: 900px;
-			margin: 0 auto;
-		}
-
-		.grid-container {
-			max-width: 100%;
-		}
-
-		.word-list-container {
-			max-width: none;
-		}
-	}
+  @media (max-width: 480px) {
+    .cell {
+      font-size: 0.9rem;
+    }
+    .word-list-panel {
+      height: 140px;
+    }
+  }
 </style>

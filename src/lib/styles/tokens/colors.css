@@ -4,61 +4,65 @@
  */
 
 :root {
-  /* Primary Brand Colors */
-  --cds-color-primary: #E63946;
-  --cds-color-primary-hover: #D32F3C;
-  --cds-color-primary-active: #C62828;
-  --cds-color-primary-light: #FFEBEE;
+  /* Primary Brand Colors - Modern Indigo */
+  --cds-color-primary: #6366F1;
+  --cds-color-primary-hover: #4F46E5;
+  --cds-color-primary-active: #4338CA;
+  --cds-color-primary-light: #EEF2FF;
 
-  --cds-color-secondary: #2A9D8F;
-  --cds-color-secondary-hover: #26897C;
-  --cds-color-secondary-active: #1D6B61;
-  --cds-color-secondary-light: #E0F2F1;
+  /* Secondary Brand Colors - Soft Emerald */
+  --cds-color-secondary: #059669;
+  --cds-color-secondary-hover: #047857;
+  --cds-color-secondary-active: #065F46;
+  --cds-color-secondary-light: #ECFDF5;
 
-  --cds-color-accent: #E9C46A;
-  --cds-color-accent-hover: #D4AF37;
-  --cds-color-accent-active: #B8960F;
-  --cds-color-accent-light: #FFF8E1;
+  /* Accent - Vibrant Amber */
+  --cds-color-accent: #F59E0B;
+  --cds-color-accent-hover: #D97706;
+  --cds-color-accent-active: #B45309;
+  --cds-color-accent-light: #FFFBEB;
 
-  --cds-color-dark: #264653;
-  --cds-color-dark-hover: #1E3A44;
-  --cds-color-dark-active: #162E36;
+  /* Dark / Deep Surfaces */
+  --cds-color-dark: #1E293B;
+  --cds-color-dark-hover: #0F172A;
+  --cds-color-dark-active: #020617;
 
-  /* Semantic Colors */
-  --cds-color-success: #6AAA64;
-  --cds-color-success-hover: #5A9454;
-  --cds-color-success-light: #E8F5E9;
+  /* Semantic Colors - More Refined */
+  --cds-color-success: #10B981;
+  --cds-color-success-hover: #059669;
+  --cds-color-success-light: #D1FAE5;
 
-  --cds-color-error: #E63946;
-  --cds-color-error-hover: #D32F3C;
-  --cds-color-error-light: #FFEBEE;
+  --cds-color-error: #EF4444;
+  --cds-color-error-hover: #DC2626;
+  --cds-color-error-light: #FEE2E2;
 
-  --cds-color-warning: #F4A261;
-  --cds-color-warning-hover: #E08E3E;
-  --cds-color-warning-light: #FFF3E0;
+  --cds-color-warning: #F59E0B;
+  --cds-color-warning-hover: #D97706;
+  --cds-color-warning-light: #FEF3C7;
 
-  --cds-color-info: #457B9D;
-  --cds-color-info-hover: #3A6682;
-  --cds-color-info-light: #E1F5FE;
+  --cds-color-info: #3B82F6;
+  --cds-color-info-hover: #2563EB;
+  --cds-color-info-light: #DBEAFE;
 
-  /* Neutral Grays (50-950) */
-  --cds-color-gray-50: #FAFAFA;
-  --cds-color-gray-100: #F5F5F5;
-  --cds-color-gray-200: #EEEEEE;
-  --cds-color-gray-300: #E0E0E0;
-  --cds-color-gray-400: #BDBDBD;
-  --cds-color-gray-500: #9E9E9E;
-  --cds-color-gray-600: #757575;
-  --cds-color-gray-700: #616161;
-  --cds-color-gray-800: #424242;
-  --cds-color-gray-900: #212121;
-  --cds-color-gray-950: #0A0A0A;
+  /* Neutral Grays - Refined Slate */
+  --cds-color-gray-50: #F8FAFC;
+  --cds-color-gray-100: #F1F5F9;
+  --cds-color-gray-200: #E2E8F0;
+  --cds-color-gray-300: #CBD5E1;
+  --cds-color-gray-400: #94A3B8;
+  --cds-color-gray-500: #64748B;
+  --cds-color-gray-600: #475569;
+  --cds-color-gray-700: #334155;
+  --cds-color-gray-800: #1E293B;
+  --cds-color-gray-900: #0F172A;
+  --cds-color-gray-950: #020617;
 
-  /* Surface Colors */
-  --cds-color-background: #F1F5F9;
+  /* Surface Colors - Layered */
+  --cds-color-background: #F8FAFC;
   --cds-color-surface: #FFFFFF;
   --cds-color-surface-elevated: #FFFFFF;
-  --cds-color-surface-overlay: rgba(0, 0, 0, 0.5);
+  --cds-color-surface-overlay: rgba(15, 23, 42, 0.4);
+  --cds-color-glass: rgba(255, 255, 255, 0.7);
 
   /* Border Colors */
   --cds-color-border: #E2E8F0;
@@ -66,27 +70,24 @@
   --cds-color-border-focus: var(--cds-color-primary);
 
   /* Text Colors */
-  --cds-color-text-primary: #1E293B;
-  --cds-color-text-secondary: #64748B;
+  --cds-color-text-primary: #0F172A;
+  --cds-color-text-secondary: #475569;
   --cds-color-text-tertiary: #94A3B8;
   --cds-color-text-disabled: #CBD5E1;
   --cds-color-text-inverse: #FFFFFF;
 
-  /* Interactive States */
-  --cds-color-interactive: var(--cds-color-primary);
-  --cds-color-interactive-hover: var(--cds-color-primary-hover);
-  --cds-color-interactive-active: var(--cds-color-primary-active);
-
-  /* Focus Ring */
-  --cds-color-focus-ring: rgba(230, 57, 70, 0.3);
-
-  /* Wordle Game Colors */
-  --wordle-correct: #6AAA64;
-  --wordle-present: #C9B458;
-  --wordle-absent: #787C7E;
-  --wordle-empty: #D3D6DA;
+  /* Wordle Game Colors - Refined High Contrast */
+  --wordle-correct: #10B981;
+  --wordle-present: #F59E0B;
+  --wordle-absent: #64748B;
+  --wordle-empty: #E2E8F0;
   --wordle-tile-bg: #FFFFFF;
-  --wordle-keyboard-bg: #D3D6DA;
+  --wordle-keyboard-bg: #E2E8F0;
+  
+  /* Gradients */
+  --cds-gradient-primary: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+  --cds-gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  --cds-glass-border: rgba(255, 255, 255, 0.1);
 }
 
 /* Dark Mode Support (future) */
