@@ -5,9 +5,9 @@
 	import Toast from '$lib/components/ui/Toast.svelte';
 
 	const KEYBOARD_ROWS = [
-		['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-		['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-		['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫']
+		['Q', 'E', 'R', 'T', 'U', 'I', 'O', 'P'],
+		['A', 'S', 'D', 'F', 'G', 'H', 'L'],
+		['ENTER', 'Z', 'C', 'V', 'B', 'N', 'M', '⌫']
 	];
 
 	let triggerConfetti = false;
@@ -22,7 +22,7 @@
 				wordleStore.submitGuess();
 			} else if (e.key === 'Backspace') {
 				wordleStore.deleteLetter();
-			} else if (/^[a-zA-Z]$/.test(e.key)) {
+			} else if (/^[a-zA-Z]$/.test(e.key) && !/^[wWxXyYjJkK]$/.test(e.key)) {
 				wordleStore.addLetter(e.key.toUpperCase());
 			}
 		};
