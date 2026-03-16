@@ -17,13 +17,15 @@
   const difficulties: Difficulty[] = ["easy", "medium", "hard"];
 
   let selectedCategory = $state<string | null>($wordSearchStore.category);
-  let selectedDifficulty = $state<Difficulty | null>($wordSearchStore.difficulty);
+  let selectedDifficulty = $state<Difficulty | null>(
+    $wordSearchStore.difficulty,
+  );
   let isSelecting = $state(false);
   let startCell = $state<SelectedCell | null>(null);
   let currentCell = $state<SelectedCell | null>(null);
   let selectedCells = $state<SelectedCell[]>([]);
   let showModal = $state(false);
-  let gridElement: HTMLElement;
+  let gridElement = $state<HTMLElement | undefined>();
   let flashState = $state<"none" | "success" | "error">("none");
   let flashCells = $state<SelectedCell[]>([]);
   let flashTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
@@ -71,23 +73,24 @@
   function getCellFromPointer(
     e: PointerEvent,
   ): { row: number; col: number } | null {
-    if (!gridElement) return null;
-    const rect = gridElement.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cellSize = rect.width / gridSize;
-    const col = Math.floor(x / cellSize);
-    const row = Math.floor(y / cellSize);
-    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const cell = target?.closest(".cell") as HTMLElement | null;
+    if (!cell) return null;
+
+    const row = parseInt(cell.dataset.row || "-1");
+    const col = parseInt(cell.dataset.col || "-1");
+
+    if (row >= 0 && col >= 0) {
       return { row, col };
     }
     return null;
   }
 
   function handleGridPointerDown(e: PointerEvent) {
-    if (!isGameActive) return;
+    if (!isGameActive || !gridElement) return;
     const cell = getCellFromPointer(e);
     if (!cell) return;
+
     e.preventDefault();
     gridElement.setPointerCapture(e.pointerId);
     isSelecting = true;
@@ -104,6 +107,7 @@
     if (!isSelecting || !startCell) return;
     const cell = getCellFromPointer(e);
     if (!cell) return;
+
     if (
       !currentCell ||
       cell.row !== currentCell.row ||
@@ -115,8 +119,10 @@
         letter: $wordSearchStore.grid[cell.row][cell.col].letter,
       };
       selectedCells = getCellsBetween(
-        startCell,
-        currentCell,
+        startCell.row,
+        startCell.col,
+        currentCell.row,
+        currentCell.col,
         $wordSearchStore.grid,
       );
     }
@@ -152,10 +158,10 @@
   }
 
   let selectedCellSet = $derived(
-    new Set(selectedCells.map((c) => `${c.row},${c.col}`)),
+    new Set(selectedCells.map((c) => (c ? `${c.row},${c.col}` : ""))),
   );
   let flashCellSet = $derived(
-    new Set(flashCells.map((c) => `${c.row},${c.col}`)),
+    new Set(flashCells.map((c) => (c ? `${c.row},${c.col}` : ""))),
   );
   let foundCellSet = $derived(
     new Set(
@@ -165,7 +171,7 @@
           return wordData ? wordData.cells : [];
         })
         .flat()
-        .map((c) => `${c.row},${c.col}`),
+        .map((c) => (c ? `${c.row},${c.col}` : "")),
     ),
   );
 
@@ -189,7 +195,10 @@
       if (isSelecting) handlePointerUp();
     };
     window.addEventListener("pointerup", handleGlobalPointerUp);
-    return () => window.removeEventListener("pointerup", handleGlobalPointerUp);
+
+    return () => {
+      window.removeEventListener("pointerup", handleGlobalPointerUp);
+    };
   });
 
   onDestroy(() => {
@@ -310,6 +319,8 @@
               {#each row as cell, colIndex}
                 <div
                   class="cell"
+                  data-row={rowIndex}
+                  data-col={colIndex}
                   class:is-selected={selectedCellSet.has(
                     `${rowIndex},${colIndex}`,
                   )}
@@ -387,7 +398,8 @@
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    max-width: 600px;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     background: var(--cds-color-background);
     overflow: hidden;
@@ -820,6 +832,44 @@
     }
     .word-list-panel {
       height: 140px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .board-area {
+      flex-direction: row;
+      align-items: flex-start;
+      padding: 40px;
+      gap: 40px;
+    }
+
+    .grid-wrapper {
+      flex: 1;
+      height: auto;
+      max-height: none;
+      align-items: flex-start;
+      padding-top: 0;
+      justify-content: center;
+    }
+
+    .word-grid {
+      max-height: 75vh;
+      max-width: 75vh;
+      width: auto;
+      aspect-ratio: 1;
+    }
+
+    .word-list-panel {
+      width: 360px;
+      height: auto;
+      max-height: 80vh;
+      overflow-y: auto;
+      margin-top: 0;
+      flex: 0 0 auto;
+    }
+
+    .word-chips {
+      overflow-y: visible;
     }
   }
 </style>

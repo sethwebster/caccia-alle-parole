@@ -258,7 +258,8 @@
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    max-width: 600px;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     background: var(--cds-color-background);
     overflow: hidden;
@@ -661,6 +662,46 @@
     }
     .reward-icon {
       font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .board-area {
+      display: grid;
+      grid-template-columns: auto 340px;
+      grid-template-rows: auto 1fr;
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      align-content: center;
+    }
+
+    .active-word-display {
+      grid-column: 1;
+      grid-row: 1;
+      width: 100%;
+      max-width: 500px;
+      justify-self: center;
+      height: 80px;
+      font-size: 2rem;
+    }
+
+    .grid-board {
+      grid-column: 1;
+      grid-row: 2;
+      width: 500px;
+      max-width: 500px;
+      justify-self: center;
+    }
+
+    .found-words-panel {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      height: 100%;
+      max-height: 700px;
+      margin-top: 0;
     }
   }
 </style>

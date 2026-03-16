@@ -297,7 +297,8 @@
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    max-width: 500px;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     background: var(--cds-color-background);
   }
@@ -602,6 +603,58 @@
     }
     .key {
       height: 40px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .game-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 40px;
+      padding: 0 40px 40px;
+      align-items: center;
+    }
+
+    .game-upper {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .status-panel {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .word-display {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: end;
+      margin-bottom: 20px;
+    }
+
+    .keyboard-area {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: start;
+      margin-top: 0;
+      max-width: 700px;
+      width: 100%;
+      justify-self: center;
+    }
+
+    .key {
+      height: 60px;
+      font-size: 1.25rem;
+    }
+
+    .illustration-panel {
+      padding: 30px;
     }
   }
 </style>

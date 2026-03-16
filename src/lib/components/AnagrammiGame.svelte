@@ -229,7 +229,8 @@
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    max-width: 500px;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     background: var(--cds-color-background);
   }
@@ -568,6 +569,67 @@
       width: 40px;
       height: 48px;
       font-size: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .board-area {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      grid-template-rows: auto 1fr auto;
+      align-content: center;
+      padding: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+    }
+
+    .category-panel {
+      grid-column: 2;
+      grid-row: 1;
+      width: 100%;
+    }
+
+    .scrambled-area {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: center;
+    }
+
+    .guess-area {
+      grid-column: 1;
+      grid-row: 3;
+      align-self: start;
+    }
+
+    .actions-area {
+      grid-column: 2;
+      grid-row: 2 / span 2;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    .action-btn.hint,
+    .action-btn.delete,
+    .action-btn.submit,
+    .action-btn.skip {
+      grid-column: auto;
+      width: 100%;
+    }
+
+    .letter-tile {
+      width: 64px;
+      height: 64px;
+      font-size: 2rem;
+    }
+
+    .guess-slot {
+      width: 56px;
+      height: 64px;
+      font-size: 2rem;
     }
   }
 </style>
