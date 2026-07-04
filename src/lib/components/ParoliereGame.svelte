@@ -1,25 +1,52 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { goto } from "$app/navigation";
   import { paroliereStore, type Cell } from "$lib/stores/paroliere";
   import { validWords } from "$lib/data/wordle-valid-words";
+  import { wordDatabase } from "$lib/data/word-data";
   import Confetti from "$lib/components/ui/Confetti.svelte";
   import { fade, fly, scale } from "svelte/transition";
 
-  let showModal = false;
-  let isDragging = false;
-  let triggerConfetti = false;
+  // The Wordle list is 5-letter-only; without the word database merged in,
+  // no 3, 4, or 6+ letter word could ever score.
+  const dictionary = new Set<string>(validWords);
+  for (const words of Object.values(wordDatabase)) {
+    for (const { word } of words) {
+      const normalized = word
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+      if (/^[A-Z]{3,}$/.test(normalized)) dictionary.add(normalized);
+    }
+  }
+
+  let showModal = $state(false);
+  let isDragging = $state(false);
+  let triggerConfetti = $state(false);
+  let gridElement = $state<HTMLElement | undefined>();
+
+  // Plain variable, not $state: reading it must not re-trigger the effect,
+  // otherwise dismissing the modal reopens it forever.
+  let resultShown = false;
 
   $effect(() => {
-    if ($paroliereStore.gameState === "finished" && !showModal) {
+    if ($paroliereStore.gameState !== "finished") {
+      resultShown = false;
+      triggerConfetti = false;
+      return;
+    }
+    if (!resultShown) {
+      resultShown = true;
       if ($paroliereStore.score > 20) triggerConfetti = true;
-      setTimeout(() => {
+      const t = setTimeout(() => {
         showModal = true;
       }, 500);
+      return () => clearTimeout(t);
     }
   });
 
   function isValidWord(word: string): boolean {
-    return validWords.has(word.toUpperCase());
+    return dictionary.has(word.toUpperCase());
   }
 
   function formatTime(seconds: number): string {
@@ -28,34 +55,48 @@
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   }
 
-  function handleMouseDown(row: number, col: number) {
+  function getTileFromPointer(e: PointerEvent): { row: number; col: number } | null {
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const tile = target?.closest(".tile") as HTMLElement | null;
+    if (!tile) return null;
+    const row = parseInt(tile.dataset.row || "-1");
+    const col = parseInt(tile.dataset.col || "-1");
+    return row >= 0 && col >= 0 ? { row, col } : null;
+  }
+
+  function handleGridPointerDown(e: PointerEvent) {
+    if (!gridElement) return;
+    const cell = getTileFromPointer(e);
+    if (!cell) return;
+    e.preventDefault();
+    gridElement.setPointerCapture(e.pointerId);
     isDragging = true;
     paroliereStore.clearSelection();
     paroliereStore.selectCell({
-      letter: $paroliereStore.grid[row][col],
-      row,
-      col,
+      letter: $paroliereStore.grid[cell.row][cell.col],
+      row: cell.row,
+      col: cell.col,
     });
   }
 
-  function handleMouseEnter(row: number, col: number) {
-    if (isDragging) {
-      paroliereStore.selectCell({
-        letter: $paroliereStore.grid[row][col],
-        row,
-        col,
-      });
-    }
+  function handleGridPointerMove(e: PointerEvent) {
+    if (!isDragging) return;
+    const cell = getTileFromPointer(e);
+    if (!cell) return;
+    paroliereStore.selectCell({
+      letter: $paroliereStore.grid[cell.row][cell.col],
+      row: cell.row,
+      col: cell.col,
+    });
   }
 
-  function handleMouseUp() {
-    if (isDragging) {
-      isDragging = false;
-      if ($paroliereStore.currentWord.length >= 3) {
-        paroliereStore.submitWord(isValidWord);
-      } else {
-        paroliereStore.clearSelection();
-      }
+  function handleGridPointerUp() {
+    if (!isDragging) return;
+    isDragging = false;
+    if ($paroliereStore.currentWord.length >= 3) {
+      paroliereStore.submitWord(isValidWord);
+    } else {
+      paroliereStore.clearSelection();
     }
   }
 
@@ -66,21 +107,25 @@
   }
 
   onMount(() => {
-    window.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUp);
+    const handleGlobalPointerUp = () => {
+      if (isDragging) handleGridPointerUp();
     };
+    window.addEventListener("pointerup", handleGlobalPointerUp);
+    return () => window.removeEventListener("pointerup", handleGlobalPointerUp);
   });
 
   onDestroy(() => {
-    paroliereStore.endGame();
+    // The store is a module singleton: leave it on the setup screen or a
+    // stale 'finished' state greets the next visit with an empty results
+    // modal instead of the setup card.
+    paroliereStore.reset();
   });
 </script>
 
 <div class="game-container">
   <!-- Game Header -->
   <header class="game-header">
-    <a href="/" class="back-btn">
+    <a href="/" class="back-btn" aria-label="Torna alla home">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -101,7 +146,7 @@
         <span class="game-info">Sfida a Tempo</span>
       {/if}
     </div>
-    <button class="settings-btn" onclick={() => paroliereStore.endGame()}>
+    <button class="settings-btn" aria-label="Termina partita" onclick={() => paroliereStore.endGame()}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -173,18 +218,24 @@
           {$paroliereStore.currentWord || "Seleziona le lettere"}
         </div>
 
-        <div class="grid-board">
+        <div
+          class="grid-board"
+          bind:this={gridElement}
+          onpointerdown={handleGridPointerDown}
+          onpointermove={handleGridPointerMove}
+          onpointerup={handleGridPointerUp}
+        >
           {#each $paroliereStore.grid as row, i}
             {#each row as letter, j}
-              <button
-                onmousedown={() => handleMouseDown(i, j)}
-                onmouseenter={() => handleMouseEnter(i, j)}
+              <div
                 class="tile"
+                data-row={i}
+                data-col={j}
                 class:is-selected={isCellSelected(i, j)}
                 class:grabbing={isDragging}
               >
                 <div class="tile-content">{letter}</div>
-              </button>
+              </div>
             {/each}
           {/each}
         </div>
@@ -209,14 +260,27 @@
 {#if showModal}
   <div
     class="modal-backdrop"
-    onclick={() => (showModal = false)}
-    role="dialog"
-    aria-modal="true"
+    role="button"
+    tabindex="0"
+    aria-label="Chiudi risultato"
+    onclick={(event) => {
+      if (event.currentTarget === event.target) {
+        showModal = false;
+      }
+    }}
+    onkeydown={(event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        showModal = false;
+      }
+    }}
     transition:fade
   >
     <div
       class="modal-content"
-      onclick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
       transition:scale={{ duration: 400, start: 0.8 }}
     >
       <div class="reward-icon">🏆</div>
@@ -243,7 +307,13 @@
         >
           Gioca Ancora
         </button>
-        <button onclick={() => (showModal = false)} class="back-link">
+        <button
+          onclick={() => {
+            showModal = false;
+            goto("/");
+          }}
+          class="back-link"
+        >
           Torna al Menu
         </button>
       </div>
@@ -483,6 +553,8 @@
     width: 100%;
     max-width: 360px;
     aspect-ratio: 1;
+    touch-action: none;
+    user-select: none;
   }
 
   .tile {

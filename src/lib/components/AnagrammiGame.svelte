@@ -1,18 +1,30 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { anagrammiStore } from "$lib/stores/anagrammi";
+  import { formatCategory } from "$lib/data/word-data";
   import Confetti from "$lib/components/ui/Confetti.svelte";
   import { fade, fly, scale } from "svelte/transition";
 
-  let showModal = false;
-  let triggerConfetti = false;
+  let showModal = $state(false);
+  let triggerConfetti = $state(false);
+
+  // Plain variable, not $state: reading it must not re-trigger the effect,
+  // otherwise dismissing the modal reopens it forever.
+  let resultShown = false;
 
   $effect(() => {
-    if ($anagrammiStore.gameState !== "playing" && !showModal) {
+    if ($anagrammiStore.gameState === "playing") {
+      resultShown = false;
+      triggerConfetti = false;
+      return;
+    }
+    if (!resultShown) {
+      resultShown = true;
       if ($anagrammiStore.gameState === "correct") triggerConfetti = true;
-      setTimeout(() => {
+      const t = setTimeout(() => {
         showModal = true;
       }, 500);
+      return () => clearTimeout(t);
     }
   });
 
@@ -32,20 +44,24 @@
       anagrammiStore.submitGuess();
     } else if (e.key === "Backspace") {
       anagrammiStore.removeLetter();
-    } else if (/^[a-zA-Z]$/.test(e.key)) {
+    } else if (/^\p{L}$/u.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) {
       anagrammiStore.addLetter(e.key.toUpperCase());
     }
   }
 
   onMount(() => {
+    anagrammiStore.start();
     window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+      anagrammiStore.stop();
+    };
   });
 </script>
 
 <div class="game-container">
   <header class="game-header">
-    <a href="/" class="back-btn">
+    <a href="/" class="back-btn" aria-label="Torna alla home">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -64,7 +80,7 @@
       <h1>Anagrammi+</h1>
       <span class="game-info">Dominio Verbale</span>
     </div>
-    <button class="settings-btn" onclick={() => anagrammiStore.reset()}>
+    <button class="settings-btn" aria-label="Nuova partita" onclick={() => anagrammiStore.reset()}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -102,7 +118,7 @@
     <div class="board-area">
       <div class="category-panel" in:fade>
         <span class="label">Categoria</span>
-        <span class="value">{$anagrammiStore.category}</span>
+        <span class="value">{formatCategory($anagrammiStore.category)}</span>
       </div>
 
       <div class="scrambled-area" in:scale={{ duration: 400 }}>
@@ -178,12 +194,24 @@
 {#if showModal}
   <div
     class="modal-backdrop"
-    onclick={() => (showModal = false)}
+    role="button"
+    tabindex="0"
+    aria-label="Chiudi risultato"
+    onclick={(event) => {
+      if (event.currentTarget === event.target) {
+        showModal = false;
+      }
+    }}
+    onkeydown={(event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        showModal = false;
+      }
+    }}
     transition:fade
   >
     <div
       class="modal-content"
-      onclick={(e) => e.stopPropagation()}
       transition:scale={{ duration: 400, start: 0.8 }}
     >
       <div class="result-icon">

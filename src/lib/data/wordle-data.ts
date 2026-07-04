@@ -197,7 +197,6 @@ export const wordleWords = [
   { "word": "IRIDE", "translation": "iris/rainbow", "definition": "a colorful flower or the eye's colored part" },
   { "word": "ISOLA", "translation": "island", "definition": "a piece of land surrounded by water" },
   { "word": "ISOLE", "translation": "islands", "definition": "pieces of land surrounded by water" },
-  { "word": "KARMA", "translation": "karma", "definition": "destiny resulting from actions" },
   { "word": "LAGHI", "translation": "lakes", "definition": "large bodies of standing water" },
   { "word": "LAMPO", "translation": "lightning/flash", "definition": "a bright flash of light in a storm" },
   { "word": "LARGA", "translation": "wide/broad (f)", "definition": "of great width (f)" },

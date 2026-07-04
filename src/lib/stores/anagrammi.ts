@@ -22,7 +22,10 @@ const GAME_DURATION = 60; // 1 minute per word
 function getRandomWord() {
 	const categories = Object.keys(wordDatabase);
 	const category = categories[Math.floor(Math.random() * categories.length)];
-	const words = wordDatabase[category as keyof typeof wordDatabase];
+	// Multi-word entries make broken anagrams: space tiles render blank and
+	// can't be typed, so only single words are playable.
+	const words = (wordDatabase[category as keyof typeof wordDatabase] as { word: string; translation: string; definition: string }[])
+		.filter((w) => !w.word.includes(' '));
 	const wordObj = words[Math.floor(Math.random() * words.length)];
 
 	return {
@@ -34,6 +37,7 @@ function getRandomWord() {
 }
 
 function scrambleWord(word: string): string {
+	if (new Set(word).size <= 1) return word;
 	const letters = word.split('');
 	for (let i = letters.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
@@ -68,6 +72,7 @@ function createStore() {
 
 		timerInterval = setInterval(() => {
 			update(state => {
+				if (state.gameState !== 'playing') return state;
 				if (state.timeLeft <= 1) {
 					if (timerInterval) clearInterval(timerInterval);
 					return { ...state, timeLeft: 0, gameState: 'skipped' };
@@ -77,10 +82,18 @@ function createStore() {
 		}, 1000);
 	}
 
-	startTimer();
+	function stopTimer() {
+		if (timerInterval) clearInterval(timerInterval);
+		timerInterval = null;
+	}
 
 	return {
 		subscribe,
+
+		// The countdown must only run while the game screen is mounted —
+		// starting it at module load would tick during SSR and route preloads.
+		start: startTimer,
+		stop: stopTimer,
 
 		addLetter: (letter: string) => {
 			update(state => {
@@ -102,7 +115,9 @@ function createStore() {
 				if (state.gameState !== 'playing') return state;
 				if (state.currentGuess.length !== state.targetWord.length) return state;
 
-				if (state.currentGuess === state.targetWord) {
+				// Accent-insensitive: a physical keyboard types CITTA for CITTÀ
+				const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				if (normalize(state.currentGuess) === normalize(state.targetWord)) {
 					const timeBonus = Math.floor(state.timeLeft / 5);
 					const basePoints = state.targetWord.length * 10;
 					const streakBonus = state.streak * 5;

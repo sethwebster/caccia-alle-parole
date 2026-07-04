@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { impiccatoStore } from "$lib/stores/impiccato";
+  import { impiccatoStore, baseLetter } from "$lib/stores/impiccato";
+  import { formatCategory } from "$lib/data/word-data";
   import Confetti from "$lib/components/ui/Confetti.svelte";
   import { fade, fly, scale } from "svelte/transition";
 
@@ -10,25 +11,41 @@
     ["Z", "X", "C", "V", "B", "N", "M"],
   ];
 
-  let showModal = false;
-  let triggerConfetti = false;
+  let showModal = $state(false);
+  let triggerConfetti = $state(false);
   let canvas: HTMLCanvasElement;
 
+  // Plain variable, not $state: reading it must not re-trigger the effect,
+  // otherwise dismissing the modal reopens it forever.
+  let resultShown = false;
+
   $effect(() => {
-    if ($impiccatoStore.gameState !== "playing" && !showModal) {
+    if ($impiccatoStore.gameState === "playing") {
+      resultShown = false;
+      triggerConfetti = false;
+      return;
+    }
+    if (!resultShown) {
+      resultShown = true;
       if ($impiccatoStore.gameState === "won") triggerConfetti = true;
-      setTimeout(() => {
+      const t = setTimeout(() => {
         showModal = true;
       }, 500);
+      return () => clearTimeout(t);
     }
   });
 
+  function targetHasLetter(letter: string): boolean {
+    return $impiccatoStore.targetWord.split("").some(
+      (l) => baseLetter(l) === letter,
+    );
+  }
+
   function getDisplayWord(): string[] {
     return $impiccatoStore.targetWord.split("").map((letter) => {
-      if (letter === " ") return " ";
-      if (letter === "-") return "-";
-      if (letter === "'") return "'";
-      return $impiccatoStore.guessedLetters.has(letter) ? letter : "";
+      const base = baseLetter(letter);
+      if (!/[A-Z]/.test(base)) return letter;
+      return $impiccatoStore.guessedLetters.has(base) ? letter : "";
     });
   }
 
@@ -37,15 +54,11 @@
   }
 
   function isLetterCorrect(letter: string): boolean {
-    return (
-      $impiccatoStore.targetWord.includes(letter) && isLetterGuessed(letter)
-    );
+    return targetHasLetter(letter) && isLetterGuessed(letter);
   }
 
   function isLetterWrong(letter: string): boolean {
-    return (
-      !$impiccatoStore.targetWord.includes(letter) && isLetterGuessed(letter)
-    );
+    return !targetHasLetter(letter) && isLetterGuessed(letter);
   }
 
   function handleKeyClick(letter: string) {
@@ -55,84 +68,88 @@
   }
 
   function drawHangman(ctx: CanvasRenderingContext2D) {
-    const lives = $impiccatoStore.remainingLives;
-    const mistakes = 6 - lives;
+    const mistakes = 6 - $impiccatoStore.remainingLives;
 
     ctx.clearRect(0, 0, 200, 300);
-    ctx.strokeStyle = "#4338ca"; // Indigo 700
-    ctx.lineWidth = 4;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    // Base & Gallows - Drawing with a slight "hand-drawn" feel
+    // Gallows — always fully visible
+    ctx.strokeStyle = "#4338ca"; // Indigo 700
+    ctx.lineWidth = 4;
+    // Ground
+    ctx.beginPath();
+    ctx.moveTo(20, 280);
+    ctx.lineTo(180, 280);
+    ctx.stroke();
+    // Vertical pole
+    ctx.beginPath();
+    ctx.moveTo(60, 280);
+    ctx.lineTo(60, 40);
+    ctx.stroke();
+    // Horizontal beam
+    ctx.beginPath();
+    ctx.moveTo(60, 40);
+    ctx.lineTo(140, 40);
+    ctx.stroke();
+    // Rope
+    ctx.strokeStyle = "#d97706"; // Amber 600
+    ctx.beginPath();
+    ctx.moveTo(140, 40);
+    ctx.lineTo(140, 70);
+    ctx.stroke();
+
+    // Body parts — revealed progressively with each mistake
+    ctx.strokeStyle = "#1e293b"; // Slate 800
+    ctx.lineWidth = 3;
+
     if (mistakes >= 1) {
-      // Ground
+      // Head
       ctx.beginPath();
-      ctx.moveTo(20, 280);
-      ctx.lineTo(180, 280);
+      ctx.arc(140, 90, 20, 0, Math.PI * 2);
       ctx.stroke();
     }
     if (mistakes >= 2) {
-      // Vertical
+      // Body
       ctx.beginPath();
-      ctx.moveTo(60, 280);
-      ctx.lineTo(60, 40);
+      ctx.moveTo(140, 110);
+      ctx.lineTo(140, 175);
       ctx.stroke();
     }
     if (mistakes >= 3) {
-      // Horizontal
+      // Left arm
       ctx.beginPath();
-      ctx.moveTo(60, 40);
-      ctx.lineTo(140, 40);
+      ctx.moveTo(140, 125);
+      ctx.lineTo(115, 155);
       ctx.stroke();
     }
     if (mistakes >= 4) {
-      // Rope
-      ctx.strokeStyle = "#d97706"; // Amber 600
+      // Right arm
       ctx.beginPath();
-      ctx.moveTo(140, 40);
-      ctx.lineTo(140, 70);
+      ctx.moveTo(140, 125);
+      ctx.lineTo(165, 155);
       ctx.stroke();
     }
-
-    ctx.strokeStyle = "#1e293b"; // Slate 800
-    // Man
     if (mistakes >= 5) {
-      // Head
+      // Left leg
       ctx.beginPath();
-      ctx.arc(140, 95, 20, 0, Math.PI * 2);
+      ctx.moveTo(140, 175);
+      ctx.lineTo(118, 225);
       ctx.stroke();
     }
     if (mistakes >= 6) {
-      // Final State
-      // Body
+      // Right leg
       ctx.beginPath();
-      ctx.moveTo(140, 115);
-      ctx.lineTo(140, 180);
-      ctx.stroke();
-      // Arms
-      ctx.beginPath();
-      ctx.moveTo(140, 130);
-      ctx.lineTo(115, 160);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(140, 130);
-      ctx.lineTo(165, 160);
-      ctx.stroke();
-      // Legs
-      ctx.beginPath();
-      ctx.moveTo(140, 180);
-      ctx.lineTo(120, 230);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(140, 180);
-      ctx.lineTo(160, 230);
+      ctx.moveTo(140, 175);
+      ctx.lineTo(162, 225);
       ctx.stroke();
     }
   }
 
   $effect(() => {
-    if (canvas && $impiccatoStore) {
+    // Explicitly read remainingLives to track it as a reactive dependency
+    const _lives = $impiccatoStore.remainingLives;
+    if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) drawHangman(ctx);
     }
@@ -152,7 +169,7 @@
 
 <div class="game-container">
   <header class="game-header">
-    <a href="/" class="back-btn">
+    <a href="/" class="back-btn" aria-label="Torna alla home">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -171,7 +188,7 @@
       <h1>L'Impiccato</h1>
       <span class="game-info">Sfida Classica</span>
     </div>
-    <button class="settings-btn" onclick={() => impiccatoStore.newGame()}>
+    <button class="settings-btn" aria-label="Nuova partita" onclick={() => impiccatoStore.newGame()}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -192,7 +209,7 @@
     <div class="game-upper">
       <div class="illustration-panel" in:fade>
         <div class="category-pill">
-          <span class="cat-label">{$impiccatoStore.targetCategory}</span>
+          <span class="cat-label">{formatCategory($impiccatoStore.targetCategory)}</span>
         </div>
         <canvas bind:this={canvas} width="200" height="300"></canvas>
       </div>
@@ -250,12 +267,24 @@
 {#if showModal}
   <div
     class="modal-backdrop"
-    onclick={() => (showModal = false)}
+    role="button"
+    tabindex="0"
+    aria-label="Chiudi risultato"
+    onclick={(event) => {
+      if (event.currentTarget === event.target) {
+        showModal = false;
+      }
+    }}
+    onkeydown={(event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        showModal = false;
+      }
+    }}
     transition:fade
   >
     <div
       class="modal-content"
-      onclick={(e) => e.stopPropagation()}
       transition:scale={{ duration: 400, start: 0.8 }}
     >
       <div class="result-icon">

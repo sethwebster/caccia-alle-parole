@@ -32,6 +32,7 @@ export interface PlacedWord extends Word {
 	col: number;
 	direction: Direction;
 	points: number;
+	cells: { row: number; col: number }[];
 }
 
 export interface Cell {

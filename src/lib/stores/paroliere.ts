@@ -66,14 +66,18 @@ function createStore() {
 			// Clear any existing timer
 			if (timerInterval) clearInterval(timerInterval);
 
-			// Start countdown
+			// Countdown against a wall-clock deadline: browsers throttle
+			// background-tab intervals, so tick-counting would pause the clock.
+			const deadline = Date.now() + GAME_DURATION * 1000;
 			timerInterval = setInterval(() => {
 				update(state => {
-					if (state.timeLeft <= 1) {
+					if (state.gameState !== 'playing') return state;
+					const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+					if (remaining <= 0) {
 						if (timerInterval) clearInterval(timerInterval);
 						return { ...state, timeLeft: 0, gameState: 'finished' };
 					}
-					return { ...state, timeLeft: state.timeLeft - 1 };
+					return { ...state, timeLeft: remaining };
 				});
 			}, 1000);
 		},
@@ -157,7 +161,27 @@ function createStore() {
 				clearInterval(timerInterval);
 				timerInterval = null;
 			}
-			update(state => ({ ...state, gameState: 'finished' }));
+			// Only a running game can finish — ending from 'setup' would show
+			// an empty results modal.
+			update(state => state.gameState === 'playing'
+				? { ...state, gameState: 'finished' }
+				: state);
+		},
+
+		reset: () => {
+			if (timerInterval) {
+				clearInterval(timerInterval);
+				timerInterval = null;
+			}
+			set({
+				grid: generateRandomGrid(),
+				foundWords: new Set(),
+				currentPath: [],
+				score: 0,
+				timeLeft: GAME_DURATION,
+				gameState: 'setup',
+				currentWord: ''
+			});
 		}
 	};
 }

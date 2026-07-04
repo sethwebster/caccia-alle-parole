@@ -16,6 +16,12 @@ type ImpiccatoStore = {
 
 const MAX_LIVES = 6;
 
+// Accent-insensitive base form: 'À' -> 'A'. The keyboard only offers A-Z,
+// so letter comparisons must ignore accents or accented words are unwinnable.
+export function baseLetter(char: string): string {
+	return char.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 function getRandomWord() {
 	const categories = Object.keys(wordDatabase);
 	const category = categories[Math.floor(Math.random() * categories.length)];
@@ -57,13 +63,15 @@ function createStore() {
 
 				const newGuessedLetters = new Set([...state.guessedLetters, upperLetter]);
 
-				// Check if letter is in word
-				const isCorrect = state.targetWord.includes(upperLetter);
+				// Check if letter is in word (accent-insensitive)
+				const targetLetters = state.targetWord.split('').map(baseLetter);
+				const isCorrect = targetLetters.includes(upperLetter);
 				const newLives = isCorrect ? state.remainingLives : state.remainingLives - 1;
 
-				// Check win condition
-				const allLettersGuessed = state.targetWord.split('').every(l =>
-					newGuessedLetters.has(l) || l === ' ' || l === '-' || l === "'"
+				// Win when every guessable (A-Z base) letter has been guessed;
+				// spaces, apostrophes, and other symbols are free.
+				const allLettersGuessed = targetLetters.every(l =>
+					!/[A-Z]/.test(l) || newGuessedLetters.has(l)
 				);
 
 				let newState: GameState = 'playing';

@@ -10,7 +10,7 @@
     ["ENTER", "Z", "C", "V", "B", "N", "M", "⌫"],
   ];
 
-  let triggerConfetti = false;
+  let triggerConfetti = $state(false);
 
   let emptyRows = $derived(
     Math.max(
@@ -24,8 +24,11 @@
   onMount(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if ($wordleStore.gameState !== "playing") return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (e.key === "Enter") {
+        // Prevent a focused on-screen key from also activating.
+        e.preventDefault();
         wordleStore.submitGuess();
       } else if (e.key === "Backspace") {
         wordleStore.deleteLetter();
@@ -38,14 +41,20 @@
     return () => window.removeEventListener("keydown", handleKeydown);
   });
 
+  // Plain variable, not $state: reading it must not re-trigger the effect,
+  // otherwise dismissing the modal reopens it forever.
+  let resultShown = false;
+
   $effect(() => {
-    if ($wordleStore.gameState !== "playing" && !$wordleUI.showModal) {
+    if ($wordleStore.gameState !== "playing" && !resultShown) {
+      resultShown = true;
       if ($wordleStore.gameState === "won") {
         triggerConfetti = true;
       }
-      setTimeout(() => {
+      const t = setTimeout(() => {
         $wordleUI.showModal = true;
       }, 1500);
+      return () => clearTimeout(t);
     }
   });
 
@@ -165,17 +174,30 @@
 {#if $wordleUI.showModal}
   <div
     class="modal-backdrop"
-    onclick={() => ($wordleUI.showModal = false)}
-    role="dialog"
-    aria-modal="true"
+    role="button"
+    tabindex="0"
+    aria-label="Chiudi risultato"
+    onclick={(event) => {
+      if (event.currentTarget === event.target) {
+        $wordleUI.showModal = false;
+      }
+    }}
+    onkeydown={(event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        $wordleUI.showModal = false;
+      }
+    }}
     transition:fade
   >
     <div
       class="modal-content"
-      onclick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
       transition:scale={{ duration: 400, start: 0.8 }}
     >
-      <button class="modal-close" onclick={() => ($wordleUI.showModal = false)}>
+      <button class="modal-close" aria-label="Chiudi" onclick={() => ($wordleUI.showModal = false)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -230,8 +252,8 @@
           <div class="target-card">
             <span class="label">La parola era</span>
             <div class="word">{$wordleStore.targetWord}</div>
-            <p class="translation">{$wordleStore.translation}</p>
-            <p class="definition">"{$wordleStore.definition}"</p>
+            <p class="translation">{$wordleStore.targetWordData.translation}</p>
+            <p class="definition">"{$wordleStore.targetWordData.definition}"</p>
           </div>
 
           <div class="stats-row">

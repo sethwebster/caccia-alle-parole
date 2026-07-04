@@ -7,9 +7,16 @@
 	let { children } = $props();
 
 	onMount(() => {
-		// Clear legacy localStorage on first visit to SvelteKit version
+		const STORAGE_KEYS_TO_RESET = [
+			'sveltekit_migrated',
+			'wordSearchGameState',
+			'wordleGameState'
+		];
+
 		if (typeof localStorage !== 'undefined' && !localStorage.getItem('sveltekit_migrated')) {
-			localStorage.clear();
+			for (const key of STORAGE_KEYS_TO_RESET) {
+				localStorage.removeItem(key);
+			}
 			localStorage.setItem('sveltekit_migrated', 'true');
 		}
 	});

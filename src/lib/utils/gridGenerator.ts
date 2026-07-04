@@ -13,47 +13,32 @@ interface DirectionDef {
 	name: Direction;
 }
 
-const DIRECTIONS: DirectionDef[] = [
-	{ dx: 1, dy: 0, name: 'horizontal' },
-	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
-	{ dx: 0, dy: 1, name: 'vertical' },
-	{ dx: 0, dy: -1, name: 'vertical-reverse' },
-	{ dx: 1, dy: 1, name: 'diagonal-down' },
-	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
-	{ dx: 1, dy: -1, name: 'diagonal-up' },
-	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' }
-];
-
 // Weighted direction pool - more diagonal and backward entries for better distribution
-const WEIGHTED_DIRECTIONS: DirectionDef[] = [
-	// Forward directions (1x)
-	{ dx: 1, dy: 0, name: 'horizontal' },
-	{ dx: 0, dy: 1, name: 'vertical' },
-	// Backward directions (3x each)
-	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
-	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
-	{ dx: -1, dy: 0, name: 'horizontal-reverse' },
-	{ dx: 0, dy: -1, name: 'vertical-reverse' },
-	{ dx: 0, dy: -1, name: 'vertical-reverse' },
-	{ dx: 0, dy: -1, name: 'vertical-reverse' },
-	// Diagonal directions (4x each)
-	{ dx: 1, dy: 1, name: 'diagonal-down' },
-	{ dx: 1, dy: 1, name: 'diagonal-down' },
-	{ dx: 1, dy: 1, name: 'diagonal-down' },
-	{ dx: 1, dy: 1, name: 'diagonal-down' },
-	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
-	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
-	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
-	{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
-	{ dx: 1, dy: -1, name: 'diagonal-up' },
-	{ dx: 1, dy: -1, name: 'diagonal-up' },
-	{ dx: 1, dy: -1, name: 'diagonal-up' },
-	{ dx: 1, dy: -1, name: 'diagonal-up' },
-	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
-	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
-	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
-	{ dx: -1, dy: 1, name: 'diagonal-down-reverse' }
-];
+const DIRECTION_AXES = [
+	'horizontal',
+	'vertical',
+	'diagonal',
+	'diagonal-backward',
+] as const;
+
+const DIRECTION_FAMILIES: Record<(typeof DIRECTION_AXES)[number], DirectionDef[]> = {
+	horizontal: [
+		{ dx: 1, dy: 0, name: 'horizontal' },
+		{ dx: -1, dy: 0, name: 'horizontal-reverse' },
+	],
+	vertical: [
+		{ dx: 0, dy: 1, name: 'vertical' },
+		{ dx: 0, dy: -1, name: 'vertical-reverse' },
+	],
+	diagonal: [
+		{ dx: 1, dy: 1, name: 'diagonal-down' },
+		{ dx: -1, dy: -1, name: 'diagonal-up-reverse' },
+	],
+	'diagonal-backward': [
+		{ dx: 1, dy: -1, name: 'diagonal-up' },
+		{ dx: -1, dy: 1, name: 'diagonal-down-reverse' },
+	],
+};
 
 const DIRECTION_DELTAS: Record<Direction, [number, number]> = {
 	'horizontal': [0, 1],
@@ -110,21 +95,36 @@ function placeWord(
 	row: number,
 	col: number,
 	direction: DirectionDef
-): void {
+): { row: number; col: number }[] {
 	const { dx, dy } = direction;
+	const cells: { row: number; col: number }[] = [];
 
 	for (let i = 0; i < word.length; i++) {
 		const newRow = row + (dy * i);
 		const newCol = col + (dx * i);
 		grid[newRow][newCol].letter = word[i];
 		grid[newRow][newCol].placed = true;
+		cells.push({ row: newRow, col: newCol });
 	}
+
+	return cells;
 }
 
 function calculatePoints(word: string, difficulty: Difficulty): number {
 	const basePoints = word.length * 10;
 	const difficultyMultiplier = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 1.5 : 2;
 	return Math.round(basePoints * difficultyMultiplier);
+}
+
+
+function pickBalancedDirection(axisBias: Record<string, number>): DirectionDef {
+	const axes = [...DIRECTION_AXES];
+	const minUsage = Math.min(...axes.map((axis) => axisBias[axis] ?? 0));
+	const candidateAxes = axes.filter((axis) => (axisBias[axis] ?? 0) === minUsage);
+	const axis = candidateAxes[Math.floor(Math.random() * candidateAxes.length)];
+	const family = DIRECTION_FAMILIES[axis];
+	axisBias[axis] = (axisBias[axis] ?? 0) + 1;
+	return family[Math.floor(Math.random() * family.length)]
 }
 
 function createAlmostMatch(word: string): string {
@@ -135,7 +135,10 @@ function createAlmostMatch(word: string): string {
 
 	for (let i = 0; i < numChanges; i++) {
 		const pos = Math.floor(Math.random() * chars.length);
-		const newChar = ITALIAN_LETTERS[Math.floor(Math.random() * ITALIAN_LETTERS.length)];
+		let newChar = chars[pos];
+		while (newChar === chars[pos]) {
+			newChar = ITALIAN_LETTERS[Math.floor(Math.random() * ITALIAN_LETTERS.length)];
+		}
 		chars[pos] = newChar;
 	}
 
@@ -146,12 +149,13 @@ function tryPlaceDecoy(
 	grid: Cell[][],
 	word: string,
 	gridSize: number,
-	maxAttempts: number
+	maxAttempts: number,
+	axisBias: Record<string, number>
 ): boolean {
 	const decoyWord = createAlmostMatch(word);
 
 	for (let attempt = 0; attempt < maxAttempts; attempt++) {
-		const direction = WEIGHTED_DIRECTIONS[Math.floor(Math.random() * WEIGHTED_DIRECTIONS.length)];
+		const direction = pickBalancedDirection(axisBias);
 		const row = Math.floor(Math.random() * gridSize);
 		const col = Math.floor(Math.random() * gridSize);
 
@@ -175,11 +179,26 @@ export function generateGrid(
 	const grid = createEmptyGrid(gridSize);
 
 	const shuffled = [...words].sort(() => Math.random() - 0.5);
-	const selectedWords = shuffled.slice(0, wordCount);
+	// Dedupe by normalized form: two entries normalizing to the same grid word
+	// would make the win condition unreachable (only one can be marked found).
+	const seen = new Set<string>();
+	const deduped = shuffled.filter((w) => {
+		const key = removeAccents(w.word.toUpperCase()).replace(/\s+/g, '');
+		if (seen.has(key)) return false;
+		seen.add(key);
+		return true;
+	});
+	const selectedWords = deduped.slice(0, wordCount);
 
 	selectedWords.sort((a, b) => b.word.length - a.word.length);
 
 	const placedWords: PlacedWord[] = [];
+	const placementDirectionBias: Record<string, number> = {
+		horizontal: 0,
+		vertical: 0,
+		diagonal: 0,
+		'diagonal-backward': 0,
+	};
 
 	for (const wordData of selectedWords) {
 		// Remove spaces and accents from multi-word entries for grid placement
@@ -191,18 +210,18 @@ export function generateGrid(
 		while (!placed && attempts < maxAttempts) {
 			attempts++;
 
-			const direction = WEIGHTED_DIRECTIONS[Math.floor(Math.random() * WEIGHTED_DIRECTIONS.length)];
+			const direction = pickBalancedDirection(placementDirectionBias);
 			const row = Math.floor(Math.random() * gridSize);
 			const col = Math.floor(Math.random() * gridSize);
 
 			if (canPlaceWord(grid, word, row, col, direction)) {
-				placeWord(grid, word, row, col, direction);
 				placedWords.push({
 					...wordData,
 					row,
 					col,
 					direction: direction.name,
-					points: calculatePoints(word, difficulty)
+					points: calculatePoints(word, difficulty),
+					cells: placeWord(grid, word, row, col, direction),
 				});
 				placed = true;
 			}
@@ -214,7 +233,10 @@ export function generateGrid(
 		const numDecoys = Math.min(2, Math.floor(placedWords.length / 3));
 		for (let i = 0; i < numDecoys; i++) {
 			const targetWord = placedWords[Math.floor(Math.random() * placedWords.length)].word;
-			tryPlaceDecoy(grid, targetWord, gridSize, 50);
+			// Normalize like real placements: grid letters must be uppercase,
+			// accent-free, and never contain spaces.
+			const normalized = removeAccents(targetWord.toUpperCase()).replace(/\s+/g, '');
+			tryPlaceDecoy(grid, normalized, gridSize, 50, placementDirectionBias);
 		}
 	}
 

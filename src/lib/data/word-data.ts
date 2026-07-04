@@ -353,7 +353,7 @@ export const wordDatabase = {
     { word: 'gemelli', translation: 'twins', definition: 'Two children born at the same time' },
     { word: 'gemello', translation: 'twin', definition: 'One of two children born at the same time' },
     { word: 'figlioccio', translation: 'godson', definition: 'A male godchild' },
-    { word: 'figliocci a', translation: 'goddaughter', definition: 'A female godchild' },
+    { word: 'figlioccia', translation: 'goddaughter', definition: 'A female godchild' },
     { word: 'padrino', translation: 'godfather', definition: 'A male sponsor at baptism' },
     { word: 'madrina', translation: 'godmother', definition: 'A female sponsor at baptism' },
     { word: 'bisnonno', translation: 'great-grandfather', definition: 'The grandfather of one\'s parent' },
@@ -473,10 +473,9 @@ export const wordDatabase = {
     { word: 'palato', translation: 'palate', definition: 'The roof of the mouth' },
     { word: 'gota', translation: 'jowl', definition: 'The lower cheek or jaw' },
     { word: 'nuca', translation: 'nape', definition: 'The back of the neck' },
-    { word: 'gola', translation: 'Adam\'s apple', definition: 'The projection in the throat' },
+    { word: 'pomo', translation: 'Adam\'s apple', definition: 'The projection in the throat' },
     { word: 'clavicola', translation: 'collarbone', definition: 'The bone between neck and shoulder' },
     { word: 'spalliera', translation: 'shoulder blade', definition: 'The flat bone on the back' },
-    { word: 'petto', translation: 'breast', definition: 'The front of the chest' },
     { word: 'capezzolo', translation: 'nipple', definition: 'The protrusion on the breast' },
     { word: 'costola', translation: 'rib', definition: 'Curved bones protecting the chest' },
     { word: 'torace', translation: 'thorax', definition: 'The chest cavity' },
@@ -838,7 +837,6 @@ export const wordDatabase = {
     { word: 'luce', translation: 'light', definition: 'Natural illumination' },
     { word: 'oscurità', translation: 'darkness', definition: 'Absence of light' },
     { word: 'grigio', translation: 'gray', definition: 'Dull weather color' },
-    { word: 'sereno', translation: 'fair weather', definition: 'Pleasant weather conditions' },
     { word: 'variabile', translation: 'variable', definition: 'Changing weather conditions' },
     { word: 'stabile', translation: 'stable', definition: 'Consistent weather conditions' },
     { word: 'previsioni', translation: 'forecast', definition: 'Prediction of weather' },
@@ -1329,7 +1327,7 @@ export const wordDatabase = {
     { word: 'freccette', translation: 'darts', definition: 'A pub game with small arrows' },
     { word: 'motociclismo', translation: 'motorcycling', definition: 'Racing or riding motorcycles' },
     { word: 'automobilismo', translation: 'auto racing', definition: 'Competitive car racing' },
-    { word: 'go-kart', translation: 'go-karting', definition: 'Racing small motorized vehicles' },
+    { word: 'kart', translation: 'go-kart', definition: 'Racing small motorized vehicles' },
     { word: 'rally', translation: 'rally', definition: 'Racing on varied terrain' },
     { word: 'BMX', translation: 'BMX', definition: 'Bicycle motocross racing' },
     { word: 'mountain bike', translation: 'mountain biking', definition: 'Cycling on rough terrain' },
@@ -1537,7 +1535,7 @@ export const wordDatabase = {
     { word: 'realtà virtuale', translation: 'virtual reality', definition: 'Simulated computer environment' },
     { word: 'realtà aumentata', translation: 'augmented reality', definition: 'Digital overlay on real world' },
     { word: 'drone', translation: 'drone', definition: 'Unmanned aerial vehicle' },
-    { word: 'stampa 3D', translation: '3D printing', definition: 'Creating objects layer by layer' },
+    { word: 'microchip', translation: 'microchip', definition: 'A tiny electronic circuit' },
     { word: 'blockchain', translation: 'blockchain', definition: 'Distributed ledger technology' },
     { word: 'criptovaluta', translation: 'cryptocurrency', definition: 'Digital currency' },
     { word: 'app', translation: 'app', definition: 'Software application for mobile' },
@@ -1738,7 +1736,6 @@ export const wordDatabase = {
     { word: 'tardi', translation: 'late', definition: 'After expected time' },
     { word: 'subito', translation: 'immediately', definition: 'Right away' },
     { word: 'adesso', translation: 'now', definition: 'At present time' },
-    { word: 'ora', translation: 'now', definition: 'Current moment' },
     { word: 'dopo', translation: 'after', definition: 'Later than' },
     { word: 'prima', translation: 'before', definition: 'Earlier than' },
     { word: 'durante', translation: 'during', definition: 'Throughout' },
@@ -1821,8 +1818,6 @@ export const wordDatabase = {
     { word: 'ultimo', translation: 'last', definition: 'Final in order' },
     { word: 'penultimo', translation: 'second to last', definition: 'Next to last' },
     { word: 'metà', translation: 'half', definition: 'One of two equal parts' },
-    { word: 'terzo', translation: 'third', definition: 'One of three equal parts' },
-    { word: 'quarto', translation: 'quarter', definition: 'One of four equal parts' },
     { word: 'doppio', translation: 'double', definition: 'Two times as much' },
     { word: 'triplo', translation: 'triple', definition: 'Three times as much' },
     { word: 'singolo', translation: 'single', definition: 'Only one' },
@@ -2232,7 +2227,6 @@ export const wordDatabase = {
     { word: 'elettronica', translation: 'electronics', definition: 'Working with circuits' },
     { word: 'droni', translation: 'drones', definition: 'Flying drones' },
     { word: 'escursione', translation: 'hiking', definition: 'Nature walking' },
-    { word: 'bird watching', translation: 'bird watching', definition: 'Observing birds' },
     { word: 'caccia fotografica', translation: 'photo hunting', definition: 'Nature photography' },
     { word: 'subacquea', translation: 'scuba diving', definition: 'Underwater diving' },
     { word: 'snorkeling', translation: 'snorkeling', definition: 'Surface diving with mask' },
@@ -2414,8 +2408,8 @@ export const wordDatabase = {
     { word: 'villa', translation: 'villa', definition: 'Vacation house' },
     { word: 'appartamento', translation: 'apartment', definition: 'Self-catering unit' },
     { word: 'reception', translation: 'reception', definition: 'Front desk' },
-    { word: 'check-in', translation: 'check-in', definition: 'Registration arrival' },
-    { word: 'check-out', translation: 'check-out', definition: 'Departure process' },
+    { word: 'pernottamento', translation: 'overnight stay', definition: 'Staying somewhere for the night' },
+    { word: 'soggiorno', translation: 'stay', definition: 'A period spent living in a place' },
     { word: 'chiave', translation: 'key', definition: 'Room opener' },
     { word: 'carta magnetica', translation: 'key card', definition: 'Electronic key' },
     { word: 'colazione', translation: 'breakfast', definition: 'Morning meal' },
@@ -2446,6 +2440,38 @@ export const wordDatabase = {
 
 // Export category names for easy access
 export const categories = Object.keys(wordDatabase);
+
+// Human-readable Italian labels for each category key
+export const categoryLabels: Record<string, string> = {
+  animali: 'Animali',
+  cibo: 'Cibo',
+  colori: 'Colori',
+  famiglia: 'Famiglia',
+  corpo: 'Corpo',
+  verbi: 'Verbi',
+  aggettivi: 'Aggettivi',
+  tempo: 'Tempo',
+  vestiti: 'Vestiti',
+  professioni: 'Professioni',
+  trasporti: 'Trasporti',
+  casa: 'Casa',
+  sport: 'Sport',
+  musica: 'Musica',
+  tecnologia: 'Tecnologia',
+  emozioni: 'Emozioni',
+  tempo_cronologico: 'Tempo Cronologico',
+  numeri: 'Numeri',
+  citta: 'Città',
+  natura: 'Natura',
+  scuola: 'Scuola',
+  hobby: 'Hobby',
+  cucina_oggetti: 'Cucina e Oggetti',
+  viaggio: 'Viaggio',
+};
+
+export function formatCategory(key: string): string {
+  return categoryLabels[key] ?? key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
 
 // Helper function to get words by category
 export const getWordsByCategory = (categoryName) => {

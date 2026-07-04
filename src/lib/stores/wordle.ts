@@ -14,6 +14,14 @@ export function getPuzzleNumber() {
 	return Math.floor((today.getTime() - EPOCH_DATE.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 }
 
+// Local-calendar date string. Must use the same clock as getTodayWord(),
+// which rolls over at local midnight — using the UTC date here would wipe
+// saved games mid-day and let players replay the same word.
+function getLocalDateString(): string {
+	const d = new Date();
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 // Linear Congruential Generator (LCG) for deterministic random number generation
 // Uses parameters from Numerical Recipes: a=1664525, c=1013904223, m=2^32
 class SeededRandom {
@@ -51,7 +59,8 @@ function getTodayWord() {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 	const dayNumber = Math.floor((today.getTime() - EPOCH_DATE.getTime()) / (1000 * 60 * 60 * 24));
-	return shuffledWords[dayNumber % shuffledWords.length];
+	const len = shuffledWords.length;
+	return shuffledWords[((dayNumber % len) + len) % len];
 }
 
 function evaluateGuess(guess: string, target: string) {
@@ -85,7 +94,7 @@ function evaluateGuess(guess: string, target: string) {
 }
 
 function createWordleStore() {
-	const today = new Date().toISOString().split('T')[0];
+	const today = getLocalDateString();
 	const todayWord = getTodayWord();
 
 	const initialState: WordleState = {
@@ -140,7 +149,7 @@ function createWordleStore() {
 			if (state.gameState !== 'playing') return state;
 
 			if (state.currentGuess.length !== 5) {
-				toast('Not enough letters', 'default', 1000);
+				toast('Lettere insufficienti', 'default', 1000);
 				return state;
 			}
 
@@ -148,7 +157,7 @@ function createWordleStore() {
 
 			// Validate word - validWords is a Set of uppercase words
 			if (!validWords.has(guess)) {
-				toast('Not in word list', 'default', 1000);
+				toast('Parola non valida', 'default', 1000);
 				return state;
 			}
 
@@ -180,7 +189,7 @@ function createWordleStore() {
 			return newState;
 		}),
 		reset: () => {
-			const today = new Date().toISOString().split('T')[0];
+			const today = getLocalDateString();
 			const todayWord = getTodayWord();
 			const newState: WordleState = {
 				targetWord: todayWord.word.toUpperCase(),

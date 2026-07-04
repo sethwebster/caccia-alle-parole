@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { wordSearchStore } from "$lib/stores/wordSearch";
-  import { wordDatabase } from "$lib/data/word-data";
+  import { wordDatabase, formatCategory } from "$lib/data/word-data";
   import { generateGrid } from "$lib/utils/gridGenerator";
   import {
     getCellsBetween,
@@ -9,12 +9,14 @@
     checkIfWordFound,
     type SelectedCell,
   } from "$lib/utils/wordDetection";
+  import { getDirectionDelta } from '$lib/utils/gridGenerator';
   import type { Difficulty } from "$lib/types";
   import Confetti from "$lib/components/ui/Confetti.svelte";
   import { fade, fly, scale } from "svelte/transition";
 
   const categories = Object.keys(wordDatabase);
   const difficulties: Difficulty[] = ["easy", "medium", "hard"];
+  const difficultyLabels: Record<Difficulty, string> = { easy: 'Facile', medium: 'Medio', hard: 'Difficile' };
 
   let selectedCategory = $state<string | null>($wordSearchStore.category);
   let selectedDifficulty = $state<Difficulty | null>(
@@ -28,8 +30,9 @@
   let gridElement = $state<HTMLElement | undefined>();
   let flashState = $state<"none" | "success" | "error">("none");
   let flashCells = $state<SelectedCell[]>([]);
-  let flashTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
-  let modalTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
+  // Timeout handles must stay non-reactive: writing a $state handle inside
+  // the win $effect re-triggers it infinitely (effect_update_depth_exceeded).
+  let flashTimeout: ReturnType<typeof setTimeout> | null = null;
   let triggerConfetti = $state(false);
 
   let isGameActive = $derived(
@@ -42,32 +45,87 @@
   );
   let gridSize = $derived($wordSearchStore.grid.length);
 
+  function normalizeWord(raw: string): string {
+    return raw
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '')
+      .toUpperCase();
+  }
+
+  function deriveCellsFromPlacement(
+    word: any,
+  ): { row: number; col: number }[] {
+    if (word?.cells && word.cells.length) {
+      return word.cells;
+    }
+
+    if (!word || typeof word.row !== 'number' || typeof word.col !== 'number' || !word.direction) {
+      return [];
+    }
+
+    const placementWord = normalizeWord(word.word);
+    const [dy, dx] = getDirectionDelta(word.direction);
+    const cells: { row: number; col: number }[] = [];
+
+    for (let i = 0; i < placementWord.length; i++) {
+      cells.push({
+        row: word.row + dy * i,
+        col: word.col + dx * i,
+      });
+    }
+
+    return cells;
+  }
+
+  // Plain variable, not $state: reading it must not re-trigger the effect,
+  // otherwise dismissing the modal reopens it forever.
+  let resultShown = false;
+
   $effect(() => {
-    if (isGameWon && !showModal) {
+    if (!isGameWon) {
+      resultShown = false;
+      return;
+    }
+    if (!resultShown) {
+      resultShown = true;
       triggerConfetti = true;
-      if (modalTimeout) clearTimeout(modalTimeout);
-      modalTimeout = setTimeout(() => {
+      const t = setTimeout(() => {
         showModal = true;
-        modalTimeout = null;
       }, 500);
+      return () => clearTimeout(t);
     }
   });
 
-  function startGame() {
-    if (!selectedCategory || !selectedDifficulty) return;
+  function ensureSelectionsFromStore() {
+    if (!selectedCategory && $wordSearchStore.category) {
+      selectedCategory = $wordSearchStore.category;
+    }
+
+    if (!selectedDifficulty && $wordSearchStore.difficulty) {
+      selectedDifficulty = $wordSearchStore.difficulty;
+    }
+  }
+
+  function startWordSearchGame(category: string | null, difficulty: Difficulty | null) {
+    if (!category || !difficulty) {
+      return;
+    }
+
     const categoryWords =
-      wordDatabase[selectedCategory as keyof typeof wordDatabase];
+      wordDatabase[category as keyof typeof wordDatabase];
     if (!categoryWords) return;
-    const { grid, placedWords } = generateGrid(
-      categoryWords,
-      selectedDifficulty,
-    );
-    wordSearchStore.setGame(
-      selectedCategory,
-      selectedDifficulty,
-      placedWords,
-      grid,
-    );
+
+    const { grid, placedWords } = generateGrid(categoryWords, difficulty);
+    selectedCategory = category;
+    selectedDifficulty = difficulty;
+    triggerConfetti = false;
+    wordSearchStore.setGame(category, difficulty, placedWords, grid);
+  }
+
+  function startGame() {
+    ensureSelectionsFromStore();
+    startWordSearchGame(selectedCategory, selectedDifficulty);
   }
 
   function getCellFromPointer(
@@ -128,14 +186,30 @@
     }
   }
 
+  function wordsMatchByNormalized(found: string, target: string) {
+    return normalizeWord(found) === normalizeWord(target);
+  }
+
+  function findFoundWord(word: string) {
+    return $wordSearchStore.words.find((w) => wordsMatchByNormalized(w.word, word));
+  }
+
   function handlePointerUp() {
     if (!isSelecting) return;
     isSelecting = false;
     if (selectedCells.length > 1) {
       const word = getWordFromCells(selectedCells);
       const isFound = checkIfWordFound(word, $wordSearchStore.words);
-      if (isFound && !$wordSearchStore.foundWords.has(word)) {
-        wordSearchStore.markWordAsFound(word);
+      if (isFound) {
+        const normalized = (
+          Array.from($wordSearchStore.foundWords).some((value) => wordsMatchByNormalized(value, isFound.word))
+        );
+
+        if (!normalized) {
+          wordSearchStore.markWordFound(isFound.word);
+        }
+
+        // Force immediate visual success feedback for the selected run.
         triggerFlash("success", [...selectedCells]);
       } else {
         triggerFlash("error", [...selectedCells]);
@@ -154,7 +228,7 @@
       flashState = "none";
       flashCells = [];
       flashTimeout = null;
-    }, 400);
+    }, state === "error" ? 500 : 400);
   }
 
   let selectedCellSet = $derived(
@@ -167,11 +241,12 @@
     new Set(
       Array.from($wordSearchStore.foundWords)
         .map((word) => {
-          const wordData = $wordSearchStore.words.find((w) => w.word === word);
-          return wordData ? wordData.cells : [];
+          const wordData = findFoundWord(word);
+          const cells = wordData ? deriveCellsFromPlacement(wordData) : [];
+          return cells;
         })
         .flat()
-        .map((c) => (c ? `${c.row},${c.col}` : "")),
+        .map((c) => `${c.row},${c.col}`),
     ),
   );
 
@@ -179,6 +254,17 @@
     wordSearchStore.reset();
     selectedCategory = null;
     selectedDifficulty = null;
+    showModal = false;
+    triggerConfetti = false;
+  }
+
+  function retryCurrentGame() {
+    const fallbackCategory =
+      selectedCategory || $wordSearchStore.category || categories[0] || null;
+    const fallbackDifficulty =
+      selectedDifficulty || $wordSearchStore.difficulty || 'easy';
+
+    startWordSearchGame(fallbackCategory, fallbackDifficulty as Difficulty);
     showModal = false;
   }
 
@@ -203,13 +289,12 @@
 
   onDestroy(() => {
     if (flashTimeout) clearTimeout(flashTimeout);
-    if (modalTimeout) clearTimeout(modalTimeout);
   });
 </script>
 
 <div class="game-container">
   <header class="game-header">
-    <a href="/" class="back-btn">
+    <a href="/" class="back-btn" aria-label="Torna alla home">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -227,10 +312,10 @@
     <div class="header-center">
       <h1>Caccia</h1>
       {#if isGameActive}
-        <span class="game-info">{selectedCategory} • {selectedDifficulty}</span>
+        <span class="game-info">{formatCategory(selectedCategory ?? '')} • {selectedDifficulty ? difficultyLabels[selectedDifficulty] : ''}</span>
       {/if}
     </div>
-    <button class="settings-btn" onclick={resetGame}>
+    <button class="settings-btn" aria-label="Nuova partita" onclick={resetGame}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -253,36 +338,39 @@
         <h2>Nuova Caccia</h2>
         <div class="setup-form">
           <div class="form-group">
-            <label>Scegli una categoria</label>
+            <div class="form-label">Scegli una categoria</div>
             <div class="options-grid">
               {#each categories as category}
                 <button
+                  type="button"
                   class="option-btn"
                   class:active={selectedCategory === category}
                   onclick={() => selectCategory(category)}
                 >
-                  {category}
+                  {formatCategory(category)}
                 </button>
               {/each}
             </div>
           </div>
 
           <div class="form-group">
-            <label>Livello di difficoltà</label>
+            <div class="form-label">Livello di difficoltà</div>
             <div class="options-grid cols-3">
               {#each difficulties as difficulty}
                 <button
-                  class="option-btn capitalize"
+                  type="button"
+                  class="option-btn"
                   class:active={selectedDifficulty === difficulty}
                   onclick={() => selectDifficulty(difficulty)}
                 >
-                  {difficulty}
+                  {difficultyLabels[difficulty]}
                 </button>
               {/each}
             </div>
           </div>
 
           <button
+            type="button"
             class="start-btn"
             disabled={!selectedCategory || !selectedDifficulty}
             onclick={startGame}
@@ -350,6 +438,9 @@
               >
                 <span class="word-it">{word.word}</span>
                 <span class="word-en">{word.translation}</span>
+                {#if $wordSearchStore.foundWords.has(word.word)}
+                  <span class="found-badge">✓</span>
+                {/if}
               </div>
             {/each}
           </div>
@@ -360,16 +451,32 @@
 </div>
 
 {#if showModal}
-  <div class="modal-backdrop" transition:fade onclick={resetGame}>
+  <div
+    class="modal-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Chiudi risultato"
+    onclick={(event) => {
+      if (event.currentTarget === event.target) {
+        resetGame();
+      }
+    }}
+    onkeydown={(event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        resetGame();
+      }
+    }}
+    transition:fade
+  >
     <div
       class="modal-content"
       transition:scale={{ duration: 400, start: 0.8 }}
-      onclick={(e) => e.stopPropagation()}
     >
       <div class="result-icon">🏆</div>
       <h2>Partita Terminata!</h2>
       <p class="result-msg">
-        Hai trovato tutte le parole in {selectedCategory}!
+        Hai trovato tutte le parole in {formatCategory(selectedCategory ?? '')}!
       </p>
 
       <div class="stats-card">
@@ -379,12 +486,12 @@
         </div>
         <div class="stat-row">
           <span class="label">Difficoltà</span>
-          <span class="value capitalize">{selectedDifficulty}</span>
+          <span class="value">{selectedDifficulty ? difficultyLabels[selectedDifficulty] : ''}</span>
         </div>
       </div>
 
       <div class="modal-btns">
-        <button class="primary-btn" onclick={startGame}>Rigioca</button>
+        <button class="primary-btn" onclick={retryCurrentGame}>Rigioca</button>
         <button class="ghost-btn" onclick={resetGame}>Nuova Partita</button>
       </div>
     </div>
@@ -474,7 +581,7 @@
   .form-group {
     margin-bottom: 24px;
   }
-  .form-group label {
+   .form-group .form-label {
     display: block;
     font-size: 0.85rem;
     font-weight: 700;
@@ -625,25 +732,27 @@
   }
 
   .cell.is-selected {
-    background: var(--cds-color-primary-light);
-    color: var(--cds-color-primary);
-    border-color: var(--cds-color-primary);
+    background: #f59e0b;
+    color: white;
+    border-color: #d97706;
     z-index: 1;
   }
   .cell.is-found {
-    background: var(--cds-color-secondary-light);
-    color: var(--cds-color-secondary-active);
+    background: #22c55e;
+    color: white;
+    border-color: transparent;
     animation: cell-pop 0.3s;
   }
   .cell.is-success {
-    background: var(--cds-color-success);
+    background: #22c55e;
     color: white;
     border-color: transparent;
   }
   .cell.is-error {
-    background: var(--cds-color-error-light);
-    color: var(--cds-color-error);
-    animation: cell-shake 0.3s;
+    background: #ef4444;
+    color: white;
+    border-color: transparent;
+    animation: cell-shake 0.5s;
   }
 
   .word-list-panel {
@@ -696,7 +805,13 @@
   .word-chip.found {
     background: var(--cds-color-success-light);
     border-color: var(--cds-color-success-light);
-    opacity: 0.6;
+    color: #0f5132;
+  }
+  .word-chip .found-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08rem;
+    color: #14532d;
   }
   .word-chip.found .word-it {
     text-decoration: line-through;
@@ -818,11 +933,17 @@
     100% {
       transform: translateX(0);
     }
-    25% {
-      transform: translateX(-4px);
+    20% {
+      transform: translateX(-5px);
     }
-    75% {
-      transform: translateX(4px);
+    40% {
+      transform: translateX(5px);
+    }
+    60% {
+      transform: translateX(-5px);
+    }
+    80% {
+      transform: translateX(5px);
     }
   }
 

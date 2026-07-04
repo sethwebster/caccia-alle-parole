@@ -1,9 +1,16 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import { afterNavigate } from "$app/navigation";
   import { wordleUI } from "$lib/stores/wordle";
   import { fade } from "svelte/transition";
 
   let menuOpen = $state(false);
+
+  // Covers browser back/forward too — the full-screen menu would otherwise
+  // stay open over the new page and block all clicks.
+  afterNavigate(() => {
+    menuOpen = false;
+  });
 
   function toggleMenu() {
     menuOpen = !menuOpen;
@@ -28,16 +35,11 @@
 
       <div class="nav-actions">
         <div class="links desktop-only">
-          <a href="/parola" class:active={$page.url.pathname === "/parola"}
-            >Paròle</a
-          >
-          <a href="/caccia" class:active={$page.url.pathname === "/caccia"}
-            >Caccia</a
-          >
-          <a
-            href="/paroliere"
-            class:active={$page.url.pathname === "/paroliere"}>Paroliere</a
-          >
+          <a href="/parola" class:active={$page.url.pathname === "/parola"}>Paròle</a>
+          <a href="/caccia" class:active={$page.url.pathname === "/caccia"}>Caccia</a>
+          <a href="/paroliere" class:active={$page.url.pathname === "/paroliere"}>Paroliere</a>
+          <a href="/impiccato" class:active={$page.url.pathname === "/impiccato"}>Impiccato</a>
+          <a href="/anagrammi" class:active={$page.url.pathname === "/anagrammi"}>Anagrammi</a>
         </div>
 
         {#if $page.url.pathname.includes("/parola")}
@@ -130,10 +132,6 @@
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-  }
-
-  .brand-name span {
-    color: var(--cds-color-primary);
   }
 
   .nav-actions {
