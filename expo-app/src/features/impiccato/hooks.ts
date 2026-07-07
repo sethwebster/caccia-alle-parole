@@ -45,7 +45,7 @@ function usePersistedRound(round: ImpiccatoRound | null) {
 
 /**
  * One-shot end-of-round presentation: fires confetti immediately on a win and
- * schedules the modal ~500ms later so the board stays visible underneath.
+ * schedules the modal ~1400ms later so the confetti volley plays out first.
  * The `shownRef` guard means dismissing never re-opens the modal, and the
  * timeout is cleared on cleanup so a new round can't pop a stale modal that
  * would reveal the next answer. Guard resets when play resumes.
@@ -64,7 +64,7 @@ function useRoundResult(gameState: ImpiccatoGameState) {
 		if (shownRef.current) return;
 		shownRef.current = true;
 		if (gameState === 'won') setConfettiBurst((burst) => burst + 1);
-		const timeout = setTimeout(() => setModalVisible(true), 500);
+		const timeout = setTimeout(() => setModalVisible(true), 1400);
 		return () => clearTimeout(timeout);
 	}, [gameState]);
 

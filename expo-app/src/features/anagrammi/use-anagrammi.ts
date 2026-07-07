@@ -52,7 +52,7 @@ function useCountdown(deadline: number, running: boolean, onExpire: () => void):
 
 /**
  * One-shot round result reveal: when the round ends, fire confetti (on win)
- * and open the modal ~500ms later so the board stays visible underneath.
+ * and open the modal ~1400ms later so the confetti volley plays out first.
  * Runs once per status transition — dismissing never re-opens it — and the
  * timeout is cleared on cleanup so a new round can't pop a stale modal.
  */
@@ -66,7 +66,7 @@ function useResultReveal(status: RoundStatus) {
 			return;
 		}
 		if (status === 'correct') setConfettiBurst((burst) => burst + 1);
-		const timeout = setTimeout(() => setModalVisible(true), 500);
+		const timeout = setTimeout(() => setModalVisible(true), 1400);
 		return () => clearTimeout(timeout);
 	}, [status]);
 

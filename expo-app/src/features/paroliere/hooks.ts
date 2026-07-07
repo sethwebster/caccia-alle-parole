@@ -18,7 +18,7 @@ function useServiceTeardown(service: ParoliereService): void {
 
 /**
  * One-shot result reveal: when a round finishes, fire confetti for big
- * scores and open the modal ~500ms later (board visible under confetti).
+ * scores and open the modal ~1400ms later (confetti volley plays out first).
  * The guard resets on a new round; dismissing never re-opens the modal,
  * and the pending timeout is cleared so a new round can't pop a stale one.
  */
@@ -41,7 +41,7 @@ export function useResultReveal(state: ParoliereState): {
 		if (shownRef.current) return;
 		shownRef.current = true;
 		if (score > 20) setBurst((b) => b + 1);
-		const timeout = setTimeout(() => setModalVisible(true), 500);
+		const timeout = setTimeout(() => setModalVisible(true), 1400);
 		return () => clearTimeout(timeout);
 	}, [finished, score]);
 

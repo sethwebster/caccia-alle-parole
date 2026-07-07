@@ -47,7 +47,7 @@ function usePersistedGame(game: WordSearchState, hydrated: boolean) {
 }
 
 /**
- * One-shot win sequence: confetti fires immediately, the modal ~500ms later
+ * One-shot win sequence: confetti fires immediately, the modal ~1400ms later
  * so the completed board stays visible under the shower. The guard resets
  * when a new round starts, dismissing never re-opens the modal, and the
  * pending timeout is cleared on cleanup so a new round can't pop a stale one.
@@ -66,7 +66,7 @@ function useWinSequence(isWon: boolean) {
 			firedRef.current = true;
 			setBurst((b) => b + 1);
 		}
-		const timeout = setTimeout(() => setShowModal(true), 500);
+		const timeout = setTimeout(() => setShowModal(true), 1400);
 		return () => clearTimeout(timeout);
 	}, [isWon]);
 
