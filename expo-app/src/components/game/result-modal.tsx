@@ -1,9 +1,19 @@
 import type { ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, Keyframe } from 'react-native-reanimated';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
+
+// Kit's --ease-out over --duration-med: settles without spring overshoot.
+const cardIn = new Keyframe({
+	0: { opacity: 0, transform: [{ scale: 0.92 }] },
+	100: {
+		opacity: 1,
+		transform: [{ scale: 1 }],
+		easing: Easing.bezier(0.22, 1, 0.36, 1).factory(),
+	},
+}).duration(240);
 
 type Props = {
 	visible: boolean;
@@ -38,7 +48,7 @@ export function ResultModal({
 			<Animated.View entering={FadeIn.duration(200)} style={styles.backdrop}>
 				<Pressable style={StyleSheet.absoluteFill} onPress={onDismiss} accessibilityLabel="Chiudi risultato" />
 				<Animated.View
-					entering={ZoomIn.springify().damping(16)}
+					entering={cardIn}
 					style={[styles.card, { backgroundColor: surface.card }]}
 				>
 					<Text style={styles.icon}>{icon}</Text>
