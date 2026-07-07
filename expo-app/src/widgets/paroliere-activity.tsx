@@ -34,15 +34,15 @@ const ParoliereActivityView = (
 	// Banner follows the system color scheme; the Dynamic Island is always
 	// dark, so its views use fixed light-on-black colors.
 	const dark = environment.colorScheme === 'dark';
-	const text = dark ? '#f1f5f9' : '#0f172a';
-	const secondary = dark ? '#b6c0d4' : '#475569';
+	const text = dark ? '#F8EFE2' : '#43241B';
+	const secondary = dark ? '#D9BFA9' : '#96705E';
 	const timer = { lower: new Date(props.startedAt), upper: new Date(props.endsAt) };
 
 	return {
 		banner: (
 			<HStack alignment="center" modifiers={[padding({ all: 16 })]}>
 				<VStack alignment="leading" spacing={2}>
-					<Text modifiers={[font({ size: 15, weight: 'bold' }), foregroundStyle('#4f46e5')]}>
+					<Text modifiers={[font({ size: 15, weight: 'bold' }), foregroundStyle('#C33F2E')]}>
 						Paroliere
 					</Text>
 					<Text modifiers={[font({ size: 13 }), foregroundStyle(secondary)]}>
@@ -57,24 +57,24 @@ const ParoliereActivityView = (
 				/>
 			</HStack>
 		),
-		compactLeading: <Image systemName="textformat.abc" color="#f59e0b" />,
+		compactLeading: <Image systemName="textformat.abc" color="#D99A2B" />,
 		compactTrailing: (
 			<Text
 				timerInterval={timer}
 				countsDown
 				modifiers={[
 					font({ size: 14, weight: 'semibold', design: 'rounded' }),
-					foregroundStyle('#f59e0b'),
+					foregroundStyle('#D99A2B'),
 				]}
 			/>
 		),
-		minimal: <Image systemName="timer" color="#f59e0b" />,
+		minimal: <Image systemName="timer" color="#D99A2B" />,
 		expandedLeading: (
 			<VStack alignment="leading" spacing={2} modifiers={[padding({ leading: 8 })]}>
 				<Text modifiers={[font({ size: 15, weight: 'bold' }), foregroundStyle('#818cf8')]}>
 					Paroliere
 				</Text>
-				<Text modifiers={[font({ size: 13 }), foregroundStyle('#94a3b8')]}>
+				<Text modifiers={[font({ size: 13 }), foregroundStyle('#C9A98B')]}>
 					{`${props.wordsFound} parole`}
 				</Text>
 			</VStack>

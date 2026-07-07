@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette, GameRadius } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 type Props = {
@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
 	btn: {
 		paddingVertical: 12,
 		paddingHorizontal: 14,
-		borderRadius: 12,
-		borderWidth: 1,
+		borderRadius: GameRadius.sm,
+		borderWidth: 2,
 		alignItems: 'center',
 	},
 	active: {
 		backgroundColor: GamePalette.primary,
 		borderColor: GamePalette.primary,
 	},
-	label: { fontWeight: '700', fontSize: 14 },
+	label: { fontFamily: GameFonts.body700, fontSize: 14 },
 });

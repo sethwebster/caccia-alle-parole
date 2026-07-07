@@ -2,8 +2,8 @@ import Svg, { Circle, Line } from 'react-native-svg';
 
 import { GamePalette } from '@/constants/game-theme';
 
-const GALLOWS_COLOR = GamePalette.primaryDark; // #4338ca
-const ROPE_COLOR = GamePalette.amberDark; // #d97706
+const GALLOWS_COLOR = GamePalette.primaryDark;
+const ROPE_COLOR = GamePalette.amberDark;
 
 type Props = {
 	/** 0-6 wrong guesses; reveals head, body, arms, legs progressively. */

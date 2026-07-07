@@ -6,7 +6,7 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
@@ -98,7 +98,7 @@ export function AnagrammiScreen() {
 								label={`💡 Indizio (${MAX_HINTS - state.hintsUsed})`}
 								onPress={game.requestHint}
 								disabled={state.hintsUsed >= MAX_HINTS || !playing}
-								background="#fef3c7"
+								background={GamePalette.amberLight}
 								color={GamePalette.amberDark}
 								grow
 							/>
@@ -123,8 +123,8 @@ export function AnagrammiScreen() {
 								label="⏭"
 								onPress={game.skip}
 								disabled={!playing}
-								background="#fee2e2"
-								color="#b91c1c"
+								background={GamePalette.onPrimaryMuted}
+								color={GamePalette.primaryDark}
 							/>
 						</View>
 					</View>
@@ -208,11 +208,11 @@ const styles = StyleSheet.create({
 	},
 	categoryLabel: {
 		fontSize: 10,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.6,
 	},
-	categoryValue: { fontSize: 16, fontWeight: '800', textTransform: 'capitalize' },
+	categoryValue: { fontSize: 16, fontFamily: GameFonts.display700, textTransform: 'capitalize' },
 	tilesArea: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
@@ -227,11 +227,11 @@ const styles = StyleSheet.create({
 		backgroundColor: GamePalette.primary,
 		alignItems: 'center',
 		justifyContent: 'center',
-		boxShadow: '0 4px 0 #312e81',
+		boxShadow: '0 4px 0 #9E2F21',
 	},
-	tilePressed: { transform: [{ translateY: 2 }], boxShadow: '0 2px 0 #312e81' },
+	tilePressed: { transform: [{ translateY: 2 }], boxShadow: '0 2px 0 #9E2F21' },
 	tileDisabled: { opacity: 0.5 },
-	tileText: { color: '#fff', fontSize: 24, fontWeight: '800' },
+	tileText: { color: '#fff', fontSize: 24, fontFamily: GameFonts.display800 },
 	slotsArea: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
 		borderColor: GamePalette.primary,
 		backgroundColor: GamePalette.primaryLight,
 	},
-	slotText: { fontSize: 24, fontWeight: '800', textTransform: 'uppercase' },
+	slotText: { fontSize: 24, fontFamily: GameFonts.display800, textTransform: 'uppercase' },
 	actions: { marginTop: 'auto', gap: 12 },
 	actionRow: { flexDirection: 'row', gap: 12 },
 	actionBtn: {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
 	actionSquare: { width: 64 },
 	actionDisabled: { opacity: 0.5 },
 	actionPressed: { transform: [{ translateY: 2 }], opacity: 0.9 },
-	actionText: { fontSize: 16, fontWeight: '800' },
+	actionText: { fontSize: 16, fontFamily: GameFonts.display700 },
 	answerCard: {
 		alignSelf: 'stretch',
 		alignItems: 'center',
@@ -275,17 +275,17 @@ const styles = StyleSheet.create({
 	},
 	answerLabel: {
 		fontSize: 11,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.6,
 	},
 	answerWord: {
 		fontSize: 34,
-		fontWeight: '800',
+		fontFamily: GameFonts.display800,
 		color: GamePalette.primary,
 		marginVertical: 6,
 		textAlign: 'center',
 	},
-	answerTranslation: { fontSize: 15, fontWeight: '700', marginBottom: 6, textAlign: 'center' },
+	answerTranslation: { fontSize: 15, fontFamily: GameFonts.body700, marginBottom: 6, textAlign: 'center' },
 	answerDefinition: { fontSize: 13, fontStyle: 'italic', textAlign: 'center' },
 });

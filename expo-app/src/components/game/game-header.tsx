@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { GameFonts, GamePalette, GameRadius } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 type Props = {
@@ -23,13 +24,17 @@ export function GameHeader({
 	const surface = useGameSurface();
 
 	return (
-		<View style={[styles.header, { backgroundColor: surface.card, borderBottomColor: surface.border }]}>
+		<View style={styles.header}>
 			<Pressable
 				accessibilityLabel="Torna alla home"
 				onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
-				style={({ pressed }) => [styles.iconBtn, pressed && { backgroundColor: surface.tile }]}
+				style={({ pressed }) => [
+					styles.iconBtn,
+					{ backgroundColor: surface.tile },
+					pressed && styles.pressed,
+				]}
 			>
-				<Text style={[styles.iconText, { color: surface.textSecondary }]}>‹</Text>
+				<Text style={styles.iconText}>‹</Text>
 			</Pressable>
 			<View style={styles.center}>
 				<Text style={[styles.title, { color: surface.text }]}>{title}</Text>
@@ -41,9 +46,13 @@ export function GameHeader({
 				<Pressable
 					accessibilityLabel={actionAccessibilityLabel}
 					onPress={onAction}
-					style={({ pressed }) => [styles.iconBtn, pressed && { backgroundColor: surface.tile }]}
+					style={({ pressed }) => [
+						styles.iconBtn,
+						{ backgroundColor: surface.tile },
+						pressed && styles.pressed,
+					]}
 				>
-					<Text style={[styles.iconText, { color: surface.textSecondary }]}>{actionLabel}</Text>
+					<Text style={styles.iconText}>{actionLabel}</Text>
 				</Pressable>
 			) : (
 				<View style={styles.iconBtn} />
@@ -57,25 +66,32 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingHorizontal: 12,
-		paddingVertical: 10,
-		borderBottomWidth: StyleSheet.hairlineWidth,
+		gap: 12,
+		paddingHorizontal: 20,
+		paddingVertical: 8,
+		minHeight: 60,
 	},
 	iconBtn: {
-		width: 40,
-		height: 40,
-		borderRadius: 12,
+		width: 44,
+		height: 44,
+		borderRadius: GameRadius.pill,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	iconText: { fontSize: 26, fontWeight: '700', lineHeight: 28 },
+	pressed: { opacity: 0.7, transform: [{ scale: 0.95 }] },
+	iconText: {
+		fontFamily: GameFonts.display800,
+		fontSize: 20,
+		lineHeight: 24,
+		color: GamePalette.primary,
+	},
 	center: { alignItems: 'center', flex: 1 },
-	title: { fontSize: 19, fontWeight: '800' },
+	title: { fontFamily: GameFonts.display800, fontSize: 22 },
 	subtitle: {
+		fontFamily: GameFonts.body600,
 		fontSize: 11,
-		fontWeight: '700',
 		textTransform: 'uppercase',
-		letterSpacing: 0.5,
+		letterSpacing: 2,
 		marginTop: 1,
 	},
 });

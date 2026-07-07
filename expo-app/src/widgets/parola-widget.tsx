@@ -22,18 +22,18 @@ const ParolaWidgetView = (props: ParolaWidgetProps, environment: WidgetEnvironme
 	// cannot reference module scope.
 	const dark = environment.colorScheme === 'dark';
 	const card = dark ? '#151b2e' : '#ffffff';
-	const text = dark ? '#f1f5f9' : '#0f172a';
-	const secondary = dark ? '#b6c0d4' : '#475569';
+	const text = dark ? '#F8EFE2' : '#43241B';
+	const secondary = dark ? '#D9BFA9' : '#96705E';
 	const won = props.gameState === 'won';
 	const lost = props.gameState === 'lost';
 	const status = won ? `Vinto in ${props.guessCount ?? 0}` : lost ? 'Persa' : 'Da giocare';
-	const statusColor = won ? '#22c55e' : lost ? '#ef4444' : text;
+	const statusColor = won ? '#578A3F' : lost ? '#C33F2E' : text;
 	const streak = `🔥 ${props.streak ?? 0}`;
 
 	if (environment.widgetFamily === 'systemSmall') {
 		return (
 			<VStack alignment="leading" spacing={4} modifiers={[containerBackground(card, 'widget')]}>
-				<Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#4f46e5')]}>
+				<Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#C33F2E')]}>
 					Paròle
 				</Text>
 				<Spacer />
@@ -50,7 +50,7 @@ const ParolaWidgetView = (props: ParolaWidgetProps, environment: WidgetEnvironme
 	return (
 		<HStack alignment="center" modifiers={[containerBackground(card, 'widget')]}>
 			<VStack alignment="leading" spacing={4}>
-				<Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#4f46e5')]}>
+				<Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#C33F2E')]}>
 					Paròle
 				</Text>
 				<Text modifiers={[font({ size: 22, weight: 'bold' }), foregroundStyle(statusColor)]}>

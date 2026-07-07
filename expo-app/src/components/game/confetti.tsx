@@ -8,7 +8,7 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated';
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+const COLORS = ['#C33F2E', '#D99A2B', '#578A3F', '#D9553F', '#F3C4B4'];
 const PIECE_COUNT = 60;
 const DURATION = 2600;
 

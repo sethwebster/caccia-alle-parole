@@ -9,7 +9,7 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 import { useParoliereGame, useResultReveal, useSubmitPulse } from './hooks';
@@ -23,7 +23,7 @@ import {
 } from './service';
 
 const GRID_GAP = 10;
-const AMBER_LIGHT = '#fef3c7';
+const AMBER_LIGHT = GamePalette.amberLight;
 
 const RULES = [
 	{ icon: '✨', text: 'Trascina tra lettere adiacenti' },
@@ -275,12 +275,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	setupIcon: { fontSize: 52, marginBottom: 18 },
-	setupTitle: { fontSize: 26, fontWeight: '800', marginBottom: 10, textAlign: 'center' },
+	setupTitle: { fontSize: 26, fontFamily: GameFonts.display800, marginBottom: 10, textAlign: 'center' },
 	setupDesc: { fontSize: 15, textAlign: 'center', marginBottom: 24 },
 	rulesBox: { alignSelf: 'stretch', borderRadius: 20, padding: 18, gap: 12, marginBottom: 24 },
 	ruleRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
 	ruleIcon: { fontSize: 20 },
-	ruleText: { fontSize: 14, fontWeight: '600', flexShrink: 1 },
+	ruleText: { fontSize: 14, fontFamily: GameFonts.body600, flexShrink: 1 },
 	startBtn: {
 		alignSelf: 'stretch',
 		backgroundColor: GamePalette.primary,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
 		borderRadius: 16,
 		alignItems: 'center',
 	},
-	startText: { color: '#fff', fontSize: 17, fontWeight: '800' },
+	startText: { color: '#fff', fontSize: 17, fontFamily: GameFonts.display700 },
 	pressed: { opacity: 0.75 },
 
 	// Game
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		overflow: 'hidden',
 	},
-	wordText: { fontSize: 24, fontWeight: '800', letterSpacing: 2, textTransform: 'uppercase' },
+	wordText: { fontSize: 24, fontFamily: GameFonts.display800, letterSpacing: 2, textTransform: 'uppercase' },
 	pulseOverlay: {
 		position: 'absolute',
 		top: 0,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	pulseText: { color: '#fff', fontSize: 24, fontWeight: '800', letterSpacing: 2 },
+	pulseText: { color: '#fff', fontSize: 24, fontFamily: GameFonts.display800, letterSpacing: 2 },
 	grid: { width: '100%', maxWidth: 360, aspectRatio: 1, gap: GRID_GAP },
 	gridRow: { flex: 1, flexDirection: 'row', gap: GRID_GAP },
 	tile: {
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
 		borderColor: GamePalette.primaryDark,
 		transform: [{ scale: 1.05 }],
 	},
-	tileText: { fontSize: 30, fontWeight: '800' },
+	tileText: { fontSize: 30, fontFamily: GameFonts.display800 },
 
 	// Found words
 	foundPanel: {
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
 	},
 	foundTitle: {
 		fontSize: 12,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.6,
 		marginBottom: 10,
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 6,
 		paddingHorizontal: 12,
 	},
-	chipText: { color: GamePalette.amberDark, fontSize: 13, fontWeight: '700' },
+	chipText: { color: GamePalette.amberDark, fontSize: 13, fontFamily: GameFonts.body700 },
 
 	// Result modal
 	resultStats: { alignSelf: 'stretch', marginTop: 6 },

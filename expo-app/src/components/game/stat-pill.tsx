@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette, GameRadius } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 type Props = {
@@ -16,7 +16,7 @@ export function StatPill({ label, value, tone = 'default' }: Props) {
 		tone === 'accent'
 			? { backgroundColor: GamePalette.primaryLight, borderColor: GamePalette.primaryLight }
 			: tone === 'warning'
-				? { backgroundColor: '#fef3c7', borderColor: '#fde68a' }
+				? { backgroundColor: GamePalette.amberLight, borderColor: GamePalette.amberLight }
 				: { backgroundColor: surface.tile, borderColor: surface.border };
 	const valueColor =
 		tone === 'accent' ? GamePalette.primary : tone === 'warning' ? GamePalette.amberDark : surface.text;
@@ -36,14 +36,14 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 8,
 		paddingHorizontal: 14,
-		borderRadius: 14,
+		borderRadius: GameRadius.md,
 		borderWidth: 1,
 	},
 	label: {
+		fontFamily: GameFonts.body600,
 		fontSize: 10,
-		fontWeight: '800',
 		textTransform: 'uppercase',
-		letterSpacing: 0.6,
+		letterSpacing: 1.5,
 	},
-	value: { fontSize: 17, fontWeight: '800', marginTop: 1 },
+	value: { fontFamily: GameFonts.display700, fontSize: 17, marginTop: 1 },
 });

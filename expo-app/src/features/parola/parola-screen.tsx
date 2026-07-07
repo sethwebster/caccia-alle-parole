@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import type { KeyboardState, LetterResult, Word, WordleState } from '@/lib/types';
 
@@ -35,8 +35,13 @@ const FLIP_STAGGER_MS = 150;
 const STATUS_COLORS: Record<LetterResult['status'], string> = {
 	correct: GamePalette.success,
 	present: GamePalette.amber,
-	absent: '#64748b',
+	absent: GamePalette.absent,
 };
+
+const DAILY_CAPTION = `La parola del giorno · ${new Date().toLocaleDateString('it-IT', {
+	day: 'numeric',
+	month: 'long',
+})}`;
 
 export function ParolaScreen() {
 	const surface = useGameSurface();
@@ -58,6 +63,7 @@ export function ParolaScreen() {
 					<>
 						<View style={styles.boardArea}>
 							<Board state={game.state} />
+							<Text style={[styles.dailyCaption, { color: surface.textTertiary }]}>{DAILY_CAPTION}</Text>
 							{game.toast ? <ToastBanner key={game.toast.id} message={game.toast.message} /> : null}
 						</View>
 						<KeyboardPanel keyboardState={game.state.keyboardState} onKey={game.onKey} />
@@ -276,6 +282,7 @@ function Key({
 	const surface = useGameSurface();
 	const colored = status !== undefined && status !== 'empty';
 	const wide = label.length > 1;
+	const display = label === 'ENTER' ? 'INVIO' : label;
 	return (
 		<Pressable
 			accessibilityLabel={label === '⌫' ? 'Cancella' : label === 'ENTER' ? 'Invio' : label}
@@ -283,12 +290,12 @@ function Key({
 			style={({ pressed }) => [
 				styles.key,
 				wide && styles.keyWide,
-				{ backgroundColor: colored ? STATUS_COLORS[status] : surface.tile },
+				{ backgroundColor: colored ? STATUS_COLORS[status] : surface.card },
 				pressed && styles.keyPressed,
 			]}
 		>
 			<Text style={[styles.keyText, wide && styles.keyTextWide, { color: colored ? '#ffffff' : surface.text }]}>
-				{label}
+				{display}
 			</Text>
 		</Pressable>
 	);
@@ -323,27 +330,28 @@ const styles = StyleSheet.create({
 	safe: { flex: 1 },
 	content: { flex: 1, width: '100%', maxWidth: 640, alignSelf: 'center' },
 	boardArea: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 12 },
-	board: { width: '100%', maxWidth: 340, gap: 6 },
-	row: { flexDirection: 'row', gap: 6 },
+	board: { width: '100%', maxWidth: 340, gap: 8 },
+	row: { flexDirection: 'row', gap: 8 },
 	tile: {
 		flex: 1,
 		aspectRatio: 1,
 		borderWidth: 2,
-		borderRadius: 8,
+		borderRadius: GameRadius.sm,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	tileText: { fontSize: 28, fontWeight: '800' },
+	tileText: { fontSize: 28, fontFamily: GameFonts.display800 },
+	dailyCaption: { fontFamily: GameFonts.body600, fontSize: 13, paddingTop: 12 },
 	toast: {
 		position: 'absolute',
 		top: 10,
 		alignSelf: 'center',
-		backgroundColor: 'rgba(15, 23, 42, 0.92)',
+		backgroundColor: 'rgba(67, 36, 27, 0.92)',
 		paddingHorizontal: 18,
 		paddingVertical: 10,
 		borderRadius: 12,
 	},
-	toastText: { color: '#ffffff', fontSize: 14, fontWeight: '700' },
+	toastText: { color: '#ffffff', fontSize: 14, fontFamily: GameFonts.body700 },
 	keyboard: {
 		width: '100%',
 		maxWidth: 500,
@@ -352,11 +360,18 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		gap: 6,
 	},
-	kbRow: { flexDirection: 'row', justifyContent: 'center', gap: 4 },
-	key: { flex: 1, height: 52, borderRadius: 6, alignItems: 'center', justifyContent: 'center' },
+	kbRow: { flexDirection: 'row', justifyContent: 'center', gap: 5 },
+	key: {
+		flex: 1,
+		height: 48,
+		borderRadius: GameRadius.sm,
+		alignItems: 'center',
+		justifyContent: 'center',
+		...GameShadow.subtle,
+	},
 	keyWide: { flex: 1.5 },
-	keyText: { fontSize: 15, fontWeight: '700' },
-	keyTextWide: { fontSize: 12 },
+	keyText: { fontSize: 16, fontFamily: GameFonts.display700 },
+	keyTextWide: { fontSize: 13 },
 	keyPressed: { opacity: 0.7, transform: [{ scale: 0.96 }] },
 	stats: { alignSelf: 'stretch', marginTop: 4 },
 	targetCard: {
@@ -368,11 +383,11 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	howTo: { alignSelf: 'stretch', gap: 8 },
-	howToText: { fontSize: 14, lineHeight: 20 },
-	howToBold: { fontWeight: '800' },
+	howToText: { fontFamily: GameFonts.body500, fontSize: 14, lineHeight: 20 },
+	howToBold: { fontFamily: GameFonts.body700 },
 	exampleBox: {
 		borderWidth: 1,
-		borderRadius: 14,
+		borderRadius: GameRadius.md,
 		padding: 14,
 		gap: 10,
 		marginTop: 4,
@@ -382,13 +397,24 @@ const styles = StyleSheet.create({
 		width: 34,
 		height: 34,
 		borderWidth: 2,
-		borderRadius: 6,
+		borderRadius: 8,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	miniTileText: { fontSize: 16, fontWeight: '800' },
-	targetLabel: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.6 },
-	targetWord: { fontSize: 32, fontWeight: '800', marginVertical: 2 },
-	targetTranslation: { fontSize: 15, fontWeight: '600' },
-	targetDefinition: { fontSize: 13, fontStyle: 'italic', marginTop: 4, textAlign: 'center' },
+	miniTileText: { fontSize: 16, fontFamily: GameFonts.display800 },
+	targetLabel: {
+		fontFamily: GameFonts.body600,
+		fontSize: 11,
+		textTransform: 'uppercase',
+		letterSpacing: 2,
+	},
+	targetWord: { fontFamily: GameFonts.display800, fontSize: 32, marginVertical: 2 },
+	targetTranslation: { fontFamily: GameFonts.body600, fontSize: 15 },
+	targetDefinition: {
+		fontFamily: GameFonts.body500,
+		fontSize: 13,
+		fontStyle: 'italic',
+		marginTop: 4,
+		textAlign: 'center',
+	},
 });

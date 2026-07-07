@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 type Props = {
@@ -78,7 +78,7 @@ export function ResultStat({ label, value, accent }: { label: string; value: str
 const styles = StyleSheet.create({
 	backdrop: {
 		flex: 1,
-		backgroundColor: 'rgba(15, 23, 42, 0.55)',
+		backgroundColor: 'rgba(67, 36, 27, 0.55)',
 		alignItems: 'center',
 		justifyContent: 'center',
 		padding: 24,
@@ -90,20 +90,22 @@ const styles = StyleSheet.create({
 		paddingVertical: 32,
 		paddingHorizontal: 26,
 		alignItems: 'center',
+		...GameShadow.raised,
 	},
 	icon: { fontSize: 56, marginBottom: 10 },
-	title: { fontSize: 26, fontWeight: '800', marginBottom: 6, textAlign: 'center' },
-	message: { fontSize: 15, textAlign: 'center', marginBottom: 14 },
+	title: { fontFamily: GameFonts.display800, fontSize: 26, marginBottom: 6, textAlign: 'center' },
+	message: { fontFamily: GameFonts.body500, fontSize: 15, textAlign: 'center', marginBottom: 14 },
 	buttons: { alignSelf: 'stretch', marginTop: 18, gap: 10 },
 	primaryBtn: {
 		backgroundColor: GamePalette.primary,
-		paddingVertical: 15,
-		borderRadius: 14,
+		height: 48,
+		borderRadius: GameRadius.md,
 		alignItems: 'center',
+		justifyContent: 'center',
 	},
-	primaryText: { color: '#fff', fontWeight: '800', fontSize: 16 },
+	primaryText: { color: GamePalette.onPrimary, fontFamily: GameFonts.display700, fontSize: 17 },
 	ghostBtn: { paddingVertical: 10, alignItems: 'center' },
-	ghostText: { fontWeight: '700', fontSize: 14 },
+	ghostText: { fontFamily: GameFonts.body700, fontSize: 14 },
 	pressed: { opacity: 0.75 },
 	statRow: {
 		alignSelf: 'stretch',
@@ -112,6 +114,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 9,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 	},
-	statLabel: { fontSize: 14, fontWeight: '600' },
-	statValue: { fontSize: 16, fontWeight: '800' },
+	statLabel: { fontFamily: GameFonts.body600, fontSize: 14 },
+	statValue: { fontFamily: GameFonts.display700, fontSize: 16 },
 });

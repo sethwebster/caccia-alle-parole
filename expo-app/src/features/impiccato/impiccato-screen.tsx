@@ -6,7 +6,7 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useGameSurface } from '@/hooks/use-game-surface';
@@ -43,7 +43,7 @@ export function ImpiccatoScreen() {
 							</View>
 							<Gallows
 								mistakes={MAX_LIVES - round.remainingLives}
-								bodyColor={scheme === 'dark' ? '#e2e8f0' : GamePalette.slate}
+								bodyColor={scheme === 'dark' ? '#F8EFE2' : GamePalette.slate}
 							/>
 						</Animated.View>
 						<View style={styles.statusColumn}>
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
 	categoryText: {
 		color: GamePalette.primary,
 		fontSize: 11,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.5,
 	},
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
 	},
 	livesLabel: {
 		fontSize: 10,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.6,
 	},
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		borderBottomWidth: 3,
 	},
-	slotText: { fontSize: 22, fontWeight: '800', textTransform: 'uppercase' },
+	slotText: { fontSize: 22, fontFamily: GameFonts.display800, textTransform: 'uppercase' },
 	keyboard: { marginTop: 'auto', gap: 7 },
 	keyRow: { flexDirection: 'row', justifyContent: 'center', gap: 5 },
 	key: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
 	keyCorrect: { backgroundColor: GamePalette.success, borderColor: GamePalette.success },
 	keyFaded: { opacity: 0.5 },
 	keyPressed: { transform: [{ translateY: 2 }], opacity: 0.9 },
-	keyText: { fontSize: 16, fontWeight: '700' },
+	keyText: { fontSize: 16, fontFamily: GameFonts.display700 },
 	answerCard: {
 		alignSelf: 'stretch',
 		borderRadius: 20,
@@ -277,17 +277,17 @@ const styles = StyleSheet.create({
 	},
 	answerLabel: {
 		fontSize: 11,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.6,
 	},
 	answerWord: {
 		fontSize: 32,
-		fontWeight: '800',
+		fontFamily: GameFonts.display800,
 		color: GamePalette.primary,
 		marginVertical: 6,
 		textAlign: 'center',
 	},
-	answerTranslation: { fontSize: 15, fontWeight: '700', marginBottom: 6 },
+	answerTranslation: { fontSize: 15, fontFamily: GameFonts.body700, marginBottom: 6 },
 	answerDefinition: { fontSize: 13, fontStyle: 'italic', textAlign: 'center' },
 });

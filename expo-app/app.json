@@ -47,12 +47,16 @@
               "displayName": "Parola del Giorno",
               "description": "Stato del puzzle di oggi e serie di vittorie.",
               "ios": {
-                "supportedFamilies": ["systemSmall", "systemMedium"]
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium"
+                ]
               }
             }
           ]
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

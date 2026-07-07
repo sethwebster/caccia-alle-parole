@@ -9,7 +9,7 @@ import { GameHeader } from '@/components/game/game-header';
 import { OptionButton } from '@/components/game/option-button';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
-import { GamePalette } from '@/constants/game-theme';
+import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { categories, formatCategory } from '@/data/word-data';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import type { Difficulty, PlacedWord, WordSearchState } from '@/lib/types';
@@ -351,13 +351,13 @@ const styles = StyleSheet.create({
 	},
 	setupTitle: {
 		fontSize: 24,
-		fontWeight: '800',
+		fontFamily: GameFonts.display800,
 		textAlign: 'center',
 		marginBottom: 20,
 	},
 	setupLabel: {
 		fontSize: 12,
-		fontWeight: '700',
+		fontFamily: GameFonts.body700,
 		textTransform: 'uppercase',
 		letterSpacing: 0.5,
 		marginBottom: 10,
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	startBtnDisabled: { opacity: 0.5 },
-	startText: { color: '#fff', fontWeight: '800', fontSize: 17 },
+	startText: { color: '#fff', fontFamily: GameFonts.display700, fontSize: 17 },
 	pressed: { opacity: 0.85 },
 	board: {
 		flex: 1,
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	cellText: { fontWeight: '800', textTransform: 'uppercase' },
+	cellText: { fontFamily: GameFonts.display700, textTransform: 'uppercase' },
 	panel: {
 		flex: 1,
 		minHeight: 120,
@@ -421,13 +421,13 @@ const styles = StyleSheet.create({
 	},
 	panelTitle: {
 		fontSize: 12,
-		fontWeight: '800',
+		fontFamily: GameFonts.body600,
 		textTransform: 'uppercase',
 		letterSpacing: 0.5,
 	},
 	panelCount: {
 		fontSize: 12,
-		fontWeight: '700',
+		fontFamily: GameFonts.body700,
 		color: GamePalette.primary,
 	},
 	chips: {
@@ -453,19 +453,19 @@ const styles = StyleSheet.create({
 		gap: 4,
 	},
 	chipWord: {
-		fontWeight: '700',
+		fontFamily: GameFonts.body700,
 		fontSize: 13,
 		textTransform: 'uppercase',
 	},
 	chipWordFound: { textDecorationLine: 'line-through' },
 	chipBadge: {
 		fontSize: 11,
-		fontWeight: '800',
+		fontFamily: GameFonts.body700,
 		color: GamePalette.successText,
 	},
 	chipTranslation: {
 		fontSize: 11,
-		fontWeight: '600',
+		fontFamily: GameFonts.body600,
 		marginTop: 1,
 	},
 	modalStats: {
