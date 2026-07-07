@@ -2,6 +2,7 @@
   import { page } from "$app/stores";
   import { afterNavigate } from "$app/navigation";
   import { wordleUI } from "$lib/stores/wordle";
+  import { GAMES_ENABLED } from "$lib/config";
   import { fade } from "svelte/transition";
 
   let menuOpen = $state(false);
@@ -35,14 +36,20 @@
 
       <div class="nav-actions">
         <div class="links desktop-only">
-          <a href="/parola" class:active={$page.url.pathname === "/parola"}>Paròle</a>
-          <a href="/caccia" class:active={$page.url.pathname === "/caccia"}>Caccia</a>
-          <a href="/paroliere" class:active={$page.url.pathname === "/paroliere"}>Paroliere</a>
-          <a href="/impiccato" class:active={$page.url.pathname === "/impiccato"}>Impiccato</a>
-          <a href="/anagrammi" class:active={$page.url.pathname === "/anagrammi"}>Anagrammi</a>
+          {#if GAMES_ENABLED}
+            <a href="/parola" class:active={$page.url.pathname === "/parola"}>Paròle</a>
+            <a href="/caccia" class:active={$page.url.pathname === "/caccia"}>Caccia</a>
+            <a href="/paroliere" class:active={$page.url.pathname === "/paroliere"}>Paroliere</a>
+            <a href="/impiccato" class:active={$page.url.pathname === "/impiccato"}>Impiccato</a>
+            <a href="/anagrammi" class:active={$page.url.pathname === "/anagrammi"}>Anagrammi</a>
+          {:else}
+            <a href="/#giochi">I Giochi</a>
+            <a href="/#screenshots">Screenshot</a>
+            <a href="/supporto" class:active={$page.url.pathname === "/supporto"}>Supporto</a>
+          {/if}
         </div>
 
-        {#if $page.url.pathname.includes("/parola")}
+        {#if GAMES_ENABLED && $page.url.pathname.includes("/parola")}
           <button
             class="icon-btn"
             onclick={() => ($wordleUI.showModal = true)}
@@ -82,11 +89,18 @@
     <div class="mobile-menu" transition:fade={{ duration: 200 }}>
       <div class="mobile-links">
         <a href="/" onclick={closeMenu}>Home</a>
-        <a href="/parola" onclick={closeMenu}>Paròle</a>
-        <a href="/caccia" onclick={closeMenu}>Caccia alle Paròle</a>
-        <a href="/paroliere" onclick={closeMenu}>Paroliere</a>
-        <a href="/impiccato" onclick={closeMenu}>Impiccato</a>
-        <a href="/anagrammi" onclick={closeMenu}>Anagrammi</a>
+        {#if GAMES_ENABLED}
+          <a href="/parola" onclick={closeMenu}>Paròle</a>
+          <a href="/caccia" onclick={closeMenu}>Caccia alle Paròle</a>
+          <a href="/paroliere" onclick={closeMenu}>Paroliere</a>
+          <a href="/impiccato" onclick={closeMenu}>Impiccato</a>
+          <a href="/anagrammi" onclick={closeMenu}>Anagrammi</a>
+        {:else}
+          <a href="/#giochi" onclick={closeMenu}>I Giochi</a>
+          <a href="/#screenshots" onclick={closeMenu}>Screenshot</a>
+          <a href="/supporto" onclick={closeMenu}>Supporto</a>
+          <a href="/privacy" onclick={closeMenu}>Privacy</a>
+        {/if}
       </div>
     </div>
   {/if}
@@ -99,9 +113,9 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 252, 245, 0.85);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(120, 52, 30, 0.1);
     height: 72px;
     display: flex;
     align-items: center;
@@ -128,10 +142,11 @@
   }
 
   .brand-name {
-    font-family: var(--cds-font-family-display);
+    font-family: "Baloo 2", var(--cds-font-family-display), sans-serif;
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
+    color: #43241b;
   }
 
   .nav-actions {
@@ -147,7 +162,8 @@
 
   .links a {
     text-decoration: none;
-    color: var(--cds-color-text-secondary);
+    color: #96705e;
+    font-family: "Figtree", sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     transition: color 0.2s;
@@ -155,7 +171,7 @@
 
   .links a:hover,
   .links a.active {
-    color: var(--cds-color-primary);
+    color: #c33f2e;
   }
 
   .menu-toggle {
@@ -171,7 +187,7 @@
   .bar {
     width: 24px;
     height: 2px;
-    background: var(--cds-color-text-primary);
+    background: #43241b;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 2px;
   }
@@ -189,7 +205,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: white;
+    background: #fffcf5;
     z-index: 90;
     padding: 40px 20px;
   }
@@ -202,11 +218,11 @@
   }
 
   .mobile-links a {
-    font-family: var(--cds-font-family-display);
+    font-family: "Baloo 2", var(--cds-font-family-display), sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     text-decoration: none;
-    color: var(--cds-color-text-primary);
+    color: #43241b;
   }
 
   @media (max-width: 768px) {

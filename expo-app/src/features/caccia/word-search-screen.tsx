@@ -14,6 +14,7 @@ import { categories, formatCategory } from '@/data/word-data';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import type { Difficulty, PlacedWord, WordSearchState } from '@/lib/types';
 import type { SelectedCell } from '@/lib/wordDetection';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
 import { useGridSelection, useWordSearchGame, type Flash } from './use-word-search';
 import { DIFFICULTY_LABELS, normalizeWord } from './word-search-service';
@@ -50,6 +51,7 @@ export function WordSearchScreen() {
 		reset,
 		submitSelection,
 	} = useWordSearchGame();
+	useScreenInteractive(hydrated);
 
 	const [pickedCategory, setPickedCategory] = useState<string | null>(null);
 	const [pickedDifficulty, setPickedDifficulty] = useState<Difficulty | null>(null);

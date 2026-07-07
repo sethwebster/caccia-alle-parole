@@ -10,6 +10,7 @@ import Animated, {
 	withTiming,
 	ZoomIn,
 } from 'react-native-reanimated';
+import { SymbolView } from 'expo-symbols';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Confetti } from '@/components/game/confetti';
@@ -18,6 +19,7 @@ import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import type { KeyboardState, LetterResult, Word, WordleState } from '@/lib/types';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
 import { MAX_GUESSES } from './parola-logic';
 import { useParolaGame } from './use-parola-game';
@@ -46,6 +48,7 @@ const DAILY_CAPTION = `La parola del giorno · ${new Date().toLocaleDateString('
 export function ParolaScreen() {
 	const surface = useGameSurface();
 	const game = useParolaGame();
+	useScreenInteractive(game.hydrated);
 	const won = game.state.gameState === 'won';
 	const [showHelp, setShowHelp] = useState(false);
 
@@ -294,9 +297,18 @@ function Key({
 				pressed && styles.keyPressed,
 			]}
 		>
-			<Text style={[styles.keyText, wide && styles.keyTextWide, { color: colored ? '#ffffff' : surface.text }]}>
-				{display}
-			</Text>
+			{label === '⌫' ? (
+				// Baloo 2 lacks U+232B; the system-font fallback looks thin next to the letter keys.
+				<SymbolView
+					name={{ ios: 'delete.left.fill', android: 'backspace', web: 'backspace' }}
+					size={19}
+					tintColor={colored ? '#ffffff' : surface.text}
+				/>
+			) : (
+				<Text style={[styles.keyText, wide && styles.keyTextWide, { color: colored ? '#ffffff' : surface.text }]}>
+					{display}
+				</Text>
+			)}
 		</Pressable>
 	);
 }

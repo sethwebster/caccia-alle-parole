@@ -11,6 +11,7 @@ import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
 import { useParoliereGame, useResultReveal, useSubmitPulse } from './hooks';
 import {
@@ -41,6 +42,7 @@ export function ParoliereScreen() {
 	const surface = useGameSurface();
 	const router = useRouter();
 	const { state, service } = useParoliereGame();
+	useScreenInteractive();
 	const { modalVisible, dismissModal, burst } = useResultReveal(state);
 
 	return (

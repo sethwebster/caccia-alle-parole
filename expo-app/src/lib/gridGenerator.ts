@@ -117,14 +117,50 @@ function calculatePoints(word: string, difficulty: Difficulty): number {
 }
 
 
-function pickBalancedDirection(axisBias: Record<string, number>): DirectionDef {
-	const axes = [...DIRECTION_AXES];
-	const minUsage = Math.min(...axes.map((axis) => axisBias[axis] ?? 0));
-	const candidateAxes = axes.filter((axis) => (axisBias[axis] ?? 0) === minUsage);
-	const axis = candidateAxes[Math.floor(Math.random() * candidateAxes.length)];
-	const family = DIRECTION_FAMILIES[axis];
-	axisBias[axis] = (axisBias[axis] ?? 0) + 1;
-	return family[Math.floor(Math.random() * family.length)]
+/** Random start so every cell of the word stays in bounds for the given direction. */
+function randomValidStart(
+	gridSize: number,
+	wordLength: number,
+	direction: DirectionDef,
+): { row: number; col: number } {
+	const span = gridSize - wordLength;
+	const roll = () => Math.floor(Math.random() * (span + 1));
+	const col = direction.dx === 1 ? roll() : direction.dx === -1 ? roll() + wordLength - 1 : Math.floor(Math.random() * gridSize);
+	const row = direction.dy === 1 ? roll() : direction.dy === -1 ? roll() + wordLength - 1 : Math.floor(Math.random() * gridSize);
+	return { row, col };
+}
+
+/**
+ * Place a word on the least-used axis that fits, so directions stay balanced.
+ * Axis usage counts successful placements only: counting attempts made
+ * diagonals (which fail more often) look used while never actually placing.
+ */
+function tryPlaceBalanced(
+	grid: Cell[][],
+	word: string,
+	axisBias: Record<string, number>,
+	attemptsPerAxis: number,
+): { row: number; col: number; direction: DirectionDef } | null {
+	const gridSize = grid.length;
+	if (word.length > gridSize) return null;
+
+	const orderedAxes = [...DIRECTION_AXES]
+		.map((axis) => ({ axis, usage: axisBias[axis] ?? 0, tiebreak: Math.random() }))
+		.sort((a, b) => a.usage - b.usage || a.tiebreak - b.tiebreak);
+
+	for (const { axis } of orderedAxes) {
+		const family = DIRECTION_FAMILIES[axis];
+		for (let attempt = 0; attempt < attemptsPerAxis; attempt++) {
+			const direction = family[Math.floor(Math.random() * family.length)];
+			const { row, col } = randomValidStart(gridSize, word.length, direction);
+			if (canPlaceWord(grid, word, row, col, direction)) {
+				axisBias[axis] = (axisBias[axis] ?? 0) + 1;
+				return { row, col, direction };
+			}
+		}
+	}
+
+	return null;
 }
 
 function createAlmostMatch(word: string): string {
@@ -148,24 +184,14 @@ function createAlmostMatch(word: string): string {
 function tryPlaceDecoy(
 	grid: Cell[][],
 	word: string,
-	gridSize: number,
 	maxAttempts: number,
 	axisBias: Record<string, number>
 ): boolean {
 	const decoyWord = createAlmostMatch(word);
-
-	for (let attempt = 0; attempt < maxAttempts; attempt++) {
-		const direction = pickBalancedDirection(axisBias);
-		const row = Math.floor(Math.random() * gridSize);
-		const col = Math.floor(Math.random() * gridSize);
-
-		if (canPlaceWord(grid, decoyWord, row, col, direction)) {
-			placeWord(grid, decoyWord, row, col, direction);
-			return true;
-		}
-	}
-
-	return false;
+	const placement = tryPlaceBalanced(grid, decoyWord, axisBias, maxAttempts);
+	if (!placement) return false;
+	placeWord(grid, decoyWord, placement.row, placement.col, placement.direction);
+	return true;
 }
 
 export function generateGrid(
@@ -203,28 +229,17 @@ export function generateGrid(
 	for (const wordData of selectedWords) {
 		// Remove spaces and accents from multi-word entries for grid placement
 		const word = removeAccents(wordData.word.toUpperCase()).replace(/\s+/g, '');
-		let placed = false;
-		let attempts = 0;
-		const maxAttempts = 100;
-
-		while (!placed && attempts < maxAttempts) {
-			attempts++;
-
-			const direction = pickBalancedDirection(placementDirectionBias);
-			const row = Math.floor(Math.random() * gridSize);
-			const col = Math.floor(Math.random() * gridSize);
-
-			if (canPlaceWord(grid, word, row, col, direction)) {
-				placedWords.push({
-					...wordData,
-					row,
-					col,
-					direction: direction.name,
-					points: calculatePoints(word, difficulty),
-					cells: placeWord(grid, word, row, col, direction),
-				});
-				placed = true;
-			}
+		const placement = tryPlaceBalanced(grid, word, placementDirectionBias, 50);
+		if (placement) {
+			const { row, col, direction } = placement;
+			placedWords.push({
+				...wordData,
+				row,
+				col,
+				direction: direction.name,
+				points: calculatePoints(word, difficulty),
+				cells: placeWord(grid, word, row, col, direction),
+			});
 		}
 	}
 
@@ -236,7 +251,7 @@ export function generateGrid(
 			// Normalize like real placements: grid letters must be uppercase,
 			// accent-free, and never contain spaces.
 			const normalized = removeAccents(targetWord.toUpperCase()).replace(/\s+/g, '');
-			tryPlaceDecoy(grid, normalized, gridSize, 50, placementDirectionBias);
+			tryPlaceDecoy(grid, normalized, 50, placementDirectionBias);
 		}
 	}
 

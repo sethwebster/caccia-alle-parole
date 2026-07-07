@@ -1,0 +1,92 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:1.00000,0.98840,0.89077,1.00000",
+      "display-p3:0.96783,0.94907,0.81405,1.00000"
+    ],
+    "orientation" : {
+      "start" : {
+        "x" : 0.5,
+        "y" : 0
+      },
+      "stop" : {
+        "x" : 0.5,
+        "y" : 0.7
+      }
+    }
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "Image 7.png",
+          "name" : "Image 7",
+          "position-specializations" : [
+            {
+              "idiom" : "square",
+              "value" : {
+                "scale" : 0.72,
+                "translation-in-points" : [
+                  22.625,
+                  37.625
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "hidden" : false,
+          "image-name" : "Image 4.png",
+          "name" : "Image 4",
+          "position-specializations" : [
+            {
+              "value" : {
+                "scale" : 1,
+                "translation-in-points" : [
+                  57.5,
+                  -87.5
+                ]
+              }
+            },
+            {
+              "idiom" : "square",
+              "value" : {
+                "scale" : 1.07,
+                "translation-in-points" : [
+                  57.703125,
+                  -111.640625
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "hidden" : false,
+          "image-name" : "Image.png",
+          "name" : "Image",
+          "opacity-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : 0.11
+            }
+          ]
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

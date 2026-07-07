@@ -8,10 +8,10 @@ import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useGameSurface } from '@/hooks/use-game-surface';
-import { Gallows } from '@/features/impiccato/gallows';
+import { Balloon } from '@/features/impiccato/balloon';
 import { useImpiccatoGame, useWebKeyboard } from '@/features/impiccato/hooks';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 import {
 	getDisplaySlots,
 	KEYBOARD_LAYOUT,
@@ -22,15 +22,15 @@ import {
 
 export function ImpiccatoScreen() {
 	const surface = useGameSurface();
-	const scheme = useColorScheme();
 	const { round, guess, startRound, modalVisible, dismissModal, confettiBurst } = useImpiccatoGame();
+	useScreenInteractive(round !== null);
 	useWebKeyboard(guess);
 
 	const won = round?.gameState === 'won';
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
-			<GameHeader title="L'Impiccato" subtitle="Sfida Classica" onAction={() => startRound(false)} />
+			<GameHeader title="Il Palloncino" subtitle="Non farlo scoppiare!" onAction={() => startRound(false)} />
 			{round ? (
 				<ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
 					<View style={styles.upper}>
@@ -41,10 +41,7 @@ export function ImpiccatoScreen() {
 							<View style={styles.categoryPill}>
 								<Text style={styles.categoryText}>{formatCategory(round.targetCategory)}</Text>
 							</View>
-							<Gallows
-								mistakes={MAX_LIVES - round.remainingLives}
-								bodyColor={scheme === 'dark' ? '#F8EFE2' : GamePalette.slate}
-							/>
+							<Balloon mistakes={MAX_LIVES - round.remainingLives} />
 						</Animated.View>
 						<View style={styles.statusColumn}>
 							<View style={[styles.livesCard, { backgroundColor: surface.card, borderColor: surface.border }]}>
@@ -106,8 +103,8 @@ export function ImpiccatoScreen() {
 
 			<ResultModal
 				visible={modalVisible && round !== null}
-				icon={won ? '🎉' : '🎭'}
-				title={won ? 'Vittoria!' : 'Game Over'}
+				icon={won ? '🎉' : '💥'}
+				title={won ? 'Vittoria!' : 'Scoppiato!'}
 				primaryLabel="Continua Sfida"
 				onPrimary={() => {
 					dismissModal();

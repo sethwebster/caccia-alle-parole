@@ -8,6 +8,7 @@
     "scheme": "cacciaparole",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "icon": "./assets/app.icon",
       "bundleIdentifier": "com.sethwebster.cacciaparole",
       "supportsTablet": true,
       "infoPlist": {
@@ -36,6 +37,14 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/android-icon-monochrome.png",
+          "color": "#C33F2E",
+          "defaultChannel": "default"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -99,6 +108,12 @@
         "projectId": "c95afd29-ad15-432d-8185-b9f2bed1cc8a"
       }
     },
-    "owner": "sethwebster"
+    "owner": "sethwebster",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c95afd29-ad15-432d-8185-b9f2bed1cc8a"
+    }
   }
 }

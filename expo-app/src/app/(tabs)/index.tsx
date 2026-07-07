@@ -1,13 +1,16 @@
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { SymbolView } from 'expo-symbols';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
 import { useHomeData, type DailyChallenge } from '@/features/home/use-home-data';
+import { useStreakReminder } from '@/features/notifications/use-streak-reminder';
+import { useUsername } from '@/features/profile/use-username';
 import { useGameSurface } from '@/hooks/use-game-surface';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
 const GAMES = [
   {
@@ -25,9 +28,9 @@ const GAMES = [
   },
   {
     href: '/impiccato' as const,
-    icon: '🎪',
-    title: "L'Impiccato",
-    subtitle: 'Indovina la parola lettera per lettera',
+    icon: '🎈',
+    title: 'Il Palloncino',
+    subtitle: 'Indovina la parola prima che scoppi',
   },
   {
     href: '/anagrammi' as const,
@@ -37,22 +40,19 @@ const GAMES = [
   },
 ];
 
-const TABS = [
-  { id: 'giochi', emoji: '🎲', label: 'Giochi' },
-  { id: 'classifica', emoji: '🏆', label: 'Classifica' },
-  { id: 'profilo', emoji: '👤', label: 'Profilo' },
-];
-
 export default function HomeScreen() {
   const surface = useGameSurface();
   const insets = useSafeAreaInsets();
   const daily = useHomeData();
+  useScreenInteractive(daily.hydrated);
+  useStreakReminder(daily);
+  const { username } = useUsername();
 
   return (
     <View style={[styles.safe, { backgroundColor: surface.background }]}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <Hero topInset={insets.top} streak={daily.streak} />
+        <Hero topInset={insets.top} streak={daily.streak} name={username} />
         <View style={styles.floating}>
           <DailyChallengeCard daily={daily} />
           <View style={styles.sectionHeader}>
@@ -66,18 +66,19 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
-      <TabBar bottomInset={insets.bottom} />
     </View>
   );
 }
 
-function Hero({ topInset, streak }: { topInset: number; streak: number }) {
+function Hero({ topInset, streak, name }: { topInset: number; streak: number; name: string }) {
   return (
     <View style={[styles.hero, { paddingTop: topInset + 12 }]}>
       <View style={styles.heroRow}>
         <View style={styles.heroText}>
           <Text style={styles.heroOverline}>BENTORNATO</Text>
-          <Text style={styles.heroTitle}>Ciao! 👋</Text>
+          <Text style={styles.heroTitle} numberOfLines={1}>
+            {name ? `Ciao, ${name}! 👋` : 'Ciao! 👋'}
+          </Text>
         </View>
         <View style={styles.streakPill}>
           <Text style={styles.streakText}>
@@ -183,49 +184,14 @@ function GameCard({
         <Text style={[styles.cardSubtitle, { color: surface.textSecondary }]}>{subtitle}</Text>
       </View>
       <View style={styles.chevronCircle}>
-        <Text style={styles.chevronText}>›</Text>
+        <SymbolView
+          name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+          size={12}
+          weight="bold"
+          tintColor={GamePalette.onPrimary}
+        />
       </View>
     </Pressable>
-  );
-}
-
-function TabBar({ bottomInset }: { bottomInset: number }) {
-  const surface = useGameSurface();
-  const [active, setActive] = useState('giochi');
-  return (
-    <View
-      style={[
-        styles.tabBar,
-        {
-          backgroundColor: surface.card,
-          borderTopColor: surface.border,
-          paddingBottom: Math.max(bottomInset, 10),
-        },
-      ]}
-    >
-      {TABS.map((tab) => {
-        const isActive = tab.id === active;
-        return (
-          <Pressable
-            key={tab.id}
-            accessibilityRole="tab"
-            accessibilityLabel={tab.label}
-            onPress={() => setActive(tab.id)}
-            style={styles.tabItem}
-          >
-            <Text style={[styles.tabEmoji, !isActive && styles.tabEmojiInactive]}>{tab.emoji}</Text>
-            <Text
-              style={[
-                styles.tabLabel,
-                { color: isActive ? GamePalette.primary : surface.textTertiary },
-              ]}
-            >
-              {tab.label}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </View>
   );
 }
 
@@ -358,21 +324,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chevronText: {
-    fontFamily: GameFonts.display800,
-    fontSize: 17,
-    lineHeight: 20,
-    color: GamePalette.onPrimary,
-  },
-
-  tabBar: {
-    flexDirection: 'row',
-    borderTopWidth: 2,
-    paddingTop: 8,
-    paddingHorizontal: 12,
-  },
-  tabItem: { flex: 1, alignItems: 'center', gap: 3, minHeight: 48, paddingVertical: 5 },
-  tabEmoji: { fontSize: 21 },
-  tabEmojiInactive: { opacity: 0.45 },
-  tabLabel: { fontFamily: GameFonts.body700, fontSize: 11.5 },
 });

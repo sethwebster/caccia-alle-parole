@@ -1,3 +1,4 @@
+import { Observe } from 'expo-observe';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Share } from 'react-native';
 
@@ -160,6 +161,16 @@ export function useParolaGame() {
 			if (next.gameState === 'won') nextStreak = await recordWin();
 			else if (next.gameState === 'lost') nextStreak = await recordLoss();
 			if (nextStreak !== streak) setStreak(nextStreak);
+			if (next.gameState !== 'playing') {
+				Observe.logEvent('parola.finished', {
+					attributes: {
+						won: next.gameState === 'won',
+						attempts: next.guesses.length,
+						streak: nextStreak,
+						puzzle: getPuzzleNumber(),
+					},
+				});
+			}
 			updateParolaWidget({
 				gameState: next.gameState,
 				guessCount: next.guesses.length,

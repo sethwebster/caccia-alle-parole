@@ -9,6 +9,7 @@ import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
 import { useGameSurface } from '@/hooks/use-game-surface';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
 import { MAX_HINTS } from './anagrammi-service';
 import { useAnagrammi } from './use-anagrammi';
@@ -22,6 +23,7 @@ function formatTime(totalSeconds: number): string {
 export function AnagrammiScreen() {
 	const surface = useGameSurface();
 	const game = useAnagrammi();
+	useScreenInteractive(game.hydrated);
 	const { state } = game;
 	const { round } = state;
 	const playing = state.status === 'playing';
@@ -99,7 +101,7 @@ export function AnagrammiScreen() {
 					<View style={styles.actions}>
 						<View style={styles.actionRow}>
 							<ActionButton
-								label={`💡 Indizio (${MAX_HINTS - state.hintsUsed})`}
+								label={`Indizio (${MAX_HINTS - state.hintsUsed})`}
 								onPress={game.requestHint}
 								disabled={state.hintsUsed >= MAX_HINTS || !playing}
 								background={GamePalette.amberLight}
@@ -108,6 +110,7 @@ export function AnagrammiScreen() {
 							/>
 							<ActionButton
 								label="⌫"
+								accessibilityLabel="Cancella lettera"
 								onPress={game.backspace}
 								disabled={game.guess.length === 0 || !playing}
 								background={surface.tile}
@@ -124,7 +127,8 @@ export function AnagrammiScreen() {
 								grow
 							/>
 							<ActionButton
-								label="⏭"
+								label="»"
+								accessibilityLabel="Salta parola"
 								onPress={game.skip}
 								disabled={!playing}
 								background={GamePalette.onPrimaryMuted}
@@ -162,6 +166,8 @@ export function AnagrammiScreen() {
 
 type ActionButtonProps = {
 	label: string;
+	/** Required for glyph-only labels that a screen reader can't speak. */
+	accessibilityLabel?: string;
 	onPress: () => void;
 	disabled?: boolean;
 	background: string;
@@ -170,9 +176,19 @@ type ActionButtonProps = {
 	grow?: boolean;
 };
 
-function ActionButton({ label, onPress, disabled, background, color, grow }: ActionButtonProps) {
+function ActionButton({
+	label,
+	accessibilityLabel,
+	onPress,
+	disabled,
+	background,
+	color,
+	grow,
+}: ActionButtonProps) {
 	return (
 		<Pressable
+			accessibilityRole="button"
+			accessibilityLabel={accessibilityLabel}
 			onPress={onPress}
 			disabled={disabled}
 			style={({ pressed }) => [

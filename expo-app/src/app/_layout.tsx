@@ -1,13 +1,21 @@
+import { Observe, ObserveRoot } from 'expo-observe';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { usePushNotifications } from '@/features/notifications/use-push-notifications';
 import { useAppFonts } from '@/hooks/use-app-fonts';
+import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
-export default function RootLayout() {
+// Must run at module scope, before any screen mounts.
+Observe.configure({ integrations: { 'expo-router': true } });
+
+function RootLayout() {
   const colorScheme = useColorScheme();
   const fontsLoaded = useAppFonts();
+  usePushNotifications();
+  useScreenInteractive(fontsLoaded);
   if (!fontsLoaded) return null;
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -18,3 +26,5 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default ObserveRoot.wrap(RootLayout);
