@@ -8,19 +8,27 @@
     "scheme": "cacciaparole",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.sethwebster.cacciaparole",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleDevelopmentRegion": "it",
+        "CFBundleLocalizations": [
+          "it"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#F8EFE2",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.sethwebster.cacciaparole"
+      "package": "com.sethwebster.cacciaparole",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -31,9 +39,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#F8EFE2",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 240
         }
       ],
       [
@@ -56,11 +64,41 @@
           ]
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "L'app usa le tue foto per impostare l'immagine del profilo."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "ExpoWidgetsTarget",
+                  "bundleIdentifier": "com.sethwebster.cacciaparole.widgets",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.sethwebster.cacciaparole"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "c95afd29-ad15-432d-8185-b9f2bed1cc8a"
+      }
+    },
+    "owner": "sethwebster"
   }
 }
