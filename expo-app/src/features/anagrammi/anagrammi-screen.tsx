@@ -84,9 +84,13 @@ export function AnagrammiScreen() {
 										filled && styles.slotFilled,
 									]}
 								>
-									<Text style={[styles.slotText, { color: filled ? GamePalette.primary : surface.text }]}>
-										{letter ?? ''}
-									</Text>
+									{filled ? (
+										// Keyed by letter: a content swap must remount, not update —
+										// updating an RCTParagraph from ''→'I' leaves a stale 0-width measurement.
+										<Text key={letter} style={[styles.slotText, { color: GamePalette.primary }]}>
+											{letter}
+										</Text>
+									) : null}
 								</View>
 							);
 						})}
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
 		borderColor: GamePalette.primary,
 		backgroundColor: GamePalette.primaryLight,
 	},
-	slotText: { fontSize: 24, fontFamily: GameFonts.display800, textTransform: 'uppercase' },
+	slotText: { fontSize: 24, fontFamily: GameFonts.display800 },
 	actions: { marginTop: 'auto', gap: 12 },
 	actionRow: { flexDirection: 'row', gap: 12 },
 	actionBtn: {

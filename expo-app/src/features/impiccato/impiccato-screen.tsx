@@ -76,9 +76,13 @@ export function ImpiccatoScreen() {
 										{ borderBottomColor: slot.kind === 'hidden' ? GamePalette.primary : surface.border },
 									]}
 								>
-									<Text style={[styles.slotText, { color: surface.text }]}>
-										{slot.kind === 'hidden' ? '' : slot.char}
-									</Text>
+									{slot.kind === 'hidden' ? null : (
+										// Keyed by char: revealing must mount a fresh Text — updating an
+										// RCTParagraph from ''→letter leaves a stale 0-width measurement.
+										<Text key={slot.char} style={[styles.slotText, { color: surface.text }]}>
+											{slot.char}
+										</Text>
+									)}
 								</View>
 							),
 						)}
