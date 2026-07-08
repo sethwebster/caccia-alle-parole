@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState, type Dispatch } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState, type Dispatch } from 'react';
 import { Platform } from 'react-native';
 
 import { useOutcomeEvent } from '@/hooks/use-outcome-event';
@@ -25,27 +25,21 @@ const STORAGE_KEY = 'anagrammi:progress:v1';
 function useCountdown(deadline: number, running: boolean, onExpire: () => void): number {
 	const [timeLeft, setTimeLeft] = useState(() => remainingSeconds(deadline, Date.now()));
 
-	// Re-sync during render when the deadline changes (new round), so the old
-	// round's frozen value (e.g. "0:00") never paints for a frame before the
-	// interval effect runs.
-	const [prevDeadline, setPrevDeadline] = useState(deadline);
-	if (prevDeadline !== deadline) {
-		setPrevDeadline(deadline);
-		setTimeLeft(remainingSeconds(deadline, Date.now()));
-	}
-
 	useEffect(() => {
 		if (!running) return;
-		setTimeLeft(remainingSeconds(deadline, Date.now()));
-		const id = setInterval(() => {
+		const tick = () => {
 			const left = remainingSeconds(deadline, Date.now());
 			setTimeLeft(left);
 			if (left <= 0) {
-				clearInterval(id);
 				onExpire();
 			}
-		}, 250);
-		return () => clearInterval(id);
+		};
+		const sync = setTimeout(tick, 0);
+		const interval = setInterval(tick, 250);
+		return () => {
+			clearTimeout(sync);
+			clearInterval(interval);
+		};
 	}, [deadline, running, onExpire]);
 
 	return timeLeft;
@@ -60,20 +54,26 @@ function useCountdown(deadline: number, running: boolean, onExpire: () => void):
 function useResultReveal(status: RoundStatus) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [confettiBurst, setConfettiBurst] = useState(0);
+	const shownRef = useRef(false);
 
 	useEffect(() => {
 		if (status === 'playing') {
-			setModalVisible(false);
+			shownRef.current = false;
 			return;
 		}
-		if (status === 'correct') setConfettiBurst((burst) => burst + 1);
+		if (shownRef.current) return;
+		shownRef.current = true;
+		const burst = status === 'correct' ? setTimeout(() => setConfettiBurst((count) => count + 1), 0) : null;
 		const timeout = setTimeout(() => setModalVisible(true), 1400);
-		return () => clearTimeout(timeout);
+		return () => {
+			if (burst) clearTimeout(burst);
+			clearTimeout(timeout);
+		};
 	}, [status]);
 
 	const dismissModal = useCallback(() => setModalVisible(false), []);
 
-	return { modalVisible, confettiBurst, dismissModal };
+	return { modalVisible: status === 'playing' ? false : modalVisible, confettiBurst, dismissModal };
 }
 
 /**
@@ -138,7 +138,7 @@ export function useAnagrammi() {
 	const hydrated = useHydratedProgress(dispatch);
 	useSavedProgress(hydrated, state.score, state.streak);
 
-	const expire = useCallback(() => dispatch({ type: 'expire' }), [dispatch]);
+	const expire = useCallback(() => dispatch({ type: 'expire' }), []);
 	const timeLeft = useCountdown(state.deadline, hydrated && state.status === 'playing', expire);
 
 	const { modalVisible, confettiBurst, dismissModal } = useResultReveal(state.status);
@@ -151,20 +151,20 @@ export function useAnagrammi() {
 		wordLength: state.round.targetWord.length,
 	}));
 
-	const tapTile = useCallback((index: number) => dispatch({ type: 'tap-tile', index }), [dispatch]);
-	const typeLetter = useCallback((letter: string) => dispatch({ type: 'type-letter', letter }), [dispatch]);
-	const backspace = useCallback(() => dispatch({ type: 'backspace' }), [dispatch]);
-	const submit = useCallback(() => dispatch({ type: 'submit', now: Date.now() }), [dispatch]);
-	const requestHint = useCallback(() => dispatch({ type: 'hint' }), [dispatch]);
-	const skip = useCallback(() => dispatch({ type: 'skip' }), [dispatch]);
+	const tapTile = useCallback((index: number) => dispatch({ type: 'tap-tile', index }), []);
+	const typeLetter = useCallback((letter: string) => dispatch({ type: 'type-letter', letter }), []);
+	const backspace = useCallback(() => dispatch({ type: 'backspace' }), []);
+	const submit = useCallback(() => dispatch({ type: 'submit', now: Date.now() }), []);
+	const requestHint = useCallback(() => dispatch({ type: 'hint' }), []);
+	const skip = useCallback(() => dispatch({ type: 'skip' }), []);
 	const next = useCallback(() => {
 		dismissModal();
 		dispatch({ type: 'next', round: pickRound(), now: Date.now() });
-	}, [dispatch, dismissModal]);
+	}, [dismissModal]);
 	const reset = useCallback(() => {
 		dismissModal();
 		dispatch({ type: 'reset', round: pickRound(), now: Date.now() });
-	}, [dispatch, dismissModal]);
+	}, [dismissModal]);
 
 	useWebKeyboard(typeLetter, submit, backspace);
 
