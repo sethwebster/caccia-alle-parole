@@ -74,9 +74,12 @@ function useConfettiPieces(burst: number): Piece[] {
 	const [pieces, setPieces] = useState<Piece[]>([]);
 	useEffect(() => {
 		if (burst <= 0) return;
-		setPieces(makePieces(burst));
-		const t = setTimeout(() => setPieces([]), CLEANUP_MS);
-		return () => clearTimeout(t);
+		const start = setTimeout(() => setPieces(makePieces(burst)), 0);
+		const cleanup = setTimeout(() => setPieces([]), CLEANUP_MS);
+		return () => {
+			clearTimeout(start);
+			clearTimeout(cleanup);
+		};
 	}, [burst]);
 	return pieces;
 }
