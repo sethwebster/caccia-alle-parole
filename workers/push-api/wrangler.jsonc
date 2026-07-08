@@ -1,0 +1,13 @@
+{
+	"name": "caccia-push-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-07-01",
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "caccia-push-tokens",
+			"database_id": "32eba79d-4789-486f-bfeb-07c7c3b27222",
+			"migrations_dir": "migrations"
+		}
+	]
+}

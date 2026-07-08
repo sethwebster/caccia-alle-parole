@@ -3,6 +3,10 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
+import { getDeviceIdAsync } from './device-id';
+
+const PUSH_API_URL = 'https://caccia-push-api.sethwebster.workers.dev';
+
 /** How incoming notifications present while the app is foregrounded. */
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -57,4 +61,15 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
 
 	const token = await Notifications.getExpoPushTokenAsync({ projectId });
 	return token.data;
+}
+
+/** Upsert this install's token so the backend can send it pushes. */
+export async function uploadPushTokenAsync(token: string): Promise<void> {
+	const deviceId = await getDeviceIdAsync();
+	const response = await fetch(`${PUSH_API_URL}/v1/push-tokens`, {
+		method: 'POST',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify({ deviceId, token, platform: Platform.OS }),
+	});
+	if (!response.ok) throw new Error(`push token upload failed: ${response.status}`);
 }

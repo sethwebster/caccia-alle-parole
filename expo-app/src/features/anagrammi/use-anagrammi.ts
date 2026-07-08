@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useState, type Dispatch } from 'react';
 import { Platform } from 'react-native';
 
+import { useOutcomeEvent } from '@/hooks/use-outcome-event';
 import { loadJSON, saveJSON } from '@/lib/storage';
 
 import {
@@ -141,6 +142,14 @@ export function useAnagrammi() {
 	const timeLeft = useCountdown(state.deadline, hydrated && state.status === 'playing', expire);
 
 	const { modalVisible, confettiBurst, dismissModal } = useResultReveal(state.status);
+
+	useOutcomeEvent(state.status !== 'playing', 'anagrammi.round_ended', () => ({
+		won: state.status === 'correct',
+		score: state.score,
+		streak: state.streak,
+		category: state.round.category,
+		wordLength: state.round.targetWord.length,
+	}));
 
 	const tapTile = useCallback((index: number) => dispatch({ type: 'tap-tile', index }), [dispatch]);
 	const typeLetter = useCallback((letter: string) => dispatch({ type: 'type-letter', letter }), [dispatch]);

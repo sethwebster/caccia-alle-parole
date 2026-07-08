@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { Platform } from 'react-native';
 
+import { useOutcomeEvent } from '@/hooks/use-outcome-event';
 import { loadJSON, saveJSON } from '@/lib/storage';
 import {
 	guessLetter as applyGuess,
+	MAX_LIVES,
 	newRound,
 	parseSavedRound,
 	type ImpiccatoGameState,
@@ -95,6 +97,13 @@ export function useImpiccatoGame() {
 	useHydratedRound(setRound);
 	usePersistedRound(round);
 	const { modalVisible, dismissModal, confettiBurst } = useRoundResult(round?.gameState ?? 'playing');
+
+	useOutcomeEvent(round != null && round.gameState !== 'playing', 'impiccato.finished', () => ({
+		won: round?.gameState === 'won',
+		score: round?.score ?? 0,
+		category: round?.targetCategory ?? '',
+		wrongGuesses: round ? MAX_LIVES - round.remainingLives : 0,
+	}));
 
 	const guess = useCallback((letter: string) => {
 		setRound((current) => (current ? applyGuess(current, letter) : current));

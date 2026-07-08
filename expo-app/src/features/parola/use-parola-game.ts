@@ -205,6 +205,9 @@ export function useParolaGame() {
 
 	const share = useCallback(async () => {
 		const text = buildShareText(state);
+		Observe.logEvent('parola.shared', {
+			attributes: { won: state.gameState === 'won', attempts: state.guesses.length },
+		});
 		if (Platform.OS === 'web') {
 			if (!navigator.clipboard) return;
 			try {

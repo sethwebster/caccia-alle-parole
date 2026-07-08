@@ -1,3 +1,4 @@
+import { Observe } from 'expo-observe';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
@@ -34,6 +35,7 @@ export function useUsername(): UsernameState {
 	const saveUsername = useCallback((name: string) => {
 		const trimmed = name.trim().slice(0, MAX_USERNAME_LENGTH);
 		setState({ hydrated: true, username: trimmed });
+		Observe.logEvent('profile.renamed', { attributes: { cleared: trimmed.length === 0 } });
 		if (trimmed) {
 			void saveJSON(KEY, trimmed);
 		} else {

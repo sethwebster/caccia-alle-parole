@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Gesture } from 'react-native-gesture-handler';
 
+import { useOutcomeEvent } from '@/hooks/use-outcome-event';
+import { Observe } from 'expo-observe';
 import type { Cell, Difficulty, WordSearchState } from '@/lib/types';
 import {
 	checkIfWordFound,
@@ -113,9 +115,19 @@ export function useWordSearchGame() {
 	const { showModal, closeModal, burst } = useWinSequence(isWon);
 	const { flash, triggerFlash } = useFlash();
 
+	useOutcomeEvent(isWon, 'caccia.completed', () => ({
+		category: game.category ?? '',
+		difficulty: game.difficulty ?? '',
+		score: game.score,
+		words: game.words.length,
+	}));
+
 	const start = (category: string, difficulty: Difficulty) => {
 		const next = createGame(category, difficulty);
-		if (next) setGame(next);
+		if (next) {
+			Observe.logEvent('caccia.started', { attributes: { category, difficulty } });
+			setGame(next);
+		}
 	};
 
 	/** New grid with the same category and difficulty. */
@@ -127,6 +139,16 @@ export function useWordSearchGame() {
 
 	/** Back to the setup screen. */
 	const reset = () => {
+		if (isActive && !isWon) {
+			Observe.logEvent('caccia.abandoned', {
+				attributes: {
+					category: game.category ?? '',
+					difficulty: game.difficulty ?? '',
+					found: game.foundWords.size,
+					words: game.words.length,
+				},
+			});
+		}
 		closeModal();
 		setGame(createEmptyState());
 	};

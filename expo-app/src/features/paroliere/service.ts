@@ -1,3 +1,5 @@
+import { Observe } from 'expo-observe';
+
 import {
 	endParoliereActivity,
 	startParoliereActivity,
@@ -89,6 +91,7 @@ export class ParoliereService {
 		this.deadline = Date.now() + GAME_DURATION * 1000;
 		this.set({ ...initialState(), gameState: 'playing' });
 		this.lastActivityPush = Date.now();
+		Observe.logEvent('paroliere.started');
 		startParoliereActivity(this.activityState());
 		// Countdown against a wall-clock deadline: throttled timers can't
 		// pause the clock, ticks just re-derive the remaining seconds.
@@ -179,6 +182,9 @@ export class ParoliereService {
 			gameState: 'finished',
 			currentPath: [],
 			currentWord: '',
+		});
+		Observe.logEvent('paroliere.finished', {
+			attributes: { score: this.state.score, words: this.state.foundWords.length },
 		});
 		endParoliereActivity(this.activityState());
 	}

@@ -2,7 +2,7 @@ import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { registerForPushNotificationsAsync } from './push-notifications';
+import { registerForPushNotificationsAsync, uploadPushTokenAsync } from './push-notifications';
 
 function navigateFromNotification(notification: Notifications.Notification) {
 	const url = notification.request.content.data?.url;
@@ -21,7 +21,9 @@ export function usePushNotifications(): { pushToken: string | null } {
 		let mounted = true;
 
 		registerForPushNotificationsAsync().then((token) => {
-			if (mounted && token) setPushToken(token);
+			if (!mounted || !token) return;
+			setPushToken(token);
+			uploadPushTokenAsync(token).catch((e) => console.warn('push token upload failed', e));
 		});
 
 		// Cold start from a notification tap: the response arrives before
