@@ -60,18 +60,20 @@ function useRoundResult(gameState: ImpiccatoGameState) {
 	useEffect(() => {
 		if (gameState === 'playing') {
 			shownRef.current = false;
-			setModalVisible(false);
 			return;
 		}
 		if (shownRef.current) return;
 		shownRef.current = true;
-		if (gameState === 'won') setConfettiBurst((burst) => burst + 1);
+		const burst = gameState === 'won' ? setTimeout(() => setConfettiBurst((count) => count + 1), 0) : null;
 		const timeout = setTimeout(() => setModalVisible(true), 1400);
-		return () => clearTimeout(timeout);
+		return () => {
+			if (burst) clearTimeout(burst);
+			clearTimeout(timeout);
+		};
 	}, [gameState]);
 
 	const dismissModal = useCallback(() => setModalVisible(false), []);
-	return { modalVisible, dismissModal, confettiBurst };
+	return { modalVisible: gameState === 'playing' ? false : modalVisible, dismissModal, confettiBurst };
 }
 
 /**
