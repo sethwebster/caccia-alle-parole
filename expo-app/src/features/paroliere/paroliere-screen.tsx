@@ -1,7 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,17 +11,15 @@ import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
+import { LetterGrid } from './letter-grid';
 import { useParoliereGame, useResultReveal, useSubmitPulse } from './hooks';
 import {
-	GRID_SIZE,
 	wordPoints,
 	type ParoliereService,
 	type ParoliereState,
-	type PathCell,
 	type SubmitOutcome,
 } from './service';
 
-const GRID_GAP = 10;
 const AMBER_LIGHT = GamePalette.amberLight;
 
 const RULES = [
@@ -167,84 +163,6 @@ function WordDisplay({ currentWord, outcome }: { currentWord: string; outcome: S
 	);
 }
 
-function LetterGrid({
-	grid,
-	currentPath,
-	service,
-}: {
-	grid: string[][];
-	currentPath: PathCell[];
-	service: ParoliereService;
-}) {
-	const surface = useGameSurface();
-	const [size, setSize] = useState(0);
-	const draggingRef = useRef(false);
-
-	// Map a gesture point (relative to the grid) to a tile. Only points near
-	// a tile's centre count, so gaps don't select and diagonal drags don't
-	// grab orthogonal neighbours.
-	const cellAt = (x: number, y: number): PathCell | null => {
-		if (size <= 0) return null;
-		const tile = (size - GRID_GAP * (GRID_SIZE - 1)) / GRID_SIZE;
-		const step = tile + GRID_GAP;
-		const col = Math.floor(x / step);
-		const row = Math.floor(y / step);
-		if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) return null;
-		const dx = x - (col * step + tile / 2);
-		const dy = y - (row * step + tile / 2);
-		if (Math.abs(dx) > tile * 0.44 || Math.abs(dy) > tile * 0.44) return null;
-		return { row, col };
-	};
-
-	const pan = Gesture.Pan()
-		.runOnJS(true)
-		.minDistance(1)
-		.onBegin((event) => {
-			const cell = cellAt(event.x, event.y);
-			draggingRef.current = cell !== null;
-			if (cell) service.beginSelection(cell);
-		})
-		.onUpdate((event) => {
-			if (!draggingRef.current) return;
-			const cell = cellAt(event.x, event.y);
-			if (cell) service.extendSelection(cell);
-		})
-		.onFinalize(() => {
-			if (!draggingRef.current) return;
-			draggingRef.current = false;
-			service.release();
-		});
-
-	return (
-		<GestureDetector gesture={pan}>
-			<View style={styles.grid} onLayout={(event) => setSize(event.nativeEvent.layout.width)}>
-				{grid.map((row, i) => (
-					<View key={i} style={styles.gridRow}>
-						{row.map((letter, j) => {
-							const selected = currentPath.some((c) => c.row === i && c.col === j);
-							return (
-								<View
-									key={j}
-									style={[
-										styles.tile,
-										selected
-											? styles.tileSelected
-											: { backgroundColor: surface.card, borderColor: surface.border },
-									]}
-								>
-									<Text style={[styles.tileText, { color: selected ? '#fff' : surface.text }]}>
-										{letter}
-									</Text>
-								</View>
-							);
-						})}
-					</View>
-				))}
-			</View>
-		</GestureDetector>
-	);
-}
-
 function FoundWords({ words }: { words: string[] }) {
 	const surface = useGameSurface();
 	const sorted = [...words].sort();
@@ -317,22 +235,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	pulseText: { color: '#fff', fontSize: 24, fontFamily: GameFonts.display800, letterSpacing: 2 },
-	grid: { width: '100%', maxWidth: 360, aspectRatio: 1, gap: GRID_GAP },
-	gridRow: { flex: 1, flexDirection: 'row', gap: GRID_GAP },
-	tile: {
-		flex: 1,
-		borderRadius: 16,
-		borderWidth: 2,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	tileSelected: {
-		backgroundColor: GamePalette.primary,
-		borderColor: GamePalette.primaryDark,
-		transform: [{ scale: 1.05 }],
-	},
-	tileText: { fontSize: 30, fontFamily: GameFonts.display800 },
-
 	// Found words
 	foundPanel: {
 		alignSelf: 'stretch',
