@@ -40,9 +40,12 @@ export function useResultReveal(state: ParoliereState): {
 		}
 		if (shownRef.current) return;
 		shownRef.current = true;
-		if (score > 20) setBurst((b) => b + 1);
+		const burstTimeout = score > 20 ? setTimeout(() => setBurst((b) => b + 1), 0) : null;
 		const timeout = setTimeout(() => setModalVisible(true), 1400);
-		return () => clearTimeout(timeout);
+		return () => {
+			if (burstTimeout) clearTimeout(burstTimeout);
+			clearTimeout(timeout);
+		};
 	}, [finished, score]);
 
 	return { modalVisible, dismissModal: () => setModalVisible(false), burst };
