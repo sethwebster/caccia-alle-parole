@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Gesture } from 'react-native-gesture-handler';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Gesture, type GestureStateChangeEvent, type GestureUpdateEvent, type PanGestureHandlerEventPayload } from 'react-native-gesture-handler';
 
 import { useOutcomeEvent } from '@/hooks/use-outcome-event';
 import { Observe } from 'expo-observe';
@@ -20,6 +20,41 @@ import {
 } from './word-search-service';
 
 export type Flash = { kind: 'success' | 'error'; cells: SelectedCell[] };
+
+class GridSelectionSession {
+	private start: SelectedCell | null = null;
+	private last: SelectedCell | null = null;
+	private selection: SelectedCell[] = [];
+
+	constructor(private readonly setSelectedCells: (cells: SelectedCell[]) => void) {}
+
+	begin(cell: SelectedCell): void {
+		this.start = cell;
+		this.last = cell;
+		this.setSelection([cell]);
+	}
+
+	update(current: SelectedCell, grid: Cell[][]): void {
+		if (!this.start) return;
+		if (this.last && this.last.row === current.row && this.last.col === current.col) return;
+		this.last = current;
+		this.setSelection(getCellsBetween(this.start.row, this.start.col, current.row, current.col, grid));
+	}
+
+	finalize(onSelectionEnd: (cells: SelectedCell[]) => void): void {
+		if (!this.start) return;
+		this.start = null;
+		this.last = null;
+		const cells = this.selection;
+		this.setSelection([]);
+		onSelectionEnd(cells);
+	}
+
+	private setSelection(cells: SelectedCell[]): void {
+		this.selection = cells;
+		this.setSelectedCells(cells);
+	}
+}
 
 /** Loads the saved game once on mount; reports when hydration finished. */
 function useHydratedGame(setGame: (game: WordSearchState) => void): boolean {
@@ -192,58 +227,44 @@ export function useGridSelection(
 	onSelectionEnd: (cells: SelectedCell[]) => void,
 ) {
 	const [selectedCells, setSelectedCells] = useState<SelectedCell[]>([]);
-	const startRef = useRef<SelectedCell | null>(null);
-	// Last cell the pointer was over: move events fire per frame, so only
-	// recompute the selection when the pointer enters a different cell.
-	const lastCellRef = useRef<SelectedCell | null>(null);
-	// Mirrors `selectedCells` so gesture callbacks read the live selection
-	// instead of a render-time snapshot.
-	const selectionRef = useRef<SelectedCell[]>([]);
+	const [session] = useState(() => new GridSelectionSession(setSelectedCells));
 
-	const setSelection = (cells: SelectedCell[]) => {
-		selectionRef.current = cells;
-		setSelectedCells(cells);
-	};
-
-	const cellAt = (x: number, y: number): SelectedCell => {
+	const cellAt = useCallback((x: number, y: number): SelectedCell => {
 		const size = grid.length;
 		const clampIndex = (value: number) => Math.min(size - 1, Math.max(0, value));
 		const row = clampIndex(Math.floor(y / cellSize));
 		const col = clampIndex(Math.floor(x / cellSize));
 		return { row, col, letter: grid[row][col].letter };
-	};
+	}, [cellSize, grid]);
 
 	const ready = grid.length > 0 && cellSize > 0;
+	type PanEvent = GestureStateChangeEvent<PanGestureHandlerEventPayload> | GestureUpdateEvent<PanGestureHandlerEventPayload>;
 
-	const pan = Gesture.Pan()
-		.enabled(ready)
-		.runOnJS(true)
-		.minDistance(0)
-		.maxPointers(1)
-		.onBegin((event) => {
+	const handleBegin = useCallback((event: PanEvent) => {
 			if (!ready) return;
-			const cell = cellAt(event.x, event.y);
-			startRef.current = cell;
-			lastCellRef.current = cell;
-			setSelection([cell]);
-		})
-		.onUpdate((event) => {
-			const start = startRef.current;
-			if (!start || !ready) return;
-			const current = cellAt(event.x, event.y);
-			const last = lastCellRef.current;
-			if (last && last.row === current.row && last.col === current.col) return;
-			lastCellRef.current = current;
-			setSelection(getCellsBetween(start.row, start.col, current.row, current.col, grid));
-		})
-		.onFinalize(() => {
-			if (!startRef.current) return;
-			startRef.current = null;
-			lastCellRef.current = null;
-			const cells = selectionRef.current;
-			setSelection([]);
-			onSelectionEnd(cells);
-		});
+			session.begin(cellAt(event.x, event.y));
+		}, [cellAt, ready, session]);
+
+	const handleUpdate = useCallback((event: PanEvent) => {
+			if (!ready) return;
+			session.update(cellAt(event.x, event.y), grid);
+		}, [cellAt, grid, ready, session]);
+
+	const handleFinalize = useCallback(() => {
+			session.finalize(onSelectionEnd);
+		}, [onSelectionEnd, session]);
+
+	const pan = useMemo(
+		() => Gesture.Pan()
+			.enabled(ready)
+			.runOnJS(true)
+			.minDistance(0)
+			.maxPointers(1)
+			.onBegin(handleBegin)
+			.onUpdate(handleUpdate)
+			.onFinalize(handleFinalize),
+		[handleBegin, handleFinalize, handleUpdate, ready],
+	);
 
 	return { pan, selectedCells };
 }
