@@ -1,5 +1,5 @@
 {
-	"name": "caccia-push-api",
+	"name": "@caccia/push-api",
 	"private": true,
 	"scripts": {
 		"dev": "wrangler dev",
