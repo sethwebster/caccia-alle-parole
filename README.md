@@ -1,111 +1,62 @@
-# Caccia alle Parole - Italian Word Search Game
+# Caccia alle Parole
 
-An educational Italian word search puzzle game with 24 categories, 3 difficulty levels, and Italian word definitions.
+Expo-forward monorepo for the Italian word-game app.
 
-## Features
+## Repository Layout
 
-- **24 Categories**: Animals, Food, Colors, Family, Body, Verbs, Adjectives, Weather, Clothing, Professions, Transportation, Home, Sports, Music, Technology, Emotions, Time, Numbers, City, Nature, School, Hobbies, Kitchen, Travel
-- **3 Difficulty Levels**:
-  - Easy: 8×8 grid, 8 words
-  - Medium: 12×12 grid, 10 words
-  - Hard: 16×16 grid, 12 words
-- **8 Directions**: Words placed horizontally, vertically, and diagonally (forward and backward)
-- **Word Definitions**: Click any word to see Italian-English translation and definition
-- **Scoring System**: Points based on word length (10 pts per letter)
-- **Timer**: Track how long it takes to complete each puzzle
-- **Victory Screen**: Final score and time display
-- **Mobile-Friendly**: Touch and drag support for mobile devices
-- **Italian-Themed Design**: Red, white, and green color scheme
+```text
+apps/
+  mobile/              Expo app for iOS, Android, and mobile web
+  web/                 Legacy SvelteKit web app, preserved for reference and web deploys
+  workers/
+    push-api/          Cloudflare Worker for push notification APIs
+docs/                  Deployment notes, roadmap, design system, and migration plans
+README.md              Monorepo entrypoint
+```
 
-## How to Play
+## Package Manager
 
-1. Select a category from the dropdown
-2. Choose a difficulty level
-3. Click "Nuova Partita" to start
-4. Find words by clicking and dragging across letters
-5. Words can go in any direction (including backward and diagonal)
-6. Click found words to see their definitions
-7. Complete all words to win!
-
-## Running the Game
-
-### Option 1: Local Web Server (Recommended)
+Use Bun from the repository root:
 
 ```bash
-python3 -m http.server 8080
+bun install
 ```
 
-Then open http://localhost:8080 in your browser.
+The root package is a workspace control plane. App dependencies and local scripts live in each app package.
 
-### Option 2: Any HTTP Server
+## Common Commands
 
 ```bash
-# Node.js
-npx serve
+bun run dev              # Expo app
+bun run dev:mobile       # Expo app
+bun run ios              # Expo iOS build/run
+bun run android          # Expo Android build/run
+bun run web:mobile       # Expo web runtime
 
-# Python 2
-python -m SimpleHTTPServer 8080
+bun run dev:web          # Legacy SvelteKit app
+bun run build:web        # Legacy SvelteKit build
 
-# PHP
-php -S localhost:8080
+bun run dev:push-api     # Push API Worker
+bun run deploy:push-api  # Deploy push API Worker
 ```
 
-## File Structure
+## Verification
 
-```
-caccia-alle-parole/
-├── index.html           # Main HTML structure
-├── styles.css           # Italian-themed styling
-├── game.js              # Main game orchestrator
-├── word-data.js         # 24 categories with 400+ Italian words
-├── grid-generator.js    # Word placement algorithm
-├── word-selector.js     # Selection and validation logic
-└── README.md            # This file
+```bash
+bun run lint:mobile
+bun run test:mobile
+bun run validate:daily-catalog
+bun run build:web
 ```
 
-## Architecture
+## Docs
 
-### word-data.js
-Exports 24 categories of Italian words with:
-- Italian word
-- English translation
-- Educational definition
+- [Deployment](docs/DEPLOY.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Mobile app](docs/apps/mobile.md)
+- [Design system](docs/cds/README.md)
+- [Migration plans](docs/plans/migration/README.md)
 
-### grid-generator.js
-Generates word search grids:
-- Places words in 8 directions
-- Uses Italian letter frequency for filler letters
-- Prevents word collisions
-- Retries if too few words fit
+## App Ownership
 
-### word-selector.js
-Handles word selection:
-- Mouse drag and touch support
-- Validates 8-directional lines
-- Checks forward and backward
-- Marks found words
-
-### game.js
-Main orchestrator:
-- Integrates all modules
-- Manages game state
-- Renders UI
-- Handles scoring and timer
-
-## Browser Requirements
-
-- Modern browser with ES6 module support
-- JavaScript enabled
-- Chrome, Firefox, Safari, or Edge (recent versions)
-
-## Educational Use
-
-Perfect for:
-- Italian language learners
-- Elementary/middle school students
-- Anyone wanting to learn Italian vocabulary
-- Teachers creating Italian lessons
-
-## Credits
-
-Built with vanilla JavaScript, HTML5, and CSS3.
+`apps/mobile` is the forward development target. Keep reusable game logic in the Expo app unless a second active app needs it. `apps/web` exists to preserve the previous SvelteKit implementation and deployment path while mobile becomes the primary product.
