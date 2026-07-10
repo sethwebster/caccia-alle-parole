@@ -1,0 +1,33 @@
+{
+  "name": "@caccia/web",
+  "version": "2.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "bun run build && wrangler deploy",
+    "cf:tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-cloudflare": "^7.2.5",
+    "@sveltejs/kit": "^2.50.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/canvas-confetti": "^1.9.0",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "svelte": "^5.47.1",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "wrangler": "^4.59.3"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4"
+  }
+}
