@@ -1,41 +1,34 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
-import { loadCurrentStreak, loadSavedState, MAX_GUESSES } from '@/features/parola/parola-logic';
+import { challengeIdForDate } from '@/features/daily/date';
+import { loadDailyChallengeStatusSummary, loadDailyStatsSummary } from '@/features/daily/progress';
 
 export type DailyChallenge = {
 	hydrated: boolean;
 	streak: number;
 	attempts: number;
 	maxAttempts: number;
-	status: 'new' | 'playing' | 'won' | 'lost';
+	status: 'new' | 'playing' | 'completed';
 };
 
 const INITIAL: DailyChallenge = {
 	hydrated: false,
 	streak: 0,
 	attempts: 0,
-	maxAttempts: MAX_GUESSES,
+	maxAttempts: 5,
 	status: 'new',
 };
 
-/** Today's Paròle progress + win streak, refreshed every time Home regains focus. */
 export function useHomeData(): DailyChallenge {
 	const [data, setData] = useState<DailyChallenge>(INITIAL);
 
 	useFocusEffect(
 		useCallback(() => {
 			let alive = true;
-			Promise.all([loadSavedState(), loadCurrentStreak()]).then(([saved, streak]) => {
+			Promise.all([loadDailyChallengeStatusSummary(challengeIdForDate()), loadDailyStatsSummary()]).then(([daily, stats]) => {
 				if (!alive) return;
-				const attempts = saved?.guesses.length ?? 0;
-				const status =
-					saved == null || attempts === 0
-						? 'new'
-						: saved.gameState === 'playing'
-							? 'playing'
-							: saved.gameState;
-				setData({ hydrated: true, streak, attempts, maxAttempts: MAX_GUESSES, status });
+				setData({ hydrated: true, streak: stats.currentStreak, attempts: daily.terminalEvents, maxAttempts: daily.totalPuzzles, status: daily.status });
 			});
 			return () => {
 				alive = false;

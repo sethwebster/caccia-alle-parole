@@ -8,6 +8,8 @@ import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
+import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
+import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
@@ -20,9 +22,9 @@ function formatTime(totalSeconds: number): string {
 	return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export function AnagrammiScreen() {
+export function AnagrammiScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
-	const game = useAnagrammi();
+	const game = useAnagrammi(routeSession);
 	useScreenInteractive(game.hydrated);
 	const { state } = game;
 	const { round } = state;
@@ -30,7 +32,7 @@ export function AnagrammiScreen() {
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
-			<GameHeader title="Anagrammi+" subtitle="Dominio Verbale" onAction={game.reset} />
+			<GameHeader title="Anagrammi+" subtitle={formatPlayModeSubtitle(routeSession.playMode, 'Dominio Verbale')} onAction={game.reset} />
 			{game.hydrated ? (
 				<View style={styles.content}>
 					<View style={styles.stats}>

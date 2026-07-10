@@ -7,7 +7,6 @@ export const MAX_GUESSES = 6;
 export const WORD_LENGTH = 5;
 
 const STORAGE_KEY = 'wordleGameState';
-const STREAK_KEY = 'parolaStreak';
 const EPOCH_DATE = new Date('2026-01-26');
 const DAY_MS = 1000 * 60 * 60 * 24;
 const SHUFFLE_SEED = 42; // Fixed seed so every player gets the same daily order.
@@ -63,12 +62,6 @@ export function getPuzzleNumber(): number {
  */
 export function getLocalDateString(date = new Date()): string {
 	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-
-function getYesterdayDateString(): string {
-	const d = new Date();
-	d.setDate(d.getDate() - 1);
-	return getLocalDateString(d);
 }
 
 function getTodayWord(): Word {
@@ -220,37 +213,4 @@ export async function loadSavedState(): Promise<WordleState | null> {
 		state = { ...state, currentGuess: saved.currentGuess };
 	}
 	return state;
-}
-
-type StreakData = { count: number; lastDate: string };
-
-async function loadStreakData(): Promise<StreakData> {
-	const raw = await loadJSON<unknown>(STREAK_KEY);
-	if (typeof raw === 'object' && raw !== null) {
-		const { count, lastDate } = raw as { count?: unknown; lastDate?: unknown };
-		if (typeof count === 'number' && Number.isInteger(count) && count >= 0 && typeof lastDate === 'string') {
-			return { count, lastDate };
-		}
-	}
-	return { count: 0, lastDate: '' };
-}
-
-/** Streak survives only across consecutive local dates (last win today or yesterday). */
-export async function loadCurrentStreak(): Promise<number> {
-	const { count, lastDate } = await loadStreakData();
-	return lastDate === getLocalDateString() || lastDate === getYesterdayDateString() ? count : 0;
-}
-
-export async function recordWin(): Promise<number> {
-	const today = getLocalDateString();
-	const data = await loadStreakData();
-	if (data.lastDate === today) return data.count; // today already recorded
-	const count = data.lastDate === getYesterdayDateString() ? data.count + 1 : 1;
-	await saveJSON(STREAK_KEY, { count, lastDate: today });
-	return count;
-}
-
-export async function recordLoss(): Promise<number> {
-	await saveJSON(STREAK_KEY, { count: 0, lastDate: getLocalDateString() });
-	return 0;
 }

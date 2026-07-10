@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateA
 import { Platform } from 'react-native';
 
 import { useOutcomeEvent } from '@/hooks/use-outcome-event';
+import { useDailyTerminalRecorder } from '@/features/daily/use-daily-terminal-recorder';
+import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { loadJSON, saveJSON } from '@/lib/storage';
 import {
 	guessLetter as applyGuess,
@@ -11,6 +13,7 @@ import {
 	type ImpiccatoGameState,
 	type ImpiccatoRound,
 } from '@/features/impiccato/logic';
+import { initializeDailyImpiccatoRound } from './daily';
 
 const STORAGE_KEY = 'impiccato-state-v1';
 
@@ -21,9 +24,15 @@ const STORAGE_KEY = 'impiccato-state-v1';
  * Functional update so a round the user already started (header restart during
  * the load window) is never clobbered by the late-resolving read.
  */
-function useHydratedRound(setRound: Dispatch<SetStateAction<ImpiccatoRound | null>>) {
+function useHydratedRound(routeSession: DailyGameRouteSession, setRound: Dispatch<SetStateAction<ImpiccatoRound | null>>) {
 	useEffect(() => {
 		let cancelled = false;
+		if (routeSession.playMode.kind === 'challenge') {
+			if (routeSession.challenge !== undefined) setRound(initializeDailyImpiccatoRound(routeSession.challenge.puzzle).round);
+			return () => {
+				cancelled = true;
+			};
+		}
 		void loadJSON<unknown>(STORAGE_KEY).then((raw) => {
 			if (cancelled) return;
 			const saved = parseSavedRound(raw);
@@ -35,7 +44,7 @@ function useHydratedRound(setRound: Dispatch<SetStateAction<ImpiccatoRound | nul
 		return () => {
 			cancelled = true;
 		};
-	}, [setRound]);
+	}, [routeSession, setRound]);
 }
 
 /** Persist every round change after hydration. */
@@ -54,18 +63,17 @@ function usePersistedRound(round: ImpiccatoRound | null) {
  */
 function useRoundResult(gameState: ImpiccatoGameState) {
 	const [modalVisible, setModalVisible] = useState(false);
-	const [confettiBurst, setConfettiBurst] = useState(0);
 	const shownRef = useRef(false);
+	const confettiBurst = gameState === 'won' ? 1 : 0;
 
 	useEffect(() => {
 		if (gameState === 'playing') {
 			shownRef.current = false;
-			setModalVisible(false);
-			return;
+			const timeout = setTimeout(() => setModalVisible(false), 0);
+			return () => clearTimeout(timeout);
 		}
 		if (shownRef.current) return;
 		shownRef.current = true;
-		if (gameState === 'won') setConfettiBurst((burst) => burst + 1);
 		const timeout = setTimeout(() => setModalVisible(true), 1400);
 		return () => clearTimeout(timeout);
 	}, [gameState]);
@@ -92,11 +100,12 @@ export function useWebKeyboard(onLetter: (letter: string) => void) {
 }
 
 /** Orchestrates the hangman round: state, persistence, and end-of-round UI. */
-export function useImpiccatoGame() {
+export function useImpiccatoGame(routeSession: DailyGameRouteSession) {
 	const [round, setRound] = useState<ImpiccatoRound | null>(null);
-	useHydratedRound(setRound);
-	usePersistedRound(round);
+	useHydratedRound(routeSession, setRound);
+	usePersistedRound(routeSession.playMode.kind === 'challenge' ? null : round);
 	const { modalVisible, dismissModal, confettiBurst } = useRoundResult(round?.gameState ?? 'playing');
+	useDailyTerminalRecorder(routeSession.challenge, round?.gameState === 'won' ? 'win' : round?.gameState === 'lost' ? 'loss' : undefined);
 
 	useOutcomeEvent(round != null && round.gameState !== 'playing', 'impiccato.finished', () => ({
 		won: round?.gameState === 'won',
@@ -111,8 +120,12 @@ export function useImpiccatoGame() {
 
 	/** New random word; keepScore=true is 'Continua Sfida', false resets to 0. */
 	const startRound = useCallback((keepScore: boolean) => {
-		setRound((current) => newRound(keepScore && current ? current.score : 0));
-	}, []);
+		if (routeSession.playMode.kind === 'challenge' && routeSession.challenge === undefined) return;
+		setRound((current) => {
+			if (routeSession.challenge !== undefined) return initializeDailyImpiccatoRound(routeSession.challenge.puzzle).round;
+			return newRound(keepScore && current ? current.score : 0);
+		});
+	}, [routeSession.challenge, routeSession.playMode.kind]);
 
 	return { round, guess, startRound, modalVisible, dismissModal, confettiBurst };
 }

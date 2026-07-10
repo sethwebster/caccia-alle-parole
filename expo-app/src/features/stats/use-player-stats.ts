@@ -1,19 +1,27 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
-import { loadCurrentStreak } from '@/features/parola/parola-logic';
+import { loadDailyStatsSummary } from '@/features/daily/progress';
 import { loadJSON } from '@/lib/storage';
 
 export type PlayerStats = {
 	hydrated: boolean;
-	parolaStreak: number;
+	dailyChallengeStreak: number;
+	dailyChallengeMaxStreak: number;
+	dailyChallengeCompletions: number;
+	dailyChallengeAllWon: number;
+	dailyChallengePerfect: number;
 	anagrammiScore: number;
 	anagrammiStreak: number;
 };
 
 const INITIAL: PlayerStats = {
 	hydrated: false,
-	parolaStreak: 0,
+	dailyChallengeStreak: 0,
+	dailyChallengeMaxStreak: 0,
+	dailyChallengeCompletions: 0,
+	dailyChallengeAllWon: 0,
+	dailyChallengePerfect: 0,
 	anagrammiScore: 0,
 	anagrammiStreak: 0,
 };
@@ -38,13 +46,17 @@ export function usePlayerStats(): PlayerStats {
 	useFocusEffect(
 		useCallback(() => {
 			let alive = true;
-			Promise.all([loadCurrentStreak(), loadJSON<unknown>(ANAGRAMMI_KEY)]).then(
-				([parolaStreak, rawAnagrammi]) => {
+			Promise.all([loadDailyStatsSummary(), loadJSON<unknown>(ANAGRAMMI_KEY)]).then(
+				([dailyStats, rawAnagrammi]) => {
 					if (!alive) return;
 					const anagrammi = parseAnagrammi(rawAnagrammi);
 					setStats({
 						hydrated: true,
-						parolaStreak,
+						dailyChallengeStreak: dailyStats.currentStreak,
+						dailyChallengeMaxStreak: dailyStats.maxStreak,
+						dailyChallengeCompletions: dailyStats.completedOfficialChallenges,
+						dailyChallengeAllWon: dailyStats.allWonOfficialChallenges,
+						dailyChallengePerfect: dailyStats.perfectOfficialChallenges,
 						anagrammiScore: anagrammi.score,
 						anagrammiStreak: anagrammi.streak,
 					});

@@ -4,9 +4,8 @@ import type { DailyChallenge } from '@/features/home/use-home-data';
 
 import { syncStreakReminder } from './streak-reminder';
 
-/** Re-syncs the 19:00 streak reminder whenever today's Paròle outcome changes. */
 export function useStreakReminder(daily: DailyChallenge): void {
-	const finishedToday = daily.status === 'won' || daily.status === 'lost';
+	const finishedToday = daily.status === 'completed';
 
 	useEffect(() => {
 		if (!daily.hydrated) return;

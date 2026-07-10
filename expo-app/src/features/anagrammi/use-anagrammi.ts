@@ -2,10 +2,14 @@ import { useCallback, useEffect, useReducer, useState, type Dispatch } from 'rea
 import { Platform } from 'react-native';
 
 import { useOutcomeEvent } from '@/hooks/use-outcome-event';
+import { useDailyTerminalRecorder } from '@/features/daily/use-daily-terminal-recorder';
+import { parseDailyAdapterSpec, type DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { loadJSON, saveJSON } from '@/lib/storage';
 
+import { createAnagrammiChallengeRound, createAnagrammiChallengeState } from './anagrammi-daily';
 import {
 	anagrammiReducer,
+	type AnagrammiState,
 	createInitialState,
 	guessFromPicked,
 	parseSavedProgress,
@@ -14,6 +18,8 @@ import {
 	type AnagrammiAction,
 	type RoundStatus,
 } from './anagrammi-service';
+
+type ReplaceChallengeAction = { readonly type: 'replace-challenge'; readonly state: AnagrammiState };
 
 const STORAGE_KEY = 'anagrammi:progress:v1';
 
@@ -25,18 +31,10 @@ const STORAGE_KEY = 'anagrammi:progress:v1';
 function useCountdown(deadline: number, running: boolean, onExpire: () => void): number {
 	const [timeLeft, setTimeLeft] = useState(() => remainingSeconds(deadline, Date.now()));
 
-	// Re-sync during render when the deadline changes (new round), so the old
-	// round's frozen value (e.g. "0:00") never paints for a frame before the
-	// interval effect runs.
-	const [prevDeadline, setPrevDeadline] = useState(deadline);
-	if (prevDeadline !== deadline) {
-		setPrevDeadline(deadline);
-		setTimeLeft(remainingSeconds(deadline, Date.now()));
-	}
-
 	useEffect(() => {
-		if (!running) return;
-		setTimeLeft(remainingSeconds(deadline, Date.now()));
+		const refresh = () => setTimeLeft(remainingSeconds(deadline, Date.now()));
+		const sync = setTimeout(refresh, 0);
+		if (!running) return () => clearTimeout(sync);
 		const id = setInterval(() => {
 			const left = remainingSeconds(deadline, Date.now());
 			setTimeLeft(left);
@@ -45,7 +43,10 @@ function useCountdown(deadline: number, running: boolean, onExpire: () => void):
 				onExpire();
 			}
 		}, 250);
-		return () => clearInterval(id);
+		return () => {
+			clearTimeout(sync);
+			clearInterval(id);
+		};
 	}, [deadline, running, onExpire]);
 
 	return timeLeft;
@@ -59,14 +60,13 @@ function useCountdown(deadline: number, running: boolean, onExpire: () => void):
  */
 function useResultReveal(status: RoundStatus) {
 	const [modalVisible, setModalVisible] = useState(false);
-	const [confettiBurst, setConfettiBurst] = useState(0);
+	const confettiBurst = status === 'correct' ? 1 : 0;
 
 	useEffect(() => {
 		if (status === 'playing') {
-			setModalVisible(false);
-			return;
+			const timeout = setTimeout(() => setModalVisible(false), 0);
+			return () => clearTimeout(timeout);
 		}
-		if (status === 'correct') setConfettiBurst((burst) => burst + 1);
 		const timeout = setTimeout(() => setModalVisible(true), 1400);
 		return () => clearTimeout(timeout);
 	}, [status]);
@@ -81,10 +81,11 @@ function useResultReveal(status: RoundStatus) {
  * true once hydration finished (the screen gates rendering on it so the
  * saved score never flashes in as 0).
  */
-function useHydratedProgress(dispatch: Dispatch<AnagrammiAction>): boolean {
+function useHydratedProgress(enabled: boolean, dispatch: Dispatch<AnagrammiAction>): boolean {
 	const [hydrated, setHydrated] = useState(false);
 
 	useEffect(() => {
+		if (!enabled) return;
 		let cancelled = false;
 		void loadJSON<unknown>(STORAGE_KEY).then((raw) => {
 			if (cancelled) return;
@@ -100,7 +101,7 @@ function useHydratedProgress(dispatch: Dispatch<AnagrammiAction>): boolean {
 		return () => {
 			cancelled = true;
 		};
-	}, [dispatch]);
+	}, [dispatch, enabled]);
 
 	return hydrated;
 }
@@ -132,16 +133,24 @@ function useWebKeyboard(onLetter: (letter: string) => void, onEnter: () => void,
 	}, [onLetter, onEnter, onBackspace]);
 }
 
-export function useAnagrammi() {
-	const [state, dispatch] = useReducer(anagrammiReducer, null, createInitialState);
+export function useAnagrammi(routeSession: DailyGameRouteSession) {
+	const [state, dispatch] = useReducer(
+		(state: AnagrammiState, action: Parameters<typeof anagrammiReducer>[1] | ReplaceChallengeAction) =>
+			action.type === 'replace-challenge' ? action.state : anagrammiReducer(state, action),
+		null,
+		createInitialState,
+	);
 
-	const hydrated = useHydratedProgress(dispatch);
-	useSavedProgress(hydrated, state.score, state.streak);
+	useChallengeAnagrammi(routeSession, dispatch);
+	const progressHydrated = useHydratedProgress(routeSession.playMode.kind !== 'challenge', dispatch);
+	const hydrated = routeSession.playMode.kind === 'challenge' ? routeSession.challenge !== undefined : progressHydrated;
+	useSavedProgress(hydrated && routeSession.playMode.kind !== 'challenge', state.score, state.streak);
 
-	const expire = useCallback(() => dispatch({ type: 'expire' }), [dispatch]);
+	const expire = useCallback(() => dispatch({ type: 'expire' }), []);
 	const timeLeft = useCountdown(state.deadline, hydrated && state.status === 'playing', expire);
 
 	const { modalVisible, confettiBurst, dismissModal } = useResultReveal(state.status);
+	useDailyTerminalRecorder(routeSession.challenge, state.status === 'correct' ? 'win' : state.status === 'skipped' ? 'skip' : undefined);
 
 	useOutcomeEvent(state.status !== 'playing', 'anagrammi.round_ended', () => ({
 		won: state.status === 'correct',
@@ -151,20 +160,20 @@ export function useAnagrammi() {
 		wordLength: state.round.targetWord.length,
 	}));
 
-	const tapTile = useCallback((index: number) => dispatch({ type: 'tap-tile', index }), [dispatch]);
-	const typeLetter = useCallback((letter: string) => dispatch({ type: 'type-letter', letter }), [dispatch]);
-	const backspace = useCallback(() => dispatch({ type: 'backspace' }), [dispatch]);
-	const submit = useCallback(() => dispatch({ type: 'submit', now: Date.now() }), [dispatch]);
-	const requestHint = useCallback(() => dispatch({ type: 'hint' }), [dispatch]);
-	const skip = useCallback(() => dispatch({ type: 'skip' }), [dispatch]);
+	const tapTile = useCallback((index: number) => dispatch({ type: 'tap-tile', index }), []);
+	const typeLetter = useCallback((letter: string) => dispatch({ type: 'type-letter', letter }), []);
+	const backspace = useCallback(() => dispatch({ type: 'backspace' }), []);
+	const submit = useCallback(() => dispatch({ type: 'submit', now: Date.now() }), []);
+	const requestHint = useCallback(() => dispatch({ type: 'hint' }), []);
+	const skip = useCallback(() => dispatch({ type: 'skip' }), []);
 	const next = useCallback(() => {
 		dismissModal();
-		dispatch({ type: 'next', round: pickRound(), now: Date.now() });
-	}, [dispatch, dismissModal]);
+		dispatch({ type: 'next', round: routeSession.challenge === undefined ? pickRound() : createAnagrammiChallengeRound(parseDailyAdapterSpec(routeSession.challenge, 'anagrammi').payload), now: Date.now() });
+	}, [dismissModal, routeSession.challenge]);
 	const reset = useCallback(() => {
 		dismissModal();
-		dispatch({ type: 'reset', round: pickRound(), now: Date.now() });
-	}, [dispatch, dismissModal]);
+		dispatch({ type: 'reset', round: routeSession.challenge === undefined ? pickRound() : createAnagrammiChallengeRound(parseDailyAdapterSpec(routeSession.challenge, 'anagrammi').payload), now: Date.now() });
+	}, [dismissModal, routeSession.challenge]);
 
 	useWebKeyboard(typeLetter, submit, backspace);
 
@@ -184,4 +193,11 @@ export function useAnagrammi() {
 		next,
 		reset,
 	};
+}
+
+function useChallengeAnagrammi(routeSession: DailyGameRouteSession, dispatch: Dispatch<ReplaceChallengeAction>): void {
+	useEffect(() => {
+		if (routeSession.challenge === undefined) return;
+		dispatch({ type: 'replace-challenge', state: createAnagrammiChallengeState(parseDailyAdapterSpec(routeSession.challenge, 'anagrammi').payload, Date.now()) });
+	}, [routeSession.challenge, dispatch]);
 }

@@ -1,5 +1,5 @@
 /**
- * iOS home-screen widget for Paròle (daily word puzzle).
+ * iOS home-screen widget for the Daily Challenge.
  *
  * The view function is marked with the 'widget' directive: babel stringifies
  * its body and the widget extension evaluates it in a separate JS context
@@ -26,15 +26,15 @@ const ParolaWidgetView = (props: ParolaWidgetProps, environment: WidgetEnvironme
 	const secondary = dark ? '#D9BFA9' : '#96705E';
 	const won = props.gameState === 'won';
 	const lost = props.gameState === 'lost';
-	const status = won ? `Vinto in ${props.guessCount ?? 0}` : lost ? 'Persa' : 'Da giocare';
+	const status = won ? `Paròle completato in ${props.guessCount ?? 0}` : lost ? 'Paròle terminato' : 'Continua oggi';
 	const statusColor = won ? '#578A3F' : lost ? '#C33F2E' : text;
-	const streak = `🔥 ${props.streak ?? 0}`;
+	const streak = `Serie 🔥 ${props.streak ?? 0}`;
 
 	if (environment.widgetFamily === 'systemSmall') {
 		return (
 			<VStack alignment="leading" spacing={4} modifiers={[containerBackground(card, 'widget')]}>
 				<Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#C33F2E')]}>
-					Paròle
+					Sfida Giornaliera
 				</Text>
 				<Spacer />
 				<Text modifiers={[font({ size: 17, weight: 'semibold' }), foregroundStyle(statusColor)]}>
@@ -51,7 +51,7 @@ const ParolaWidgetView = (props: ParolaWidgetProps, environment: WidgetEnvironme
 		<HStack alignment="center" modifiers={[containerBackground(card, 'widget')]}>
 			<VStack alignment="leading" spacing={4}>
 				<Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#C33F2E')]}>
-					Paròle
+					Sfida Giornaliera
 				</Text>
 				<Text modifiers={[font({ size: 22, weight: 'bold' }), foregroundStyle(statusColor)]}>
 					{status}
@@ -65,7 +65,7 @@ const ParolaWidgetView = (props: ParolaWidgetProps, environment: WidgetEnvironme
 				<Text modifiers={[font({ size: 28, weight: 'bold' }), foregroundStyle(text)]}>
 					{streak}
 				</Text>
-				<Text modifiers={[font({ size: 12 }), foregroundStyle(secondary)]}>Serie</Text>
+				<Text modifiers={[font({ size: 12 }), foregroundStyle(secondary)]}>Completamenti</Text>
 			</VStack>
 		</HStack>
 	);

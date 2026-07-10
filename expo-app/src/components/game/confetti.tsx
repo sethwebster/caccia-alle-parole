@@ -69,26 +69,26 @@ function makePieces(seed: number): Piece[] {
 	});
 }
 
-/** Regenerates the particle set every time `burst` increments past 0. */
-function useConfettiPieces(burst: number): Piece[] {
-	const [pieces, setPieces] = useState<Piece[]>([]);
-	useEffect(() => {
-		if (burst <= 0) return;
-		setPieces(makePieces(burst));
-		const t = setTimeout(() => setPieces([]), CLEANUP_MS);
-		return () => clearTimeout(t);
-	}, [burst]);
-	return pieces;
-}
-
 /**
  * Full-screen celebratory confetti. Fire it by incrementing `burst`
  * (0 = idle); each increment produces a fresh volley, so repeat wins
  * retrigger correctly.
  */
 export function Confetti({ burst }: { burst: number }) {
-	const pieces = useConfettiPieces(burst);
-	if (pieces.length === 0) return null;
+	if (burst <= 0) return null;
+	return <ConfettiVolley key={burst} burst={burst} />;
+}
+
+function ConfettiVolley({ burst }: { burst: number }) {
+	const [pieces] = useState(() => makePieces(burst));
+	const [visible, setVisible] = useState(true);
+
+	useEffect(() => {
+		const timeout = setTimeout(() => setVisible(false), CLEANUP_MS);
+		return () => clearTimeout(timeout);
+	}, []);
+
+	if (!visible) return null;
 	return (
 		<View pointerEvents="none" style={StyleSheet.absoluteFill}>
 			{pieces.map((piece) => (

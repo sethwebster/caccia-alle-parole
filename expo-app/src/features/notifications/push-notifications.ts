@@ -32,6 +32,8 @@ export function ensureNotificationPermissionAsync(): Promise<boolean> {
 let pendingPermissionRequest: Promise<boolean> | null = null;
 
 async function ensurePermission(): Promise<boolean> {
+	if (Platform.OS === 'web') return false;
+
 	if (Platform.OS === 'android') {
 		// Android 13+ shows the permission prompt only after a channel exists.
 		await Notifications.setNotificationChannelAsync('default', {

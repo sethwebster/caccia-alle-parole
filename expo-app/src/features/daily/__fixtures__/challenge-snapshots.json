@@ -1,0 +1,2066 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "catalogEpoch": "daily-v1",
+    "catalogVersion": "2026.01.26",
+    "releaseBaseChallengeId": "2026-01-26",
+    "supportedFromChallengeId": "2026-01-26",
+    "supportedThroughChallengeId": "2027-01-26"
+  },
+  "samples": {
+    "2026-01-26": {
+      "challengeId": "2026-01-26",
+      "streakDate": "2026-01-26",
+      "source": {
+        "kind": "bundledCatalog",
+        "epoch": "daily-v1",
+        "version": "2026.01.26"
+      },
+      "releaseBaseChallengeId": "2026-01-26",
+      "catalogEpoch": "daily-v1",
+      "catalogVersion": "2026.01.26",
+      "supportedFromChallengeId": "2026-01-26",
+      "supportedThroughChallengeId": "2027-01-26",
+      "theme": {
+        "themeId": "theme-scuola",
+        "label": "Giornata di scuola",
+        "explanation": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+        "choices": [
+          "Giornata di scuola",
+          "Partita allo stadio",
+          "Mercato notturno",
+          "Foresta tropicale"
+        ],
+        "answerIndex": 0
+      },
+      "puzzles": [
+        {
+          "key": "parola",
+          "label": "Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Paròle collega VOTO a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "VOTO",
+          "payload": {
+            "targetWord": "VOTO",
+            "maxAttempts": 6
+          }
+        },
+        {
+          "key": "caccia",
+          "label": "Caccia alle Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Caccia alle Paròle collega LAVAGNA a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "LAVAGNA",
+          "payload": {
+            "category": "Giornata di scuola",
+            "difficulty": "easy",
+            "grid": [
+              [
+                "Q",
+                "U",
+                "A",
+                "D",
+                "E",
+                "R",
+                "N",
+                "O"
+              ],
+              [
+                "L",
+                "A",
+                "V",
+                "A",
+                "G",
+                "N",
+                "A",
+                "A"
+              ],
+              [
+                "C",
+                "O",
+                "M",
+                "P",
+                "I",
+                "T",
+                "O",
+                "A"
+              ]
+            ],
+            "words": [
+              {
+                "word": "QUADERNO",
+                "translation": "Giornata di scuola",
+                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 80,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 6
+                  },
+                  {
+                    "row": 0,
+                    "col": 7
+                  }
+                ]
+              },
+              {
+                "word": "LAVAGNA",
+                "translation": "Giornata di scuola",
+                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "row": 1,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 0
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  },
+                  {
+                    "row": 1,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 5
+                  },
+                  {
+                    "row": 1,
+                    "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "COMPITO",
+                "translation": "Giornata di scuola",
+                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "row": 2,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 2,
+                    "col": 0
+                  },
+                  {
+                    "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  },
+                  {
+                    "row": 2,
+                    "col": 5
+                  },
+                  {
+                    "row": 2,
+                    "col": 6
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "paroliere",
+          "label": "Paroliere+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Paroliere+ collega LEZIONE a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "LEZIONE",
+          "payload": {
+            "grid": [
+              [
+                "M",
+                "A",
+                "T",
+                "I"
+              ],
+              [
+                "T",
+                "A",
+                "L",
+                "E"
+              ],
+              [
+                "Z",
+                "I",
+                "O",
+                "N"
+              ],
+              [
+                "E",
+                "C",
+                "A",
+                "R"
+              ]
+            ],
+            "durationSeconds": 180
+          }
+        },
+        {
+          "key": "impiccato",
+          "label": "Il Palloncino",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Il Palloncino collega MAESTRA a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "MAESTRA",
+          "payload": {
+            "targetWord": "MAESTRA",
+            "targetCategory": "Giornata di scuola",
+            "targetTranslation": "Giornata di scuola",
+            "targetDefinition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+            "lives": 6
+          }
+        },
+        {
+          "key": "anagrammi",
+          "label": "Anagrammi+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Anagrammi+ collega SCUOLA a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "SCUOLA",
+          "payload": {
+            "targetWord": "SCUOLA",
+            "tiles": [
+              "C",
+              "U",
+              "O",
+              "L",
+              "A",
+              "S"
+            ],
+            "translation": "Giornata di scuola",
+            "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+            "category": "Giornata di scuola",
+            "durationSeconds": 60
+          }
+        }
+      ]
+    },
+    "2026-02-14": {
+      "challengeId": "2026-02-14",
+      "streakDate": "2026-02-14",
+      "source": {
+        "kind": "bundledCatalog",
+        "epoch": "daily-v1",
+        "version": "2026.01.26"
+      },
+      "releaseBaseChallengeId": "2026-01-26",
+      "catalogEpoch": "daily-v1",
+      "catalogVersion": "2026.01.26",
+      "supportedFromChallengeId": "2026-01-26",
+      "supportedThroughChallengeId": "2027-01-26",
+      "theme": {
+        "themeId": "theme-mare",
+        "label": "Estate al mare",
+        "explanation": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+        "choices": [
+          "Officina meccanica",
+          "Teatro lirico",
+          "Estate al mare",
+          "Biblioteca antica"
+        ],
+        "answerIndex": 2
+      },
+      "puzzles": [
+        {
+          "key": "parola",
+          "label": "Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Officina meccanica",
+              "Teatro lirico",
+              "Estate al mare",
+              "Biblioteca antica"
+            ],
+            "answerIndex": 2
+          },
+          "themeId": "theme-mare",
+          "themeLink": "Paròle collega SOLE a Estate al mare",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "SOLE",
+          "payload": {
+            "targetWord": "SOLE",
+            "maxAttempts": 6
+          }
+        },
+        {
+          "key": "caccia",
+          "label": "Caccia alle Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Officina meccanica",
+              "Teatro lirico",
+              "Estate al mare",
+              "Biblioteca antica"
+            ],
+            "answerIndex": 2
+          },
+          "themeId": "theme-mare",
+          "themeLink": "Caccia alle Paròle collega OMBRELLONE a Estate al mare",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "OMBRELLONE",
+          "payload": {
+            "category": "Estate al mare",
+            "difficulty": "easy",
+            "grid": [
+              [
+                "O",
+                "M",
+                "B",
+                "R",
+                "E",
+                "L",
+                "L",
+                "O",
+                "N",
+                "E"
+              ],
+              [
+                "C",
+                "O",
+                "N",
+                "C",
+                "H",
+                "I",
+                "G",
+                "L",
+                "I",
+                "A"
+              ],
+              [
+                "B",
+                "A",
+                "G",
+                "N",
+                "O",
+                "A",
+                "A",
+                "A",
+                "A",
+                "A"
+              ]
+            ],
+            "words": [
+              {
+                "word": "OMBRELLONE",
+                "translation": "Estate al mare",
+                "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 100,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 6
+                  },
+                  {
+                    "row": 0,
+                    "col": 7
+                  },
+                  {
+                    "row": 0,
+                    "col": 8
+                  },
+                  {
+                    "row": 0,
+                    "col": 9
+                  }
+                ]
+              },
+              {
+                "word": "CONCHIGLIA",
+                "translation": "Estate al mare",
+                "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+                "row": 1,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 100,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 0
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  },
+                  {
+                    "row": 1,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 5
+                  },
+                  {
+                    "row": 1,
+                    "col": 6
+                  },
+                  {
+                    "row": 1,
+                    "col": 7
+                  },
+                  {
+                    "row": 1,
+                    "col": 8
+                  },
+                  {
+                    "row": 1,
+                    "col": 9
+                  }
+                ]
+              },
+              {
+                "word": "BAGNO",
+                "translation": "Estate al mare",
+                "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+                "row": 2,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 2,
+                    "col": 0
+                  },
+                  {
+                    "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "paroliere",
+          "label": "Paroliere+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Officina meccanica",
+              "Teatro lirico",
+              "Estate al mare",
+              "Biblioteca antica"
+            ],
+            "answerIndex": 2
+          },
+          "themeId": "theme-mare",
+          "themeLink": "Paroliere+ collega VELIERO a Estate al mare",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "VELIERO",
+          "payload": {
+            "grid": [
+              [
+                "M",
+                "A",
+                "R",
+                "E"
+              ],
+              [
+                "A",
+                "V",
+                "E",
+                "L"
+              ],
+              [
+                "I",
+                "E",
+                "R",
+                "O"
+              ],
+              [
+                "P",
+                "O",
+                "R",
+                "T"
+              ]
+            ],
+            "durationSeconds": 180
+          }
+        },
+        {
+          "key": "impiccato",
+          "label": "Il Palloncino",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Officina meccanica",
+              "Teatro lirico",
+              "Estate al mare",
+              "Biblioteca antica"
+            ],
+            "answerIndex": 2
+          },
+          "themeId": "theme-mare",
+          "themeLink": "Il Palloncino collega COSTUME a Estate al mare",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "COSTUME",
+          "payload": {
+            "targetWord": "COSTUME",
+            "targetCategory": "Estate al mare",
+            "targetTranslation": "Estate al mare",
+            "targetDefinition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+            "lives": 6
+          }
+        },
+        {
+          "key": "anagrammi",
+          "label": "Anagrammi+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Officina meccanica",
+              "Teatro lirico",
+              "Estate al mare",
+              "Biblioteca antica"
+            ],
+            "answerIndex": 2
+          },
+          "themeId": "theme-mare",
+          "themeLink": "Anagrammi+ collega VACANZA a Estate al mare",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "VACANZA",
+          "payload": {
+            "targetWord": "VACANZA",
+            "tiles": [
+              "A",
+              "C",
+              "A",
+              "N",
+              "Z",
+              "A",
+              "V"
+            ],
+            "translation": "Estate al mare",
+            "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+            "category": "Estate al mare",
+            "durationSeconds": 60
+          }
+        }
+      ]
+    },
+    "2026-07-09": {
+      "challengeId": "2026-07-09",
+      "streakDate": "2026-07-09",
+      "source": {
+        "kind": "bundledCatalog",
+        "epoch": "daily-v1",
+        "version": "2026.01.26"
+      },
+      "releaseBaseChallengeId": "2026-01-26",
+      "catalogEpoch": "daily-v1",
+      "catalogVersion": "2026.01.26",
+      "supportedFromChallengeId": "2026-01-26",
+      "supportedThroughChallengeId": "2027-01-26",
+      "theme": {
+        "themeId": "theme-cucina",
+        "label": "Cucina di casa",
+        "explanation": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+        "choices": [
+          "Giardino segreto",
+          "Laboratorio chimico",
+          "Stazione ferroviaria",
+          "Cucina di casa"
+        ],
+        "answerIndex": 3
+      },
+      "puzzles": [
+        {
+          "key": "parola",
+          "label": "Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giardino segreto",
+              "Laboratorio chimico",
+              "Stazione ferroviaria",
+              "Cucina di casa"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-cucina",
+          "themeLink": "Paròle collega PASTA a Cucina di casa",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "PASTA",
+          "payload": {
+            "targetWord": "PASTA",
+            "maxAttempts": 6
+          }
+        },
+        {
+          "key": "caccia",
+          "label": "Caccia alle Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giardino segreto",
+              "Laboratorio chimico",
+              "Stazione ferroviaria",
+              "Cucina di casa"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-cucina",
+          "themeLink": "Caccia alle Paròle collega MESTOLO a Cucina di casa",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "MESTOLO",
+          "payload": {
+            "category": "Cucina di casa",
+            "difficulty": "easy",
+            "grid": [
+              [
+                "M",
+                "E",
+                "S",
+                "T",
+                "O",
+                "L",
+                "O",
+                "A"
+              ],
+              [
+                "R",
+                "I",
+                "C",
+                "E",
+                "T",
+                "T",
+                "A",
+                "A"
+              ],
+              [
+                "T",
+                "A",
+                "G",
+                "L",
+                "I",
+                "E",
+                "R",
+                "E"
+              ]
+            ],
+            "words": [
+              {
+                "word": "MESTOLO",
+                "translation": "Cucina di casa",
+                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "RICETTA",
+                "translation": "Cucina di casa",
+                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+                "row": 1,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 0
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  },
+                  {
+                    "row": 1,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 5
+                  },
+                  {
+                    "row": 1,
+                    "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "TAGLIERE",
+                "translation": "Cucina di casa",
+                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+                "row": 2,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 80,
+                "cells": [
+                  {
+                    "row": 2,
+                    "col": 0
+                  },
+                  {
+                    "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  },
+                  {
+                    "row": 2,
+                    "col": 5
+                  },
+                  {
+                    "row": 2,
+                    "col": 6
+                  },
+                  {
+                    "row": 2,
+                    "col": 7
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "paroliere",
+          "label": "Paroliere+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giardino segreto",
+              "Laboratorio chimico",
+              "Stazione ferroviaria",
+              "Cucina di casa"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-cucina",
+          "themeLink": "Paroliere+ collega PENTOLA a Cucina di casa",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "PENTOLA",
+          "payload": {
+            "grid": [
+              [
+                "B",
+                "A",
+                "S",
+                "I"
+              ],
+              [
+                "L",
+                "I",
+                "C",
+                "O"
+              ],
+              [
+                "P",
+                "E",
+                "N",
+                "T"
+              ],
+              [
+                "O",
+                "L",
+                "A",
+                "F"
+              ]
+            ],
+            "durationSeconds": 180
+          }
+        },
+        {
+          "key": "impiccato",
+          "label": "Il Palloncino",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giardino segreto",
+              "Laboratorio chimico",
+              "Stazione ferroviaria",
+              "Cucina di casa"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-cucina",
+          "themeLink": "Il Palloncino collega COLTELLO a Cucina di casa",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "COLTELLO",
+          "payload": {
+            "targetWord": "COLTELLO",
+            "targetCategory": "Cucina di casa",
+            "targetTranslation": "Cucina di casa",
+            "targetDefinition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+            "lives": 6
+          }
+        },
+        {
+          "key": "anagrammi",
+          "label": "Anagrammi+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giardino segreto",
+              "Laboratorio chimico",
+              "Stazione ferroviaria",
+              "Cucina di casa"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-cucina",
+          "themeLink": "Anagrammi+ collega TEGAME a Cucina di casa",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "TEGAME",
+          "payload": {
+            "targetWord": "TEGAME",
+            "tiles": [
+              "E",
+              "G",
+              "A",
+              "M",
+              "E",
+              "T"
+            ],
+            "translation": "Cucina di casa",
+            "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+            "category": "Cucina di casa",
+            "durationSeconds": 60
+          }
+        }
+      ]
+    }
+  },
+  "supportedWindow": {
+    "2026-01-26": {
+      "challengeId": "2026-01-26",
+      "streakDate": "2026-01-26",
+      "source": {
+        "kind": "bundledCatalog",
+        "epoch": "daily-v1",
+        "version": "2026.01.26"
+      },
+      "releaseBaseChallengeId": "2026-01-26",
+      "catalogEpoch": "daily-v1",
+      "catalogVersion": "2026.01.26",
+      "supportedFromChallengeId": "2026-01-26",
+      "supportedThroughChallengeId": "2027-01-26",
+      "theme": {
+        "themeId": "theme-scuola",
+        "label": "Giornata di scuola",
+        "explanation": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+        "choices": [
+          "Giornata di scuola",
+          "Partita allo stadio",
+          "Mercato notturno",
+          "Foresta tropicale"
+        ],
+        "answerIndex": 0
+      },
+      "puzzles": [
+        {
+          "key": "parola",
+          "label": "Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Paròle collega VOTO a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "VOTO",
+          "payload": {
+            "targetWord": "VOTO",
+            "maxAttempts": 6
+          }
+        },
+        {
+          "key": "caccia",
+          "label": "Caccia alle Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Caccia alle Paròle collega LAVAGNA a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "LAVAGNA",
+          "payload": {
+            "category": "Giornata di scuola",
+            "difficulty": "easy",
+            "grid": [
+              [
+                "Q",
+                "U",
+                "A",
+                "D",
+                "E",
+                "R",
+                "N",
+                "O"
+              ],
+              [
+                "L",
+                "A",
+                "V",
+                "A",
+                "G",
+                "N",
+                "A",
+                "A"
+              ],
+              [
+                "C",
+                "O",
+                "M",
+                "P",
+                "I",
+                "T",
+                "O",
+                "A"
+              ]
+            ],
+            "words": [
+              {
+                "word": "QUADERNO",
+                "translation": "Giornata di scuola",
+                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 80,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 6
+                  },
+                  {
+                    "row": 0,
+                    "col": 7
+                  }
+                ]
+              },
+              {
+                "word": "LAVAGNA",
+                "translation": "Giornata di scuola",
+                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "row": 1,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 0
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  },
+                  {
+                    "row": 1,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 5
+                  },
+                  {
+                    "row": 1,
+                    "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "COMPITO",
+                "translation": "Giornata di scuola",
+                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "row": 2,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 2,
+                    "col": 0
+                  },
+                  {
+                    "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  },
+                  {
+                    "row": 2,
+                    "col": 5
+                  },
+                  {
+                    "row": 2,
+                    "col": 6
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "paroliere",
+          "label": "Paroliere+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Paroliere+ collega LEZIONE a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "LEZIONE",
+          "payload": {
+            "grid": [
+              [
+                "M",
+                "A",
+                "T",
+                "I"
+              ],
+              [
+                "T",
+                "A",
+                "L",
+                "E"
+              ],
+              [
+                "Z",
+                "I",
+                "O",
+                "N"
+              ],
+              [
+                "E",
+                "C",
+                "A",
+                "R"
+              ]
+            ],
+            "durationSeconds": 180
+          }
+        },
+        {
+          "key": "impiccato",
+          "label": "Il Palloncino",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Il Palloncino collega MAESTRA a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "MAESTRA",
+          "payload": {
+            "targetWord": "MAESTRA",
+            "targetCategory": "Giornata di scuola",
+            "targetTranslation": "Giornata di scuola",
+            "targetDefinition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+            "lives": 6
+          }
+        },
+        {
+          "key": "anagrammi",
+          "label": "Anagrammi+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Giornata di scuola",
+              "Partita allo stadio",
+              "Mercato notturno",
+              "Foresta tropicale"
+            ],
+            "answerIndex": 0
+          },
+          "themeId": "theme-scuola",
+          "themeLink": "Anagrammi+ collega SCUOLA a Giornata di scuola",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "SCUOLA",
+          "payload": {
+            "targetWord": "SCUOLA",
+            "tiles": [
+              "C",
+              "U",
+              "O",
+              "L",
+              "A",
+              "S"
+            ],
+            "translation": "Giornata di scuola",
+            "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+            "category": "Giornata di scuola",
+            "durationSeconds": 60
+          }
+        }
+      ]
+    },
+    "2026-07-25": {
+      "challengeId": "2026-07-25",
+      "streakDate": "2026-07-25",
+      "source": {
+        "kind": "bundledCatalog",
+        "epoch": "daily-v1",
+        "version": "2026.01.26"
+      },
+      "releaseBaseChallengeId": "2026-01-26",
+      "catalogEpoch": "daily-v1",
+      "catalogVersion": "2026.01.26",
+      "supportedFromChallengeId": "2026-01-26",
+      "supportedThroughChallengeId": "2027-01-26",
+      "theme": {
+        "themeId": "theme-viaggio",
+        "label": "Viaggio in treno",
+        "explanation": "Binari, partenze e biglietti costruiscono il filo comune.",
+        "choices": [
+          "Museo egizio",
+          "Viaggio in treno",
+          "Campo di grano",
+          "Cena in famiglia"
+        ],
+        "answerIndex": 1
+      },
+      "puzzles": [
+        {
+          "key": "parola",
+          "label": "Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Museo egizio",
+              "Viaggio in treno",
+              "Campo di grano",
+              "Cena in famiglia"
+            ],
+            "answerIndex": 1
+          },
+          "themeId": "theme-viaggio",
+          "themeLink": "Paròle collega POSTO a Viaggio in treno",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "POSTO",
+          "payload": {
+            "targetWord": "POSTO",
+            "maxAttempts": 6
+          }
+        },
+        {
+          "key": "caccia",
+          "label": "Caccia alle Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Museo egizio",
+              "Viaggio in treno",
+              "Campo di grano",
+              "Cena in famiglia"
+            ],
+            "answerIndex": 1
+          },
+          "themeId": "theme-viaggio",
+          "themeLink": "Caccia alle Paròle collega STAZIONE a Viaggio in treno",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "STAZIONE",
+          "payload": {
+            "category": "Viaggio in treno",
+            "difficulty": "easy",
+            "grid": [
+              [
+                "V",
+                "A",
+                "L",
+                "I",
+                "G",
+                "I",
+                "A",
+                "A",
+                "A"
+              ],
+              [
+                "S",
+                "T",
+                "A",
+                "Z",
+                "I",
+                "O",
+                "N",
+                "E",
+                "A"
+              ],
+              [
+                "B",
+                "I",
+                "G",
+                "L",
+                "I",
+                "E",
+                "T",
+                "T",
+                "O"
+              ]
+            ],
+            "words": [
+              {
+                "word": "VALIGIA",
+                "translation": "Viaggio in treno",
+                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "STAZIONE",
+                "translation": "Viaggio in treno",
+                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
+                "row": 1,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 80,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 0
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  },
+                  {
+                    "row": 1,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 5
+                  },
+                  {
+                    "row": 1,
+                    "col": 6
+                  },
+                  {
+                    "row": 1,
+                    "col": 7
+                  }
+                ]
+              },
+              {
+                "word": "BIGLIETTO",
+                "translation": "Viaggio in treno",
+                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
+                "row": 2,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 90,
+                "cells": [
+                  {
+                    "row": 2,
+                    "col": 0
+                  },
+                  {
+                    "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  },
+                  {
+                    "row": 2,
+                    "col": 5
+                  },
+                  {
+                    "row": 2,
+                    "col": 6
+                  },
+                  {
+                    "row": 2,
+                    "col": 7
+                  },
+                  {
+                    "row": 2,
+                    "col": 8
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "paroliere",
+          "label": "Paroliere+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Museo egizio",
+              "Viaggio in treno",
+              "Campo di grano",
+              "Cena in famiglia"
+            ],
+            "answerIndex": 1
+          },
+          "themeId": "theme-viaggio",
+          "themeLink": "Paroliere+ collega PARTENZA a Viaggio in treno",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "PARTENZA",
+          "payload": {
+            "grid": [
+              [
+                "P",
+                "A",
+                "R",
+                "T"
+              ],
+              [
+                "E",
+                "N",
+                "Z",
+                "A"
+              ],
+              [
+                "R",
+                "I",
+                "T",
+                "A"
+              ],
+              [
+                "R",
+                "D",
+                "O",
+                "C"
+              ]
+            ],
+            "durationSeconds": 180
+          }
+        },
+        {
+          "key": "impiccato",
+          "label": "Il Palloncino",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Museo egizio",
+              "Viaggio in treno",
+              "Campo di grano",
+              "Cena in famiglia"
+            ],
+            "answerIndex": 1
+          },
+          "themeId": "theme-viaggio",
+          "themeLink": "Il Palloncino collega CAPOTRENO a Viaggio in treno",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "CAPOTRENO",
+          "payload": {
+            "targetWord": "CAPOTRENO",
+            "targetCategory": "Viaggio in treno",
+            "targetTranslation": "Viaggio in treno",
+            "targetDefinition": "Binari, partenze e biglietti costruiscono il filo comune.",
+            "lives": 6
+          }
+        },
+        {
+          "key": "anagrammi",
+          "label": "Anagrammi+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Museo egizio",
+              "Viaggio in treno",
+              "Campo di grano",
+              "Cena in famiglia"
+            ],
+            "answerIndex": 1
+          },
+          "themeId": "theme-viaggio",
+          "themeLink": "Anagrammi+ collega RITORNO a Viaggio in treno",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "RITORNO",
+          "payload": {
+            "targetWord": "RITORNO",
+            "tiles": [
+              "I",
+              "T",
+              "O",
+              "R",
+              "N",
+              "O",
+              "R"
+            ],
+            "translation": "Viaggio in treno",
+            "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
+            "category": "Viaggio in treno",
+            "durationSeconds": 60
+          }
+        }
+      ]
+    },
+    "2027-01-26": {
+      "challengeId": "2027-01-26",
+      "streakDate": "2027-01-26",
+      "source": {
+        "kind": "bundledCatalog",
+        "epoch": "daily-v1",
+        "version": "2026.01.26"
+      },
+      "releaseBaseChallengeId": "2026-01-26",
+      "catalogEpoch": "daily-v1",
+      "catalogVersion": "2026.01.26",
+      "supportedFromChallengeId": "2026-01-26",
+      "supportedThroughChallengeId": "2027-01-26",
+      "theme": {
+        "themeId": "theme-mercato",
+        "label": "Mercato italiano",
+        "explanation": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+        "choices": [
+          "Viaggio spaziale",
+          "Cinema classico",
+          "Montagna innevata",
+          "Mercato italiano"
+        ],
+        "answerIndex": 3
+      },
+      "puzzles": [
+        {
+          "key": "parola",
+          "label": "Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Viaggio spaziale",
+              "Cinema classico",
+              "Montagna innevata",
+              "Mercato italiano"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-mercato",
+          "themeLink": "Paròle collega BANCO a Mercato italiano",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "BANCO",
+          "payload": {
+            "targetWord": "BANCO",
+            "maxAttempts": 6
+          }
+        },
+        {
+          "key": "caccia",
+          "label": "Caccia alle Paròle",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Viaggio spaziale",
+              "Cinema classico",
+              "Montagna innevata",
+              "Mercato italiano"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-mercato",
+          "themeLink": "Caccia alle Paròle collega PANE a Mercato italiano",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "PANE",
+          "payload": {
+            "category": "Mercato italiano",
+            "difficulty": "easy",
+            "grid": [
+              [
+                "F",
+                "R",
+                "U",
+                "T",
+                "T",
+                "A",
+                "A",
+                "A",
+                "A",
+                "A"
+              ],
+              [
+                "P",
+                "A",
+                "N",
+                "E",
+                "A",
+                "A",
+                "A",
+                "A",
+                "A",
+                "A"
+              ],
+              [
+                "B",
+                "A",
+                "N",
+                "C",
+                "A",
+                "R",
+                "E",
+                "L",
+                "L",
+                "A"
+              ]
+            ],
+            "words": [
+              {
+                "word": "FRUTTA",
+                "translation": "Mercato italiano",
+                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 60,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  }
+                ]
+              },
+              {
+                "word": "PANE",
+                "translation": "Mercato italiano",
+                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+                "row": 1,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 40,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 0
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  }
+                ]
+              },
+              {
+                "word": "BANCARELLA",
+                "translation": "Mercato italiano",
+                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+                "row": 2,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 100,
+                "cells": [
+                  {
+                    "row": 2,
+                    "col": 0
+                  },
+                  {
+                    "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  },
+                  {
+                    "row": 2,
+                    "col": 5
+                  },
+                  {
+                    "row": 2,
+                    "col": 6
+                  },
+                  {
+                    "row": 2,
+                    "col": 7
+                  },
+                  {
+                    "row": 2,
+                    "col": 8
+                  },
+                  {
+                    "row": 2,
+                    "col": 9
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "paroliere",
+          "label": "Paroliere+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Viaggio spaziale",
+              "Cinema classico",
+              "Montagna innevata",
+              "Mercato italiano"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-mercato",
+          "themeLink": "Paroliere+ collega VENDERE a Mercato italiano",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "VENDERE",
+          "payload": {
+            "grid": [
+              [
+                "M",
+                "E",
+                "R",
+                "C"
+              ],
+              [
+                "A",
+                "T",
+                "O",
+                "V"
+              ],
+              [
+                "E",
+                "N",
+                "D",
+                "E"
+              ],
+              [
+                "R",
+                "E",
+                "C",
+                "E"
+              ]
+            ],
+            "durationSeconds": 180
+          }
+        },
+        {
+          "key": "impiccato",
+          "label": "Il Palloncino",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Viaggio spaziale",
+              "Cinema classico",
+              "Montagna innevata",
+              "Mercato italiano"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-mercato",
+          "themeLink": "Il Palloncino collega FORMAGGIO a Mercato italiano",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "FORMAGGIO",
+          "payload": {
+            "targetWord": "FORMAGGIO",
+            "targetCategory": "Mercato italiano",
+            "targetTranslation": "Mercato italiano",
+            "targetDefinition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+            "lives": 6
+          }
+        },
+        {
+          "key": "anagrammi",
+          "label": "Anagrammi+",
+          "themeQuiz": {
+            "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
+            "choices": [
+              "Viaggio spaziale",
+              "Cinema classico",
+              "Montagna innevata",
+              "Mercato italiano"
+            ],
+            "answerIndex": 3
+          },
+          "themeId": "theme-mercato",
+          "themeLink": "Anagrammi+ collega CLIENTE a Mercato italiano",
+          "generatorVersion": "daily-catalog-generator-v1",
+          "dictionaryVersion": "it-bundled-v1",
+          "target": "CLIENTE",
+          "payload": {
+            "targetWord": "CLIENTE",
+            "tiles": [
+              "L",
+              "I",
+              "E",
+              "N",
+              "T",
+              "E",
+              "C"
+            ],
+            "translation": "Mercato italiano",
+            "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+            "category": "Mercato italiano",
+            "durationSeconds": 60
+          }
+        }
+      ]
+    }
+  }
+}

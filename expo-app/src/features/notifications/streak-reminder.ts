@@ -1,14 +1,15 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 import { ensureNotificationPermissionAsync } from './push-notifications';
 
 const REMINDER_ID = 'streak-reminder';
 const REMINDER_HOUR = 19;
 
-const CONTENT: Notifications.NotificationContentInput = {
-	title: 'Non perdere la serie! 🔥',
-	body: 'La parola del giorno ti aspetta.',
-	data: { url: '/parola' },
+export const DAILY_CHALLENGE_REMINDER_CONTENT: Notifications.NotificationContentInput = {
+	title: 'Sfida Giornaliera pronta',
+	body: 'Cinque giochi e un tema nascosto ti aspettano oggi.',
+	data: { url: '/daily' },
 };
 
 /**
@@ -18,6 +19,8 @@ const CONTENT: Notifications.NotificationContentInput = {
  * every Home focus re-syncs, which restores the repeating schedule.
  */
 export async function syncStreakReminder(finishedToday: boolean): Promise<void> {
+	if (Platform.OS === 'web') return;
+
 	const granted = await ensureNotificationPermissionAsync();
 	if (!granted) return;
 
@@ -26,7 +29,7 @@ export async function syncStreakReminder(finishedToday: boolean): Promise<void> 
 	if (!finishedToday) {
 		await Notifications.scheduleNotificationAsync({
 			identifier: REMINDER_ID,
-			content: CONTENT,
+			content: DAILY_CHALLENGE_REMINDER_CONTENT,
 			trigger: {
 				type: Notifications.SchedulableTriggerInputTypes.DAILY,
 				hour: REMINDER_HOUR,
@@ -41,7 +44,7 @@ export async function syncStreakReminder(finishedToday: boolean): Promise<void> 
 	tomorrow.setHours(REMINDER_HOUR, 0, 0, 0);
 	await Notifications.scheduleNotificationAsync({
 		identifier: REMINDER_ID,
-		content: CONTENT,
+		content: DAILY_CHALLENGE_REMINDER_CONTENT,
 		trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: tomorrow },
 	});
 }

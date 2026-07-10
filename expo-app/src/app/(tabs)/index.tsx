@@ -6,39 +6,13 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
+import { ArchiveAccessCard } from '@/components/daily/archive-access-card';
+import { DAILY_HOME_ROUTE, PRACTICE_ROUTES } from '@/features/daily/route-policy';
 import { useHomeData, type DailyChallenge } from '@/features/home/use-home-data';
 import { useStreakReminder } from '@/features/notifications/use-streak-reminder';
 import { useUsername } from '@/features/profile/use-username';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
-
-const GAMES = [
-  {
-    href: '/caccia' as const,
-    icon: '🔍',
-    title: 'Caccia alle Paròle',
-    subtitle: 'Trova le parole nascoste nella griglia',
-  },
-  {
-    href: '/paroliere' as const,
-    icon: '🎭',
-    title: 'Paroliere+',
-    subtitle: 'Collega le lettere, batti il tempo',
-    badge: 'Nuovo',
-  },
-  {
-    href: '/impiccato' as const,
-    icon: '🎈',
-    title: 'Il Palloncino',
-    subtitle: 'Indovina la parola prima che scoppi',
-  },
-  {
-    href: '/anagrammi' as const,
-    icon: '🔀',
-    title: 'Anagrammi+',
-    subtitle: 'Riordina le lettere contro il tempo',
-  },
-];
 
 export default function HomeScreen() {
   const surface = useGameSurface();
@@ -53,13 +27,14 @@ export default function HomeScreen() {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Hero topInset={insets.top} streak={daily.streak} name={username} />
-        <View style={styles.floating}>
-          <DailyChallengeCard daily={daily} />
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: surface.text }]}>Tutti i giochi</Text>
-            <Text style={[styles.sectionCount, { color: surface.textTertiary }]}>5 giochi</Text>
+	        <View style={styles.floating}>
+	          <DailyChallengeCard daily={daily} />
+	          <ArchiveAccessCard />
+	          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: surface.text }]}>Allenamento libero</Text>
+            <Text style={[styles.sectionCount, { color: surface.textTertiary }]}>{PRACTICE_ROUTES.length} giochi</Text>
           </View>
-          {GAMES.map((game, i) => (
+          {PRACTICE_ROUTES.map((game, i) => (
             <Animated.View key={game.href} entering={FadeInDown.delay(i * 70).springify().damping(18)}>
               <GameCard {...game} />
             </Animated.View>
@@ -91,30 +66,29 @@ function Hero({ topInset, streak, name }: { topInset: number; streak: number; na
 }
 
 const DAILY_COPY: Record<DailyChallenge['status'], { subtitle: (d: DailyChallenge) => string; cta: string }> = {
-  new: { subtitle: () => 'La parola del giorno ti aspetta', cta: 'Gioca ora' },
+  new: { subtitle: () => DAILY_HOME_ROUTE.subtitle, cta: DAILY_HOME_ROUTE.cta },
   playing: {
-    subtitle: (d) => `${d.attempts} tentativi su ${d.maxAttempts} usati`,
-    cta: 'Continua a giocare',
+    subtitle: () => 'Riprendi i puzzle della sfida di oggi',
+    cta: 'Continua la sfida',
   },
-  won: { subtitle: (d) => `Risolto in ${d.attempts} tentativi 🎉`, cta: 'Vedi risultato' },
-  lost: { subtitle: () => 'Torna domani per una nuova parola', cta: 'Vedi risultato' },
+  completed: { subtitle: () => 'Sfida completata: risultati e tema ti aspettano', cta: 'Vedi risultato' },
 };
 
 function DailyChallengeCard({ daily }: { daily: DailyChallenge }) {
   const surface = useGameSurface();
   const router = useRouter();
   const copy = DAILY_COPY[daily.status];
-  const progress = daily.status === 'won' || daily.status === 'lost' ? daily.maxAttempts : daily.attempts;
+  const progress = daily.status === 'completed' ? daily.maxAttempts : daily.attempts;
 
   return (
     <View style={[styles.dailyCard, { backgroundColor: surface.card }]}>
       <Text style={styles.dailyOverline}>SFIDA DEL GIORNO</Text>
       <View style={styles.dailyRow}>
         <View style={[styles.emojiTile, { backgroundColor: surface.tile }]}>
-          <Text style={styles.emojiTileText}>🟩</Text>
+          <Text style={styles.emojiTileText}>🧩</Text>
         </View>
         <View style={styles.dailyText}>
-          <Text style={[styles.dailyTitle, { color: surface.text }]}>Paròle</Text>
+          <Text style={[styles.dailyTitle, { color: surface.text }]}>{DAILY_HOME_ROUTE.title}</Text>
           <Text style={[styles.dailySubtitle, { color: surface.textSecondary }]}>
             {daily.hydrated ? copy.subtitle(daily) : ' '}
           </Text>
@@ -123,7 +97,7 @@ function DailyChallengeCard({ daily }: { daily: DailyChallenge }) {
       <ProgressBar value={progress} max={daily.maxAttempts} />
       <Pressable
         accessibilityRole="button"
-        onPress={() => router.push('/parola')}
+        onPress={() => router.push('/daily')}
         style={({ pressed }) => [styles.dailyButton, pressed && styles.pressed]}
       >
         <Text style={styles.dailyButtonText}>{copy.cta}</Text>
@@ -149,7 +123,7 @@ function GameCard({
   subtitle,
   badge,
 }: {
-  href: (typeof GAMES)[number]['href'];
+  href: (typeof PRACTICE_ROUTES)[number]['href'];
   icon: string;
   title: string;
   subtitle: string;

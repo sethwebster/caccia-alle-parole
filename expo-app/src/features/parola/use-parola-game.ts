@@ -2,18 +2,19 @@ import { Observe } from 'expo-observe';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Share } from 'react-native';
 
+import { loadDailyStatsSummary } from '@/features/daily/progress';
+import { useDailyTerminalRecorder } from '@/features/daily/use-daily-terminal-recorder';
+import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import type { GameState, WordleState } from '@/lib/types';
 import { updateParolaWidget } from '@/lib/widget-bridge';
 
+import { stateFromPuzzle } from './parola-daily';
 import {
 	buildShareText,
 	createTodayState,
 	getPuzzleNumber,
-	loadCurrentStreak,
 	loadSavedState,
 	persistState,
-	recordLoss,
-	recordWin,
 	submitCurrentGuess,
 	withLetter,
 	withoutLastLetter,
@@ -69,8 +70,8 @@ function useCopiedFlag(): [boolean, () => void] {
 	return [copied, flash];
 }
 
-/** Restores today's saved game (if any) and the win streak, then opens the gate. */
 function useHydratedParola(
+	routeSession: DailyGameRouteSession,
 	setState: (state: WordleState) => void,
 	setStreak: (streak: number) => void,
 	setHydrated: (hydrated: boolean) => void,
@@ -78,10 +79,20 @@ function useHydratedParola(
 	useEffect(() => {
 		let cancelled = false;
 		(async () => {
-			const [saved, streak] = await Promise.all([loadSavedState(), loadCurrentStreak()]);
-			if (cancelled) return;
-			if (saved) setState(saved);
-			setStreak(streak);
+				if (routeSession.playMode.kind === 'challenge') {
+					if (routeSession.challenge === undefined) return;
+					const dailyStats = await loadDailyStatsSummary();
+					if (cancelled) return;
+					setState(stateFromPuzzle(routeSession.challenge.context.challengeId, routeSession.challenge.puzzle));
+					setStreak(dailyStats.currentStreak);
+					setHydrated(true);
+					return;
+				}
+				const [saved, dailyStats] = await Promise.all([loadSavedState(), loadDailyStatsSummary()]);
+				if (cancelled) return;
+				if (saved) setState(saved);
+				const streak = dailyStats.currentStreak;
+				setStreak(streak);
 			setHydrated(true);
 			const state = saved ?? createTodayState();
 			updateParolaWidget({
@@ -94,7 +105,7 @@ function useHydratedParola(
 		return () => {
 			cancelled = true;
 		};
-	}, [setState, setStreak, setHydrated]);
+	}, [routeSession, setState, setStreak, setHydrated]);
 }
 
 /**
@@ -139,7 +150,7 @@ function useWebKeyboard(onKey: (key: string) => void) {
 	}, [onKey]);
 }
 
-export function useParolaGame() {
+export function useParolaGame(routeSession: DailyGameRouteSession) {
 	const [state, setState] = useState<WordleState>(createTodayState);
 	const [hydrated, setHydrated] = useState(false);
 	const [streak, setStreak] = useState(0);
@@ -148,25 +159,22 @@ export function useParolaGame() {
 	const { toast, show: showToast } = useToast();
 	const [copied, flashCopied] = useCopiedFlag();
 
-	useHydratedParola(setState, setStreak, setHydrated);
+	useHydratedParola(routeSession, setState, setStreak, setHydrated);
 
 	const fireConfetti = useCallback(() => setBurst((b) => b + 1), []);
 	const showModal = useCallback(() => setModalVisible(true), []);
 	useResultReveal(state.gameState, fireConfetti, showModal);
+	useDailyTerminalRecorder(routeSession.challenge, state.gameState === 'won' ? 'win' : state.gameState === 'lost' ? 'loss' : undefined);
 
 	const syncSubmittedGuess = useCallback(
-		async (next: WordleState) => {
-			void persistState(next);
-			let nextStreak = streak;
-			if (next.gameState === 'won') nextStreak = await recordWin();
-			else if (next.gameState === 'lost') nextStreak = await recordLoss();
-			if (nextStreak !== streak) setStreak(nextStreak);
+		(next: WordleState) => {
+			if (routeSession.playMode.kind !== 'challenge') void persistState(next);
 			if (next.gameState !== 'playing') {
 				Observe.logEvent('parola.finished', {
 					attributes: {
 						won: next.gameState === 'won',
 						attempts: next.guesses.length,
-						streak: nextStreak,
+						dailyChallengeStreak: streak,
 						puzzle: getPuzzleNumber(),
 					},
 				});
@@ -175,10 +183,10 @@ export function useParolaGame() {
 				gameState: next.gameState,
 				guessCount: next.guesses.length,
 				puzzleNumber: getPuzzleNumber(),
-				streak: nextStreak,
+				streak,
 			});
 		},
-		[streak],
+		[routeSession.playMode.kind, streak],
 	);
 
 	const onKey = useCallback(

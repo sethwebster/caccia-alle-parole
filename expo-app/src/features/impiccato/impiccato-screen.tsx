@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -6,8 +6,10 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
-import { GameFonts, GamePalette } from '@/constants/game-theme';
+import { GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
+import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
+import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { Balloon } from '@/features/impiccato/balloon';
 import { useImpiccatoGame, useWebKeyboard } from '@/features/impiccato/hooks';
@@ -19,20 +21,24 @@ import {
 	targetHasLetter,
 	type ImpiccatoRound,
 } from '@/features/impiccato/logic';
+import { styles } from '@/features/impiccato/impiccato-screen.styles';
 
-export function ImpiccatoScreen() {
+export function ImpiccatoScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
-	const { round, guess, startRound, modalVisible, dismissModal, confettiBurst } = useImpiccatoGame();
+	const { round, guess, startRound, modalVisible, dismissModal, confettiBurst } = useImpiccatoGame(routeSession);
 	useScreenInteractive(round !== null);
 	useWebKeyboard(guess);
+	const challengeRouteLoading = routeSession.playMode.kind === 'challenge' && routeSession.challenge === undefined;
 
 	const won = round?.gameState === 'won';
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
-			<GameHeader title="Il Palloncino" subtitle="Non farlo scoppiare!" onAction={() => startRound(false)} />
-			{round ? (
-				<ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+			<GameHeader title="Il Palloncino" subtitle={formatPlayModeSubtitle(routeSession.playMode, 'Non farlo scoppiare!')} onAction={() => startRound(false)} />
+				{challengeRouteLoading ? (
+					<ChallengeLoading />
+				) : round ? (
+					<ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
 					<View style={styles.upper}>
 						<Animated.View
 							entering={FadeIn}
@@ -123,6 +129,16 @@ export function ImpiccatoScreen() {
 	);
 }
 
+function ChallengeLoading() {
+	const surface = useGameSurface();
+	return (
+		<View style={styles.loadingCard}>
+			<Text style={[styles.loadingTitle, { color: surface.text }]}>Prepariamo la sfida</Text>
+			<Text style={[styles.loadingCopy, { color: surface.textSecondary }]}>Caricamento del tentativo ufficiale in corso.</Text>
+		</View>
+	);
+}
+
 function KeyButton({
 	letter,
 	round,
@@ -177,118 +193,3 @@ function AnswerCard({ round }: { round: ImpiccatoRound }) {
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	safe: { flex: 1 },
-	scroll: { flex: 1 },
-	content: {
-		flexGrow: 1,
-		padding: 16,
-		gap: 16,
-		maxWidth: 640,
-		width: '100%',
-		alignSelf: 'center',
-	},
-	upper: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
-	panel: {
-		flex: 1,
-		borderRadius: 24,
-		borderWidth: 1,
-		padding: 12,
-		alignItems: 'center',
-		gap: 8,
-	},
-	categoryPill: {
-		backgroundColor: GamePalette.primaryLight,
-		paddingVertical: 4,
-		paddingHorizontal: 12,
-		borderRadius: 99,
-	},
-	categoryText: {
-		color: GamePalette.primary,
-		fontSize: 11,
-		fontFamily: GameFonts.body600,
-		textTransform: 'uppercase',
-		letterSpacing: 0.5,
-	},
-	statusColumn: { width: 118, gap: 12 },
-	livesCard: {
-		borderRadius: 20,
-		borderWidth: 1,
-		padding: 12,
-		alignItems: 'center',
-		gap: 8,
-	},
-	livesLabel: {
-		fontSize: 10,
-		fontFamily: GameFonts.body600,
-		textTransform: 'uppercase',
-		letterSpacing: 0.6,
-	},
-	hearts: {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		justifyContent: 'center',
-		gap: 4,
-		maxWidth: 84,
-	},
-	heart: { fontSize: 18 },
-	heartLost: { opacity: 0.35 },
-	wordCard: {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		justifyContent: 'center',
-		rowGap: 10,
-		columnGap: 7,
-		borderRadius: 20,
-		borderWidth: 1,
-		padding: 18,
-	},
-	wordGap: { width: 16 },
-	slot: {
-		width: 30,
-		height: 44,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderBottomWidth: 3,
-	},
-	slotText: { fontSize: 22, fontFamily: GameFonts.display800, textTransform: 'uppercase' },
-	keyboard: { marginTop: 'auto', gap: 7 },
-	keyRow: { flexDirection: 'row', justifyContent: 'center', gap: 5 },
-	key: {
-		flex: 1,
-		maxWidth: 56,
-		height: 48,
-		borderRadius: 8,
-		borderWidth: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	keyCorrect: { backgroundColor: GamePalette.success, borderColor: GamePalette.success },
-	keyFaded: { opacity: 0.5 },
-	keyPressed: { transform: [{ translateY: 2 }], opacity: 0.9 },
-	keyText: { fontSize: 16, fontFamily: GameFonts.display700 },
-	answerCard: {
-		alignSelf: 'stretch',
-		borderRadius: 20,
-		borderWidth: 1,
-		padding: 20,
-		alignItems: 'center',
-		marginTop: 4,
-	},
-	answerLabel: {
-		fontSize: 11,
-		fontFamily: GameFonts.body600,
-		textTransform: 'uppercase',
-		letterSpacing: 0.6,
-	},
-	answerWord: {
-		fontSize: 32,
-		fontFamily: GameFonts.display800,
-		color: GamePalette.primary,
-		marginVertical: 6,
-		textAlign: 'center',
-	},
-	answerTranslation: { fontSize: 15, fontFamily: GameFonts.body700, marginBottom: 6 },
-	answerDefinition: { fontSize: 13, fontStyle: 'italic', textAlign: 'center' },
-});

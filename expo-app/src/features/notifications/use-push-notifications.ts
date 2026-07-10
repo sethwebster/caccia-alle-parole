@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 
 import { registerForPushNotificationsAsync, uploadPushTokenAsync } from './push-notifications';
 
@@ -18,6 +19,8 @@ export function usePushNotifications(): { pushToken: string | null } {
 	const [pushToken, setPushToken] = useState<string | null>(null);
 
 	useEffect(() => {
+		if (Platform.OS === 'web') return;
+
 		let mounted = true;
 
 		registerForPushNotificationsAsync().then((token) => {

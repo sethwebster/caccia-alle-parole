@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
-import { ParoliereService, type ParoliereState, type SubmitOutcome } from './service';
+import { ParoliereService, type ParoliereChallengeConfig, type ParoliereState, type SubmitOutcome } from './service';
 
 /** Owns a per-mount service instance and subscribes the screen to its state. */
-export function useParoliereGame(): { state: ParoliereState; service: ParoliereService } {
-	const [service] = useState(() => new ParoliereService());
+export function useParoliereGame(challenge?: ParoliereChallengeConfig): { state: ParoliereState; service: ParoliereService } {
+	const service = useMemo(() => new ParoliereService({ challenge }), [challenge]);
 	const state = useSyncExternalStore(service.subscribe, service.getState, service.getState);
 	useServiceTeardown(service);
 	return { state, service };
@@ -28,24 +28,26 @@ export function useResultReveal(state: ParoliereState): {
 	burst: number;
 } {
 	const [modalVisible, setModalVisible] = useState(false);
-	const [burst, setBurst] = useState(0);
 	const shownRef = useRef(false);
 	const finished = state.gameState === 'finished';
 	const { score } = state;
+	const burst = finished && score > 20 ? score : 0;
 
 	useEffect(() => {
 		if (!finished) {
 			shownRef.current = false;
-			return;
+			const timeout = setTimeout(() => setModalVisible(false), 0);
+			return () => clearTimeout(timeout);
 		}
 		if (shownRef.current) return;
 		shownRef.current = true;
-		if (score > 20) setBurst((b) => b + 1);
 		const timeout = setTimeout(() => setModalVisible(true), 1400);
 		return () => clearTimeout(timeout);
-	}, [finished, score]);
+	}, [finished]);
 
-	return { modalVisible, dismissModal: () => setModalVisible(false), burst };
+	const dismissModal = useCallback(() => setModalVisible(false), []);
+
+	return { modalVisible, dismissModal, burst };
 }
 
 /** Brief green/red flash after each submit; returns the overlay's animated style. */

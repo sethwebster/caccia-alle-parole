@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
+import { ArchiveAccessCard } from '@/components/daily/archive-access-card';
 import { usePlayerStats } from '@/features/stats/use-player-stats';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
@@ -15,11 +16,25 @@ export default function ClassificaScreen() {
 
   const rows = [
     {
-      icon: '🟩',
-      title: 'Paròle',
-      metric: 'Serie di vittorie',
-      value: stats.parolaStreak,
-      unit: stats.parolaStreak === 1 ? 'giorno' : 'giorni',
+      icon: '🧩',
+      title: 'Sfida Giornaliera',
+      metric: 'Serie attuale',
+      value: stats.dailyChallengeStreak,
+      unit: stats.dailyChallengeStreak === 1 ? 'giorno' : 'giorni',
+    },
+    {
+      icon: '🏁',
+      title: 'Sfida Giornaliera',
+      metric: 'Sfide completate',
+      value: stats.dailyChallengeCompletions,
+      unit: 'ufficiali',
+    },
+    {
+      icon: '⭐',
+      title: 'Sfida Giornaliera',
+      metric: 'Sfide perfette',
+      value: stats.dailyChallengePerfect,
+      unit: '5 vittorie',
     },
     {
       icon: '🔀',
@@ -61,9 +76,9 @@ export default function ClassificaScreen() {
             </View>
           </View>
         ))}
+        <ArchiveAccessCard compact />
         <Text style={[styles.footnote, { color: surface.textTertiary }]}>
-          Caccia, Paroliere+ e Il Palloncino si giocano a partite singole: i punteggi valgono per
-          la sessione.
+          I record della Sfida Giornaliera derivano dai risultati ufficiali salvati, non dai replay.
         </Text>
       </ScrollView>
     </View>

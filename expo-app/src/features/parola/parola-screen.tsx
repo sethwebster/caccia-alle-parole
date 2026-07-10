@@ -17,6 +17,8 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
+import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
+import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import type { KeyboardState, LetterResult, Word, WordleState } from '@/lib/types';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
@@ -45,18 +47,18 @@ const DAILY_CAPTION = `La parola del giorno · ${new Date().toLocaleDateString('
 	month: 'long',
 })}`;
 
-export function ParolaScreen() {
+export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
-	const game = useParolaGame();
+	const game = useParolaGame(routeSession);
 	useScreenInteractive(game.hydrated);
 	const won = game.state.gameState === 'won';
 	const [showHelp, setShowHelp] = useState(false);
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
-			<GameHeader
-				title="Paròle"
-				subtitle={`Puzzle ${game.puzzleNumber}`}
+				<GameHeader
+					title="Paròle"
+						subtitle={formatPlayModeSubtitle(routeSession.playMode, `Puzzle ${game.puzzleNumber}`)}
 				actionLabel="?"
 				actionAccessibilityLabel="Come giocare"
 				onAction={() => setShowHelp(true)}
@@ -87,7 +89,7 @@ export function ParolaScreen() {
 				<TargetCard word={game.state.targetWord} data={game.state.targetWordData} />
 				<View style={styles.stats}>
 					<ResultStat label="Tentativi" value={won ? game.state.guesses.length : 'X'} accent={won} />
-					<ResultStat label="Serie di vittorie" value={game.streak} />
+						<ResultStat label="Serie Sfida Giornaliera" value={game.streak} />
 				</View>
 			</ResultModal>
 			<ResultModal

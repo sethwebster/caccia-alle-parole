@@ -207,6 +207,8 @@ export type SavedProgress = { score: number; streak: number };
 /** Validate persisted data; wrong shape => discard (never hydrate a broken game). */
 export function parseSavedProgress(value: unknown): SavedProgress | null {
 	if (typeof value !== 'object' || value === null) return null;
+	const keys = Object.keys(value);
+	if (keys.length !== 2 || !keys.includes('score') || !keys.includes('streak')) return null;
 	const { score, streak } = value as Record<string, unknown>;
 	if (typeof score !== 'number' || !Number.isFinite(score) || score < 0) return null;
 	if (typeof streak !== 'number' || !Number.isFinite(streak) || streak < 0) return null;

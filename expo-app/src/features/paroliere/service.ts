@@ -1,5 +1,6 @@
 import { Observe } from 'expo-observe';
 
+import type { TerminalAttemptContext, TerminalReason } from '@/features/daily/types';
 import {
 	endParoliereActivity,
 	startParoliereActivity,
@@ -11,6 +12,7 @@ import { isValidWord } from './dictionary';
 
 export type PathCell = { row: number; col: number };
 export type ParoliereGameState = 'setup' | 'playing' | 'finished';
+export type ParoliereChallengeTerminalReason = Extract<TerminalReason, 'loss' | 'skip' | 'giveUp'>;
 
 /** Result of the last released path; `nonce` retriggers the pulse animation. */
 export type SubmitOutcome = { word: string; valid: boolean; nonce: number };
@@ -25,6 +27,34 @@ export type ParoliereState = {
 	gameState: ParoliereGameState;
 	lastOutcome: SubmitOutcome | null;
 };
+
+export type ParoliereChallengeConfig = {
+	readonly context: TerminalAttemptContext;
+	readonly durationSeconds: number;
+	readonly grid: readonly (readonly string[])[];
+};
+
+export type ParoliereServiceOptions = {
+	readonly challenge?: ParoliereChallengeConfig;
+};
+
+export type ParoliereTerminalSummary = {
+	readonly context: TerminalAttemptContext;
+	readonly foundWords: readonly string[];
+	readonly puzzleKey: 'paroliere';
+	readonly reason: ParoliereChallengeTerminalReason;
+	readonly score: number;
+	readonly timeLeft: number;
+	readonly totalWords: number;
+};
+
+export class ParoliereChallengeConfigError extends Error {
+	readonly name = 'ParoliereChallengeConfigError';
+
+	constructor(readonly field: 'context' | 'durationSeconds' | 'grid') {
+		super(`paroliere invalid ${field}`);
+	}
+}
 
 export const GRID_SIZE = 4;
 const GAME_DURATION = 180; // seconds
@@ -51,17 +81,30 @@ export function wordPoints(length: number): number {
 	return 10;
 }
 
-function initialState(): ParoliereState {
+function initialState(challenge: ParoliereChallengeConfig | null): ParoliereState {
 	return {
-		grid: generateRandomGrid(),
+		grid: challenge === null ? generateRandomGrid() : copyGrid(challenge.grid),
 		foundWords: [],
 		currentPath: [],
 		currentWord: '',
 		score: 0,
-		timeLeft: GAME_DURATION,
+		timeLeft: challenge?.durationSeconds ?? GAME_DURATION,
 		gameState: 'setup',
 		lastOutcome: null,
 	};
+}
+
+function copyGrid(grid: readonly (readonly string[])[]): string[][] {
+	return grid.map((row) => [...row]);
+}
+
+function validateChallengeConfig(challenge: ParoliereChallengeConfig): void {
+	if (challenge.context.puzzleKey !== 'paroliere') throw new ParoliereChallengeConfigError('context');
+	if (!Number.isInteger(challenge.durationSeconds) || challenge.durationSeconds <= 0) throw new ParoliereChallengeConfigError('durationSeconds');
+	if (challenge.grid.length !== GRID_SIZE) throw new ParoliereChallengeConfigError('grid');
+	for (const row of challenge.grid) {
+		if (row.length !== GRID_SIZE || row.some((cell) => !/^[A-ZÀ-Ù]$/.test(cell))) throw new ParoliereChallengeConfigError('grid');
+	}
 }
 
 /**
@@ -70,12 +113,20 @@ function initialState(): ParoliereState {
  * the Live Activity lifecycle; consumed via subscribe/getState.
  */
 export class ParoliereService {
-	private state = initialState();
+	private state: ParoliereState;
 	private listeners = new Set<() => void>();
 	private timer: ReturnType<typeof setInterval> | null = null;
 	private deadline = 0;
 	private lastActivityPush = 0;
 	private outcomeNonce = 0;
+	private terminalSummary: ParoliereTerminalSummary | null = null;
+	private readonly challenge: ParoliereChallengeConfig | null;
+
+	constructor(options: ParoliereServiceOptions = {}) {
+		if (options.challenge) validateChallengeConfig(options.challenge);
+		this.challenge = options.challenge ?? null;
+		this.state = initialState(this.challenge);
+	}
 
 	subscribe = (listener: () => void): (() => void) => {
 		this.listeners.add(listener);
@@ -85,11 +136,15 @@ export class ParoliereService {
 	};
 
 	getState = (): ParoliereState => this.state;
+	getTerminalSummary = (): ParoliereTerminalSummary | null => this.terminalSummary;
 
 	startGame = (): void => {
+		if (this.state.gameState === 'playing') endParoliereActivity(this.activityState());
 		this.stopTimer();
-		this.deadline = Date.now() + GAME_DURATION * 1000;
-		this.set({ ...initialState(), gameState: 'playing' });
+		this.terminalSummary = null;
+		const next = initialState(this.challenge);
+		this.deadline = Date.now() + next.timeLeft * 1000;
+		this.set({ ...next, gameState: 'playing' });
 		this.lastActivityPush = Date.now();
 		Observe.logEvent('paroliere.started');
 		startParoliereActivity(this.activityState());
@@ -151,7 +206,13 @@ export class ParoliereService {
 	/** Only a running game can finish — ending from 'setup' would show an empty results modal. */
 	endGame = (): void => {
 		if (this.state.gameState !== 'playing') return;
-		this.finish(this.state.timeLeft);
+		this.finish(this.state.timeLeft, 'giveUp');
+	};
+
+	giveUp = (reason: Extract<TerminalReason, 'skip' | 'giveUp'>): ParoliereTerminalSummary | null => {
+		if (this.state.gameState !== 'playing') return this.terminalSummary;
+		this.finish(this.state.timeLeft, reason);
+		return this.terminalSummary;
 	};
 
 	/** Screen unmounted: stop the clock and close the Live Activity. */
@@ -164,7 +225,7 @@ export class ParoliereService {
 		if (this.state.gameState !== 'playing') return;
 		const remaining = Math.max(0, Math.ceil((this.deadline - Date.now()) / 1000));
 		if (remaining <= 0) {
-			this.finish(0);
+			this.finish(0, 'loss');
 			return;
 		}
 		if (remaining !== this.state.timeLeft) this.set({ ...this.state, timeLeft: remaining });
@@ -174,7 +235,7 @@ export class ParoliereService {
 		}
 	};
 
-	private finish(timeLeft: number): void {
+	private finish(timeLeft: number, reason: ParoliereChallengeTerminalReason): void {
 		this.stopTimer();
 		this.set({
 			...this.state,
@@ -186,6 +247,15 @@ export class ParoliereService {
 		Observe.logEvent('paroliere.finished', {
 			attributes: { score: this.state.score, words: this.state.foundWords.length },
 		});
+		this.terminalSummary = this.challenge === null ? null : {
+			context: this.challenge.context,
+			foundWords: [...this.state.foundWords],
+			puzzleKey: 'paroliere',
+			reason,
+			score: this.state.score,
+			timeLeft: this.state.timeLeft,
+			totalWords: this.state.foundWords.length,
+		};
 		endParoliereActivity(this.activityState());
 	}
 

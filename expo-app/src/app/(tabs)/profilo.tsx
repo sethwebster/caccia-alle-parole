@@ -6,6 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
+import { ArchiveAccessCard } from '@/components/daily/archive-access-card';
 import { useAvatar } from '@/features/profile/use-avatar';
 import { MAX_USERNAME_LENGTH, useUsername } from '@/features/profile/use-username';
 import { usePlayerStats } from '@/features/stats/use-player-stats';
@@ -65,14 +66,25 @@ export default function ProfiloScreen() {
         </View>
         <View style={styles.statRow}>
           <StatTile
-            label="Serie Paròle"
-            value={stats.hydrated ? `${stats.parolaStreak} 🔥` : '–'}
+            label="Serie Sfida Giornaliera"
+            value={stats.hydrated ? `${stats.dailyChallengeStreak} 🔥` : '–'}
           />
           <StatTile
             label="Punti Anagrammi"
             value={stats.hydrated ? String(stats.anagrammiScore) : '–'}
           />
         </View>
+        <View style={styles.statRow}>
+          <StatTile
+            label="Sfide completate"
+            value={stats.hydrated ? String(stats.dailyChallengeCompletions) : '–'}
+          />
+          <StatTile
+            label="Sfide perfette"
+            value={stats.hydrated ? String(stats.dailyChallengePerfect) : '–'}
+          />
+        </View>
+        <ArchiveAccessCard compact />
       </ScrollView>
     </View>
   );

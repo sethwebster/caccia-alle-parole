@@ -1,0 +1,56 @@
+export {
+	compareStreakDates,
+	challengeIdForDate,
+	InvalidLocalCivilDateError,
+	localCivilDateForDate,
+	makeCatalogEpoch,
+	makeCatalogVersion,
+	makeChallengeId,
+	makeLocalCivilDate,
+	makeReleaseBaseChallengeId,
+	makeStreakDate,
+	makeSupportedDateRange,
+	nextStreakDate,
+	streakDateForDate,
+} from './date';
+export {
+	buildTerminalAttemptContext,
+	evaluateOfficialStreakEligibility,
+	isCompleteTerminalAttemptContext,
+	isTerminalReason,
+} from './contract';
+export {
+	CANONICAL_PUZZLE_KEYS,
+	CANONICAL_PUZZLE_LABELS,
+	TERMINAL_REASONS,
+	type CatalogEpoch,
+	type CatalogVersion,
+	type ChallengeId,
+	type ChallengeSource,
+	type ChallengeStatus,
+	type DailyChallengeBundle,
+	type DailyPuzzleKey,
+	type DailyPuzzleSpec,
+	type LocalCivilDate,
+	type OfficialAttempt,
+	type OfficialStreakEligibility,
+	type OfficialStreakEligibilityInput,
+	type ReleaseBaseChallengeId,
+	type ReplayAttempt,
+	type StreakDate,
+	type SupportedDateRange,
+	type TerminalAttemptContext,
+	type TerminalReason,
+	type ThemeQuizData,
+} from './types';
+export { DailyChallengeOrchestrator, getDailyChallengeOrchestrator } from './orchestrator-service';
+export { useDailyChallenge } from './use-daily-challenge';
+export type {
+	DailyChallengePhase,
+	DailyChallengeReadySnapshot,
+	DailyChallengeSnapshot,
+	DailyPuzzleRuntime,
+	PuzzleRuntimeStatus,
+	TerminalRecordResult,
+	ThemeGateState,
+} from './orchestrator-model';

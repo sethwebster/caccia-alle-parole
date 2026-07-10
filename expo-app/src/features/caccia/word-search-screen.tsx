@@ -11,6 +11,8 @@ import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { categories, formatCategory } from '@/data/word-data';
+import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
+import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import type { Difficulty, PlacedWord, WordSearchState } from '@/lib/types';
 import type { SelectedCell } from '@/lib/wordDetection';
@@ -36,7 +38,7 @@ const cellShake = new Keyframe({
 	100: { transform: [{ translateX: 0 }] },
 }).duration(500);
 
-export function WordSearchScreen() {
+export function WordSearchScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
 	const {
 		game,
@@ -50,7 +52,7 @@ export function WordSearchScreen() {
 		replay,
 		reset,
 		submitSelection,
-	} = useWordSearchGame();
+	} = useWordSearchGame(routeSession);
 	useScreenInteractive(hydrated);
 
 	const [pickedCategory, setPickedCategory] = useState<string | null>(null);
@@ -72,7 +74,7 @@ export function WordSearchScreen() {
 			style={[styles.safe, { backgroundColor: surface.background }]}
 			edges={['top', 'bottom']}
 		>
-			<GameHeader title="Caccia" subtitle={subtitle} onAction={resetToSetup} />
+		<GameHeader title="Caccia" subtitle={formatPlayModeSubtitle(routeSession.playMode, subtitle)} onAction={resetToSetup} />
 			{!hydrated ? null : !isActive ? (
 				<SetupPanel
 					pickedCategory={pickedCategory}
