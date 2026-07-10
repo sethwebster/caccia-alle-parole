@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "cf:dev": "wrangler dev",
+    "cf:deploy:built": "wrangler deploy",
     "cf:deploy": "bun run build && wrangler deploy",
     "cf:tail": "wrangler tail"
   },

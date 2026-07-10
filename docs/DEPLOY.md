@@ -1,6 +1,14 @@
-# Deploying to Cloudflare Workers
+# Deploying the web app to Cloudflare Workers
 
-This guide explains how to deploy a SvelteKit app to Cloudflare Workers with static assets.
+This guide explains how to deploy the SvelteKit app in `apps/web` to Cloudflare Workers with static assets.
+
+## Repository deployment contract
+
+This repository is a Bun workspace that also contains the Expo mobile app. Do not use Cloudflare's managed Git build for the web app: it runs `bun install --frozen-lockfile` from the repository root before the build command and installs the Expo dependency graph.
+
+Use the committed GitHub Actions workflow, `.github/workflows/deploy-web.yml`, instead. It installs only `@caccia/web`, builds from `apps/web`, then deploys through Wrangler.
+
+Set the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` GitHub Actions secrets. Scope the token to deploy the `caccia-alle-parole` Worker in that account. Disable the existing Cloudflare Git integration build after this workflow is enabled to prevent the failing root install from continuing to run.
 
 ## Quick Summary
 
@@ -11,7 +19,7 @@ Cloudflare merged Pages and Workers into one thing. Now everything is a "Worker"
 ## How It Works (The Simple Version)
 
 1. **You write code** - SvelteKit app with pages, components, etc.
-2. **You build it** - `bun run build` creates two things:
+2. **You build it** - `bun run --cwd apps/web build` creates two things:
    - A "worker" file (`_worker.js`) - the brain that handles requests
    - Static files (CSS, JS, images) - the stuff browsers download
 3. **Cloudflare serves it** - Worker handles dynamic stuff, static files get served directly
@@ -20,7 +28,7 @@ Cloudflare merged Pages and Workers into one thing. Now everything is a "Worker"
 
 ## Project Configuration
 
-### wrangler.toml (The Config File)
+### apps/web/wrangler.toml (The Config File)
 
 This tells Cloudflare how to run your app:
 
@@ -86,7 +94,7 @@ This opens a browser. Click "Allow" to authorize.
 
 ### Step 3: Create wrangler.toml
 
-Create a file named `wrangler.toml` in your project root:
+Create a file named `wrangler.toml` in the web app root, `apps/web`:
 
 ```toml
 name = "your-project-name"
@@ -102,8 +110,9 @@ binding = "ASSETS"
 ### Step 4: Build and Deploy
 
 ```bash
-bun run build
-bunx wrangler deploy
+bun install --filter @caccia/web --frozen-lockfile
+bun run --cwd apps/web build
+bun run --cwd apps/web cf:deploy:built
 ```
 
 Your app is now live at: `https://your-project-name.your-subdomain.workers.dev`
@@ -112,74 +121,40 @@ Your app is now live at: `https://your-project-name.your-subdomain.workers.dev`
 
 ## Connecting GitHub for Automatic Deploys
 
-### Option A: Cloudflare Dashboard (Recommended)
+### Option A: GitHub Actions (Recommended)
 
-1. Go to [dash.cloudflare.com](https://dash.cloudflare.com)
-2. Click **Workers & Pages** in the left sidebar
-3. Click **Create**
-4. Select **Import from Git**
-5. Connect your GitHub account (if not already)
-6. Select your repository
-7. Configure build settings:
-   - **Build command**: `bun run build`
-   - **Build output directory**: `.svelte-kit/cloudflare`
-8. Click **Deploy**
+The repository includes `.github/workflows/deploy-web.yml`. Add `CLOUDFLARE_API_TOKEN` to the repository's GitHub Actions secrets, then pushes to `main` that affect `apps/web`, `package.json`, or `bun.lock` deploy the web Worker.
 
-Now every push to `main` triggers a new deployment.
+The workflow uses:
 
-### Option B: GitHub Actions (Manual Setup)
-
-Create `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to Cloudflare Workers
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - run: bun install
-      - run: bun run build
-
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+```bash
+bun install --filter @caccia/web --frozen-lockfile
+bun run --cwd apps/web build
+bun run --cwd apps/web cf:deploy:built
 ```
 
-Add `CLOUDFLARE_API_TOKEN` to your GitHub repo secrets:
-1. Cloudflare Dashboard > My Profile > API Tokens
-2. Create Token > Use "Edit Cloudflare Workers" template
-3. Copy token to GitHub: Settings > Secrets > Actions
+This prevents the Expo workspace from being installed during web deployments.
+
+### Option B: Cloudflare Dashboard Git Integration
+
+Do not use Cloudflare Dashboard Git integration for this repository's web deployment. Its managed install runs before the build command and cannot be scoped to `@caccia/web`; it will install the mobile Expo workspace from the root lockfile and can exceed the build environment limit.
 
 ---
 
 ## What Cloudflare Runs Automatically
 
-When you connect your repo to Cloudflare Dashboard:
+When GitHub Actions deploys this repository:
 
 | Step | Automatic? | What Happens |
 |------|------------|--------------|
-| Clone repo | Yes | Cloudflare pulls your code |
-| Install deps | Yes | Runs `bun install` or `npm install` |
-| Build | Yes | Runs your build command |
-| Deploy worker | Yes | Uploads `_worker.js` |
+| Clone repo | Yes | GitHub Actions checks out the code |
+| Install deps | Yes | Runs `bun install --filter @caccia/web --frozen-lockfile` |
+| Build | Yes | Runs the `apps/web` build |
+| Deploy worker | Yes | Wrangler uploads `_worker.js` |
 | Deploy assets | Yes | Uploads static files |
 | Assign URL | Yes | Makes it live at `*.workers.dev` |
 
-You do NOT need to:
-- Run `wrangler deploy` manually
-- Set up CI/CD pipelines (unless you want GitHub Actions)
-- Upload files yourself
+You do NOT need to upload files manually. Use **Run workflow** in GitHub Actions to redeploy without a code change, or run `wrangler deploy` locally when needed.
 
 ---
 
@@ -188,14 +163,15 @@ You do NOT need to:
 When NOT using automatic GitHub integration:
 
 ```bash
-# Build the project
-bun run build
+# Install only the web workspace
+bun install --filter @caccia/web --frozen-lockfile
 
-# Deploy to Cloudflare
-bunx wrangler deploy
+# Build and deploy from the web workspace
+bun run --cwd apps/web build
+bun run --cwd apps/web cf:deploy:built
 
 # Or use the combined script
-bun run cf:deploy
+bun run --cwd apps/web cf:deploy
 ```
 
 ---
@@ -256,7 +232,7 @@ If you can't switch nameservers, use a subdomain:
 main = ".svelte-kit/cloudflare/_worker.js"
 ```
 
-And run `bun run build` before deploying.
+And run `bun run --cwd apps/web build` before deploying.
 
 ### "ASSETS binding not found"
 
@@ -269,14 +245,20 @@ directory = ".svelte-kit/cloudflare"
 binding = "ASSETS"
 ```
 
-### Build works locally but fails on Cloudflare
+### Dependency install is killed before the build
+
+**Problem**: The build log stops at root `bun install --frozen-lockfile` with `Killed`.
+
+**Solution**: Disable Cloudflare Dashboard Git integration for this repository and use `.github/workflows/deploy-web.yml`. The workflow installs only `@caccia/web`, so it does not pull the Expo mobile dependency graph into the web deployment.
+
+### Build works locally but fails in GitHub Actions
 
 **Problem**: Cloudflare's build environment differs from yours
 
 **Solutions**:
-1. Check Node version - Cloudflare defaults vary
-2. Set build environment variables in Dashboard
-3. Try adding to your build command: `NODE_VERSION=20 bun run build`
+1. Verify the workflow still pins Bun to the repository's `packageManager` version
+2. Run `bun install --filter @caccia/web --frozen-lockfile` locally
+3. Run `bun run --cwd apps/web build` locally
 
 ### Static assets 404
 
