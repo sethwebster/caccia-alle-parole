@@ -6,7 +6,6 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
-import { ArchiveAccessCard } from '@/components/daily/archive-access-card';
 import { DAILY_HOME_ROUTE, PRACTICE_ROUTES } from '@/features/daily/route-policy';
 import { useHomeData, type DailyChallenge } from '@/features/home/use-home-data';
 import { useStreakReminder } from '@/features/notifications/use-streak-reminder';
@@ -29,7 +28,6 @@ export default function HomeScreen() {
         <Hero topInset={insets.top} streak={daily.streak} name={username} />
 	        <View style={styles.floating}>
 	          <DailyChallengeCard daily={daily} />
-	          <ArchiveAccessCard />
 	          <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: surface.text }]}>Allenamento libero</Text>
             <Text style={[styles.sectionCount, { color: surface.textTertiary }]}>{PRACTICE_ROUTES.length} giochi</Text>

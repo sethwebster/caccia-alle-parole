@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
-import { ArchiveAccessCard } from '@/components/daily/archive-access-card';
 import { usePlayerStats } from '@/features/stats/use-player-stats';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
@@ -76,7 +75,6 @@ export default function ClassificaScreen() {
             </View>
           </View>
         ))}
-        <ArchiveAccessCard compact />
         <Text style={[styles.footnote, { color: surface.textTertiary }]}>
           I record della Sfida Giornaliera derivano dai risultati ufficiali salvati, non dai replay.
         </Text>
