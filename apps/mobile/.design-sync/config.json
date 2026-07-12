@@ -1,0 +1,54 @@
+{
+  "projectId": "a4dd10f2-4be5-44a9-9bc2-6aa3e73adc8c",
+  "shape": "package",
+  "pkg": "@caccia/mobile",
+  "globalName": "CacciaParole",
+  "srcDir": "src",
+  "entry": ".design-sync/ds-entry.ts",
+  "buildCmd": "bunx tsc -p .design-sync/tsconfig.types.json && sed 's|\\.\\./src/|./src/|g' types/.design-sync/ds-entry.d.ts > types/ds-entry.d.ts",
+  "tsconfig": ".design-sync/tsconfig.dsync.json",
+  "extraFonts": [
+    ".design-sync/fonts/caccia-fonts.css"
+  ],
+  "libOverrides": {
+    "bundle.mjs": "react-native-web platform extensions (.web.js resolution for reanimated/svg)"
+  },
+  "componentSrcMap": {
+    "ThemedText": "src/components/themed-text.tsx",
+    "ThemedView": "src/components/themed-view.tsx",
+    "GameHeader": "src/components/game/game-header.tsx",
+    "OptionButton": "src/components/game/option-button.tsx",
+    "StatPill": "src/components/game/stat-pill.tsx",
+    "ResultModal": "src/components/game/result-modal.tsx",
+    "ResultStat": "src/components/game/result-modal.tsx",
+    "Confetti": "src/components/game/confetti.tsx",
+    "ArchiveAccessCard": "src/components/daily/archive-access-card.tsx",
+    "Balloon": "src/features/impiccato/balloon.tsx",
+    "DailyThemeCard": "src/features/daily/daily-theme-card.tsx"
+  },
+  "runtimeFontPrefixes": [
+    "SF Pro Rounded",
+    "Hiragino Maru Gothic ProN"
+  ],
+  "overrides": {
+    "ResultModal": {
+      "cardMode": "single",
+      "primaryStory": "Vittoria",
+      "viewport": "420x560"
+    },
+    "StatPill": {
+      "cardMode": "column"
+    },
+    "GameHeader": {
+      "cardMode": "column"
+    },
+    "ResultStat": {
+      "cardMode": "column"
+    },
+    "ThemedView": {
+      "cardMode": "column"
+    }
+  },
+  "cssEntry": ".design-sync/tokens/caccia-tokens.css",
+  "readmeHeader": ".design-sync/conventions.md"
+}

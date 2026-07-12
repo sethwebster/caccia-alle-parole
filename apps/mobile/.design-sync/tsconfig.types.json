@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "outDir": "../types",
+    "rootDir": ".."
+  },
+  "include": ["ds-entry.ts", "../src/types-css.d.ts", "../expo-env.d.ts"]
+}

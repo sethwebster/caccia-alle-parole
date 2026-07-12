@@ -1,0 +1,52 @@
+/* CacciaParole brand fonts. Family names match the React Native fontFamily
+ * strings in src/constants/game-theme.ts (GameFonts) exactly — one family per
+ * weight, as expo-google-fonts registers them. Files ship from the
+ * @expo-google-fonts packages the app already depends on. */
+
+@font-face {
+  font-family: 'Baloo2_600SemiBold';
+  src: url('../../node_modules/@expo-google-fonts/baloo-2/600SemiBold/Baloo2_600SemiBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Baloo2_700Bold';
+  src: url('../../node_modules/@expo-google-fonts/baloo-2/700Bold/Baloo2_700Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Baloo2_800ExtraBold';
+  src: url('../../node_modules/@expo-google-fonts/baloo-2/800ExtraBold/Baloo2_800ExtraBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree_500Medium';
+  src: url('../../node_modules/@expo-google-fonts/figtree/500Medium/Figtree_500Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree_600SemiBold';
+  src: url('../../node_modules/@expo-google-fonts/figtree/600SemiBold/Figtree_600SemiBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree_700Bold';
+  src: url('../../node_modules/@expo-google-fonts/figtree/700Bold/Figtree_700Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

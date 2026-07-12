@@ -41,3 +41,11 @@ example
 # generated native folders
 /ios
 /android
+
+# design-sync (machine state — the durable set under .design-sync/ IS committed)
+.ds-sync/
+ds-bundle/
+types/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules

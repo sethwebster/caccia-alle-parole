@@ -1,0 +1,76 @@
+/* CacciaParole design tokens — the "tomato bold" game language.
+ * Hand-derived from src/constants/game-theme.ts (GamePalette, GameSurfaces,
+ * GameRadius, GameShadow, GameFonts) and src/constants/theme.ts (Spacing).
+ * NOTE: components style themselves via react-native-web inline styles; these
+ * custom properties exist for layout glue built AROUND the components. If the
+ * TS constants change, regenerate this file (see .design-sync/NOTES.md). */
+
+:root {
+  /* Brand */
+  --caccia-primary: #C33F2E;          /* tomato */
+  --caccia-primary-dark: #9E2F21;     /* tomato-deep */
+  --caccia-primary-light: #F7E3CE;    /* cream-tile */
+  --caccia-on-primary: #FFF8EE;       /* cream-on-brand */
+  --caccia-on-primary-muted: #F3C4B4; /* rosa */
+
+  /* Gameplay feedback */
+  --caccia-amber: #D99A2B;            /* letter present */
+  --caccia-amber-dark: #B37E1F;
+  --caccia-amber-light: #F7E9CB;
+  --caccia-success: #578A3F;          /* basil — letter correct */
+  --caccia-success-light: #E2EDD8;    /* basil-soft */
+  --caccia-success-text: #3E6B2C;
+  --caccia-absent: #A99887;           /* olive-gray — letter absent */
+  --caccia-error: #C33F2E;
+  --caccia-slate: #43241B;            /* ink — dark overlays / toasts */
+
+  /* Surfaces (light) */
+  --caccia-background: #F8EFE2;       /* cream-page */
+  --caccia-card: #FFFCF5;             /* cream-card */
+  --caccia-border: #EBD9C3;           /* border-soft */
+  --caccia-text: #43241B;             /* ink */
+  --caccia-text-secondary: #96705E;   /* ink-soft */
+  --caccia-text-tertiary: #C9A98B;    /* ink-faint */
+  --caccia-tile: #F7E3CE;             /* cream-tile */
+
+  /* Radii */
+  --caccia-radius-sm: 12px;   /* small chips, letter tiles */
+  --caccia-radius-md: 16px;   /* buttons, inputs */
+  --caccia-radius-lg: 22px;   /* cards, rows */
+  --caccia-radius-tile: 18px; /* emoji tiles */
+  --caccia-radius-pill: 999px;
+
+  /* Spacing scale (src/constants/theme.ts Spacing) */
+  --caccia-space-half: 2px;
+  --caccia-space-1: 4px;
+  --caccia-space-2: 8px;
+  --caccia-space-3: 16px;
+  --caccia-space-4: 24px;
+  --caccia-space-5: 32px;
+  --caccia-space-6: 64px;
+
+  /* Shadows — warm brown, never gray (GameShadow) */
+  --caccia-shadow-card: 0 8px 10px rgba(120, 52, 30, 0.12);
+  --caccia-shadow-raised: 0 12px 14px rgba(120, 52, 30, 0.18);
+  --caccia-shadow-subtle: 0 2px 3px rgba(120, 52, 30, 0.08);
+
+  /* Type — Baloo 2 for display/headings/buttons, Figtree for body/labels */
+  --caccia-font-display: 'Baloo2_700Bold';
+  --caccia-font-display-semibold: 'Baloo2_600SemiBold';
+  --caccia-font-display-extrabold: 'Baloo2_800ExtraBold';
+  --caccia-font-body: 'Figtree_500Medium';
+  --caccia-font-body-semibold: 'Figtree_600SemiBold';
+  --caccia-font-body-bold: 'Figtree_700Bold';
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --caccia-background: #211310;
+    --caccia-card: #2E1C15;
+    --caccia-border: #4A3226;
+    --caccia-text: #F8EFE2;
+    --caccia-text-secondary: #D9BFA9;
+    --caccia-text-tertiary: #96705E;
+    --caccia-tile: #3B2619;
+  }
+}
