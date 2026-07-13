@@ -261,10 +261,9 @@ export function useGridSelection(
 	};
 
 	const cellAt = (x: number, y: number): SelectedCell => {
-		const size = grid.length;
-		const clampIndex = (value: number) => Math.min(size - 1, Math.max(0, value));
-		const row = clampIndex(Math.floor(y / cellSize));
-		const col = clampIndex(Math.floor(x / cellSize));
+		const clampIndex = (value: number, count: number) => Math.min(count - 1, Math.max(0, value));
+		const row = clampIndex(Math.floor(y / cellSize), grid.length);
+		const col = clampIndex(Math.floor(x / cellSize), grid[row].length);
 		return { row, col, letter: grid[row][col].letter };
 	};
 

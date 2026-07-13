@@ -199,8 +199,9 @@ function GameBoard({
 }) {
 	const surface = useGameSurface();
 	const [gridWidth, setGridWidth] = useState(0);
-	const gridSize = game.grid.length;
-	const cellSize = gridSize > 0 && gridWidth > 0 ? Math.floor(gridWidth / gridSize) : 0;
+	const rowCount = game.grid.length;
+	const columnCount = game.grid.reduce((max, row) => Math.max(max, row.length), 0);
+	const cellSize = columnCount > 0 && gridWidth > 0 ? Math.floor(gridWidth / columnCount) : 0;
 	const { pan, selectedCells } = useGridSelection(game.grid, cellSize, onSelectionEnd);
 
 	const selectedKeys = new Set(selectedCells.map((c) => `${c.row},${c.col}`));
@@ -226,7 +227,7 @@ function GameBoard({
 					<GestureDetector gesture={pan}>
 						<View
 							collapsable={false}
-							style={{ width: cellSize * gridSize, height: cellSize * gridSize }}
+							style={{ width: cellSize * columnCount, height: cellSize * rowCount }}
 						>
 							{game.grid.map((row, rowIndex) => (
 								<View key={rowIndex} style={styles.gridRow}>

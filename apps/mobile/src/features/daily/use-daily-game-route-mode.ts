@@ -60,7 +60,11 @@ export function useDailyGameRouteMode(puzzleKey: DailyPuzzleKey): DailyGameRoute
 	}, [context, orchestrator]);
 
 	const routeSnapshot = context === undefined || snapshot.kind !== 'ready' || snapshot.bundle.challengeId !== context.challengeId || snapshot.mode !== context.attemptKind ? undefined : snapshot;
-	if (context !== undefined && routeSnapshot !== undefined && (routeSnapshot.activeAttempt === undefined || !activeAttemptMatches(routeSnapshot.activeAttempt, context))) {
+	// After this attempt records its terminal, the snapshot clears activeAttempt;
+	// that render is legitimate (the game shows its result UI), not a route error.
+	const puzzleRuntime = routeSnapshot?.puzzles.find((candidate) => candidate.key === puzzleKey);
+	const attemptEnded = context !== undefined && puzzleRuntime?.status.kind === 'terminal' && puzzleRuntime.status.context.attemptId === context.attemptId;
+	if (context !== undefined && routeSnapshot !== undefined && !attemptEnded && (routeSnapshot.activeAttempt === undefined || !activeAttemptMatches(routeSnapshot.activeAttempt, context))) {
 		throw new DailyGameRouteSessionError('activeAttempt');
 	}
 	const puzzle = routeSnapshot?.bundle.puzzles.find((candidate) => candidate.key === puzzleKey);

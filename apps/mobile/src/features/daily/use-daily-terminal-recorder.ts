@@ -19,7 +19,9 @@ export function useDailyTerminalRecorder(challenge: DailyGameChallengeRoute | un
 
 	useEffect(() => {
 		if (challenge === undefined || reason === undefined) return;
-		const recordKey = `${challenge.context.terminalEventId}:${reason}`;
+		// One record per attempt: a later local replay of the board (e.g. after a
+		// give-up reset) must never write a second terminal for the same attempt.
+		const recordKey = challenge.context.terminalEventId;
 		if (recordedRef.current === recordKey) return;
 		recordedRef.current = recordKey;
 		challenge.recordTerminal(reason).then((result) => {
