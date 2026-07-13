@@ -1,6 +1,8 @@
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SymbolView } from 'expo-symbols';
+import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,6 +12,8 @@ import { ArchiveAccessCard } from '@/components/daily/archive-access-card';
 import { useAvatar } from '@/features/profile/use-avatar';
 import { MAX_USERNAME_LENGTH, useUsername } from '@/features/profile/use-username';
 import { usePlayerStats } from '@/features/stats/use-player-stats';
+import { LEGAL_URLS, SUBSCRIPTION_COPY } from '@/features/subscription/subscription-copy';
+import { useSubscriptionSnapshot } from '@/features/subscription/use-entitlement';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
@@ -85,7 +89,75 @@ export default function ProfiloScreen() {
           />
         </View>
         <ArchiveAccessCard compact />
+        <SubscriptionCard />
       </ScrollView>
+    </View>
+  );
+}
+
+function SubscriptionCard() {
+  const surface = useGameSurface();
+  const router = useRouter();
+  const { snapshot, service } = useSubscriptionSnapshot();
+  const copy = SUBSCRIPTION_COPY.profile;
+  const statusLabel =
+    snapshot.entitlement === 'entitled' ? copy.statusActive : snapshot.entitlement === 'notEntitled' ? copy.statusInactive : copy.statusUnknown;
+
+  return (
+    <View style={[styles.subscriptionCard, { backgroundColor: surface.card, borderColor: surface.border }]}>
+      <Text style={styles.subscriptionOverline}>{copy.overline}</Text>
+      <View style={styles.subscriptionHeader}>
+        <Text style={[styles.subscriptionTitle, { color: surface.text }]}>{copy.title}</Text>
+        <View
+          style={[
+            styles.subscriptionStatus,
+            { backgroundColor: snapshot.entitlement === 'entitled' ? GamePalette.successLight : GamePalette.primaryLight },
+          ]}
+        >
+          <Text
+            style={[
+              styles.subscriptionStatusText,
+              { color: snapshot.entitlement === 'entitled' ? GamePalette.successText : GamePalette.primaryDark },
+            ]}
+          >
+            {statusLabel}
+          </Text>
+        </View>
+      </View>
+      {snapshot.entitlement === 'entitled' ? (
+        <Pressable
+          accessibilityRole="link"
+          onPress={() => void WebBrowser.openBrowserAsync(LEGAL_URLS.manageSubscriptions)}
+          style={({ pressed }) => [styles.subscriptionAction, { backgroundColor: surface.tile }, pressed && styles.pressed]}
+        >
+          <Text style={styles.subscriptionActionText}>{copy.manage}</Text>
+        </Pressable>
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/paywall')}
+          style={({ pressed }) => [styles.subscriptionPrimary, pressed && styles.pressed]}
+        >
+          <Text style={styles.subscriptionPrimaryText}>{copy.subscribe}</Text>
+        </Pressable>
+      )}
+      <Pressable
+        accessibilityRole="button"
+        disabled={snapshot.busy !== undefined}
+        onPress={() => void service.restore()}
+        style={({ pressed }) => [styles.subscriptionAction, { backgroundColor: surface.tile }, pressed && styles.pressed]}
+      >
+        <Text style={styles.subscriptionActionText}>{copy.restore}</Text>
+      </Pressable>
+      <View style={styles.legalRow}>
+        <Pressable accessibilityRole="link" onPress={() => void WebBrowser.openBrowserAsync(LEGAL_URLS.privacy)}>
+          <Text style={styles.legalLink}>{copy.privacy}</Text>
+        </Pressable>
+        <Text style={[styles.legalDivider, { color: surface.textTertiary }]}>·</Text>
+        <Pressable accessibilityRole="link" onPress={() => void WebBrowser.openBrowserAsync(LEGAL_URLS.terms)}>
+          <Text style={styles.legalLink}>{copy.terms}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -245,4 +317,30 @@ const styles = StyleSheet.create({
   },
   statValue: { fontFamily: GameFonts.display800, fontSize: 26, color: GamePalette.primary },
   statLabel: { fontFamily: GameFonts.body600, fontSize: 13 },
+  subscriptionCard: { borderWidth: 1, borderRadius: GameRadius.lg, padding: 18, gap: 12, ...GameShadow.card },
+  subscriptionOverline: { fontFamily: GameFonts.body700, fontSize: 11.5, letterSpacing: 1.6, color: GamePalette.primary },
+  subscriptionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  subscriptionTitle: { fontFamily: GameFonts.display700, fontSize: 19, flexShrink: 1 },
+  subscriptionStatus: { borderRadius: GameRadius.pill, paddingHorizontal: 10, paddingVertical: 5 },
+  subscriptionStatusText: { fontFamily: GameFonts.body700, fontSize: 11.5 },
+  subscriptionPrimary: {
+    minHeight: 48,
+    borderRadius: GameRadius.md,
+    backgroundColor: GamePalette.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  subscriptionPrimaryText: { fontFamily: GameFonts.display700, fontSize: 16, color: GamePalette.onPrimary },
+  subscriptionAction: {
+    minHeight: 44,
+    borderRadius: GameRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  subscriptionActionText: { fontFamily: GameFonts.body700, fontSize: 14.5, color: GamePalette.primary },
+  legalRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8 },
+  legalLink: { fontFamily: GameFonts.body600, fontSize: 12.5, color: GamePalette.primary },
+  legalDivider: { fontFamily: GameFonts.body600, fontSize: 12.5 },
 });

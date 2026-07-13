@@ -170,6 +170,7 @@
     <nav>
       <a href="/supporto">Supporto</a>
       <a href="/privacy">Privacy</a>
+      <a href="/termini">Termini</a>
     </nav>
   </footer>
 </div>

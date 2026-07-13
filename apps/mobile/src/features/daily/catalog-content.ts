@@ -17,7 +17,7 @@ export const THEMES = [
 		explanation: 'Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.',
 		distractors: ['Cinema classico', 'Montagna innevata', 'Viaggio spaziale'],
 		puzzleWords: {
-			parola: ['BANCO', 'PREZZO', 'SPESA'],
+			parola: ['SPESA', 'POSTO', 'FORNO'],
 			caccia: ['FRUTTA', 'PANE', 'BANCARELLA'],
 			paroliere: ['MERCATO', 'VENDERE', 'CESTINO'],
 			impiccato: ['POMODORO', 'FORMAGGIO', 'SALUMI'],
@@ -30,7 +30,7 @@ export const THEMES = [
 		explanation: 'La sfida raccoglie parole da spiaggia, onde, sole e vacanze.',
 		distractors: ['Biblioteca antica', 'Officina meccanica', 'Teatro lirico'],
 		puzzleWords: {
-			parola: ['ONDA', 'SABBIA', 'SOLE'],
+			parola: ['BARCA', 'POSTO', 'SUONO'],
 			caccia: ['OMBRELLONE', 'CONCHIGLIA', 'BAGNO'],
 			paroliere: ['MAREA', 'VELIERO', 'PORTO'],
 			impiccato: ['BAGNINO', 'COSTUME', 'TRAMONTO'],
@@ -43,7 +43,7 @@ export const THEMES = [
 		explanation: 'Ingredienti, utensili e profumi domestici legano ogni puzzle.',
 		distractors: ['Stazione ferroviaria', 'Giardino segreto', 'Laboratorio chimico'],
 		puzzleWords: {
-			parola: ['PASTA', 'FORNO', 'SUGO'],
+			parola: ['PASTA', 'FORNO', 'SPESA'],
 			caccia: ['MESTOLO', 'RICETTA', 'TAGLIERE'],
 			paroliere: ['BASILICO', 'PENTOLA', 'FARINA'],
 			impiccato: ['CROSTATA', 'RISOTTO', 'COLTELLO'],
@@ -56,7 +56,7 @@ export const THEMES = [
 		explanation: 'Ogni parola rimanda a lezioni, quaderni e vita in classe.',
 		distractors: ['Foresta tropicale', 'Partita allo stadio', 'Mercato notturno'],
 		puzzleWords: {
-			parola: ['BANCO', 'LIBRO', 'VOTO'],
+			parola: ['CANTO', 'TRENO', 'POSTO'],
 			caccia: ['QUADERNO', 'LAVAGNA', 'COMPITO'],
 			paroliere: ['MATITA', 'LEZIONE', 'CARTELLA'],
 			impiccato: ['INTERVALLO', 'MAESTRA', 'DIARIO'],
@@ -69,7 +69,7 @@ export const THEMES = [
 		explanation: 'Binari, partenze e biglietti costruiscono il filo comune.',
 		distractors: ['Cena in famiglia', 'Museo egizio', 'Campo di grano'],
 		puzzleWords: {
-			parola: ['TRENO', 'BINARIO', 'POSTO'],
+			parola: ['TRENO', 'BARCA', 'POSTO'],
 			caccia: ['VALIGIA', 'STAZIONE', 'BIGLIETTO'],
 			paroliere: ['PARTENZA', 'RITARDO', 'CARROZZA'],
 			impiccato: ['CAPOTRENO', 'FERMATA', 'VIAGGIO'],
@@ -82,7 +82,7 @@ export const THEMES = [
 		explanation: 'Strumenti, note e palco fanno da tema nascosto della sfida.',
 		distractors: ['Pesca sul lago', 'Cantiere urbano', 'Cucina rustica'],
 		puzzleWords: {
-			parola: ['NOTA', 'RITMO', 'CORO'],
+			parola: ['SUONO', 'CANTO', 'POSTO'],
 			caccia: ['CHITARRA', 'PIANOFORTE', 'TAMBURO'],
 			paroliere: ['MELODIA', 'CONCERTO', 'ARPEGGIO'],
 			impiccato: ['ORCHESTRA', 'CANTANTE', 'SPARTITO'],

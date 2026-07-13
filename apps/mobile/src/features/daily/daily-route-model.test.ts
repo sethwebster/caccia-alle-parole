@@ -20,7 +20,7 @@ class MemoryProgressStorage {
 
 function makeOrchestrator(): DailyChallengeOrchestrator {
 	const store = createDailyProgressStore(new MemoryProgressStorage());
-	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store) });
+	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store), entitlements: { currentEntitlement: async () => true } });
 }
 
 async function loadRouteModel(orchestrator = makeOrchestrator()) {

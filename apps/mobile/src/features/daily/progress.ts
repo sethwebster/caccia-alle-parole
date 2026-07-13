@@ -1,26 +1,21 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import type { DailyCatalogBundle } from './catalog';
 import { evaluateOfficialStreakEligibility } from './contract';
 import { CANONICAL_PUZZLE_KEYS, type ChallengeId, type ChallengeSource, type DailyPuzzleKey, type TerminalAttemptContext, type TerminalReason } from './types';
-import { parseProgressJson, progressOrEmpty } from './progress-parse';
+import { createDailyProgressStore, type DailyProgressStore } from './progress-store';
 import {
-	DAILY_PROGRESS_KEY,
-	DAILY_PROGRESS_QUARANTINE_KEY,
-	emptyDailyProgress,
 	hasAllOfficialTerminalEvents,
 	makeProgressReady,
 	type ArchiveState,
 	type DailyChallengeProgressRecord,
 	type DailyProgress,
-	type DailyProgressLoadState,
 	type DailyStatsSummary,
 	type ProgressError,
 	type ProgressResult,
-	type ProgressStorageAdapter,
 	type ReplayProgressAttempt,
 	type TerminalProgressEvent,
 } from './progress-model';
+
+export { createDailyProgressStore, DailyProgressStore } from './progress-store';
 
 export class DailyStatsLoadError extends Error {
 	readonly name = 'DailyStatsLoadError';
@@ -60,60 +55,6 @@ export type DailyChallengeStatusSummary = {
 	readonly terminalEvents: number;
 	readonly totalPuzzles: number;
 };
-
-export function createDailyProgressStore(storage: ProgressStorageAdapter = AsyncStorage): DailyProgressStore {
-	return new DailyProgressStore(storage);
-}
-
-export class DailyProgressStore {
-	constructor(private readonly storage: ProgressStorageAdapter) {}
-
-	async load(): Promise<ProgressResult<DailyProgressLoadState>> {
-		let raw: string | null;
-		try {
-			raw = await this.storage.getItem(DAILY_PROGRESS_KEY);
-		} catch (error) {
-			if (error instanceof Error) return { ok: false, error: { kind: 'readFailed', message: 'Unable to read Daily Challenge progress.' } };
-			throw error;
-		}
-		if (raw === null) return { ok: true, value: { kind: 'ready', progress: emptyDailyProgress } };
-		try {
-			const progress = parseProgressJson(raw);
-			if (progress !== null) return { ok: true, value: { kind: 'ready', progress } };
-		} catch (error) {
-			if (!(error instanceof SyntaxError)) throw error;
-		}
-		try {
-			await this.storage.setItem(DAILY_PROGRESS_QUARANTINE_KEY, raw);
-		} catch (error) {
-			if (error instanceof Error) return { ok: false, error: { kind: 'writeFailed', message: 'Unable to save Daily Challenge progress.' } };
-			throw error;
-		}
-		return { ok: true, value: { kind: 'quarantined', message: 'Daily Challenge progress needs recovery.' } };
-	}
-
-	async commit(progress: DailyProgress): Promise<ProgressResult<DailyProgress>> {
-		const serialized = serializeProgress(progress);
-		try {
-			await this.storage.setItem(DAILY_PROGRESS_KEY, serialized);
-		} catch (error) {
-			if (error instanceof Error) return { ok: false, error: { kind: 'writeFailed', message: 'Unable to save Daily Challenge progress.' } };
-			throw error;
-		}
-		let raw: string | null;
-		try {
-			raw = await this.storage.getItem(DAILY_PROGRESS_KEY);
-		} catch (error) {
-			if (error instanceof Error) return { ok: false, error: { kind: 'readFailed', message: 'Unable to read Daily Challenge progress.' } };
-			throw error;
-		}
-		const verified = raw === null ? null : progressOrEmpty(raw);
-		if (raw !== serialized || verified === null) {
-			return { ok: false, error: { kind: 'verificationFailed', message: 'Daily Challenge progress write verification failed.' } };
-		}
-		return { ok: true, value: progress };
-	}
-}
 
 export class DailyProgressMutationQueue {
 	private tail: Promise<void> = Promise.resolve();
@@ -270,10 +211,6 @@ function terminalEvent(input: PuzzleTerminalMutation): TerminalProgressEvent {
 		reason: input.reason,
 		terminalEventId: input.terminalEventId,
 	};
-}
-
-function serializeProgress(progress: DailyProgress): string {
-	return JSON.stringify(makeProgressReady(progress));
 }
 
 export const dailyProgressMutationQueue = new DailyProgressMutationQueue();

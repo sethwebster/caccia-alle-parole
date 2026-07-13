@@ -88,9 +88,16 @@ function createStore() {
 
 				const { currentPath } = state;
 
-				// Check if cell is already in path
-				const alreadySelected = currentPath.some(c => c.row === cell.row && c.col === cell.col);
-				if (alreadySelected) return state;
+				const selectedIndex = currentPath.findIndex(c => c.row === cell.row && c.col === cell.col);
+				if (selectedIndex >= 0) {
+					if (selectedIndex === currentPath.length - 1) return state;
+					const newPath = currentPath.slice(0, selectedIndex + 1);
+					return {
+						...state,
+						currentPath: newPath,
+						currentWord: newPath.map(c => state.grid[c.row][c.col]).join('')
+					};
+				}
 
 				// Check if cell is adjacent to last cell in path
 				if (currentPath.length > 0) {

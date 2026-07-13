@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { makeChallengeId } from '@/features/daily/date';
+import { resolveDailyChallengeBundle, type DailyCatalogPuzzleSpec } from '@/features/daily/catalog';
 import { DailyProgressMutationQueue, createDailyProgressStore } from '@/features/daily/progress';
 import { CANONICAL_PUZZLE_KEYS, type ChallengeId, type DailyPuzzleKey } from '@/features/daily/types';
 
@@ -11,6 +12,7 @@ import {
 	migrateLegacyParolaState,
 	recordOfficialParolaChallengeTerminal,
 	recordParolaChallengeTerminal,
+	stateFromPuzzle,
 } from './parola-daily';
 
 class MemoryStorage {
@@ -65,6 +67,17 @@ describe('Paròle Daily Challenge source', () => {
 
 		expect(beforeUtcMidnight.state.targetWord).toBe('PASTA');
 		expect(afterUtcMidnight.state.targetWord).toBe('PASTA');
+	});
+
+	it('rejects non-five-letter Paròle catalog targets during hydration', () => {
+		const resolution = resolveDailyChallengeBundle({ challengeId });
+		expect(resolution.kind).toBe('ready');
+		if (resolution.kind !== 'ready') throw new Error('expected ready daily catalog');
+		const puzzle = resolution.bundle.puzzles.find((candidate) => candidate.key === 'parola');
+		if (puzzle === undefined) throw new Error('expected Paròle puzzle');
+		const invalidPuzzle = { ...puzzle, target: 'MARE', payload: { ...puzzle.payload, targetWord: 'MARE' } } satisfies DailyCatalogPuzzleSpec;
+
+		expect(() => stateFromPuzzle(challengeId, invalidPuzzle)).toThrow('targetWord');
 	});
 });
 

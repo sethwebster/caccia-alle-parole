@@ -66,7 +66,12 @@ function ArchiveRow({ item }: { readonly item: DailyArchiveItem }) {
 				<Meta label={DAILY_COPY.archive.meta.catalog} value={item.catalogLabel} />
 				<Meta label={DAILY_COPY.archive.replay.countLabel} value={archiveReplayCount(item.replayCount)} />
 			</View>
-			<Pressable accessibilityRole="button" disabled={!item.canReplay} onPress={() => router.push(`/daily?challengeId=${item.challengeId}&mode=replay`)} style={({ pressed }) => [styles.replayButton, !item.canReplay && styles.disabled, pressed && item.canReplay && styles.pressed]}>
+			<Pressable
+				accessibilityRole="button"
+				disabled={!item.canReplay && !item.requiresSubscription}
+				onPress={() => router.push(item.requiresSubscription ? '/paywall' : `/daily?challengeId=${item.challengeId}&mode=replay`)}
+				style={({ pressed }) => [styles.replayButton, !item.canReplay && !item.requiresSubscription && styles.disabled, pressed && (item.canReplay || item.requiresSubscription) && styles.pressed]}
+			>
 				<Text style={styles.replayButtonText}>{item.replayLabel}</Text>
 			</Pressable>
 		</View>

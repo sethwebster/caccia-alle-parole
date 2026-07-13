@@ -1,5 +1,6 @@
 import type { Difficulty, Direction, PlacedWord } from '@/lib/types';
 import { createAnagrammiChallengeState } from '@/features/anagrammi/anagrammi-daily';
+import { MAX_GUESSES, WORD_LENGTH } from '@/features/parola/parola-logic';
 
 import { CANONICAL_PUZZLE_LABELS, TERMINAL_REASONS, type DailyPuzzleKey, type DailyPuzzleSpec, type TerminalAttemptContext, type TerminalReason } from './types';
 
@@ -152,7 +153,11 @@ function init(spec: DailyAdapterInput, state: Record<string, unknown>, totalUnit
 
 function parseParolaPayload(value: unknown, key: 'parola'): ParolaPayload {
 	const record = ensureRecord(value, key, 'payload');
-	return { targetWord: uppercaseWord(record, key, 'targetWord'), maxAttempts: positiveIntegerField(record, key, 'maxAttempts') };
+	const targetWord = uppercaseWord(record, key, 'targetWord');
+	if (normalizeWord(targetWord).length !== WORD_LENGTH) throw new DailyAdapterValidationError(key, 'targetWord');
+	const maxAttempts = positiveIntegerField(record, key, 'maxAttempts');
+	if (maxAttempts !== MAX_GUESSES) throw new DailyAdapterValidationError(key, 'maxAttempts');
+	return { targetWord, maxAttempts };
 }
 
 function parseCacciaPayload(value: unknown, key: 'caccia'): CacciaPayload {
@@ -212,7 +217,23 @@ function parseThemeQuiz(value: unknown, key: DailyPuzzleKey): DailyPuzzleSpec['t
 
 function parsePlacedWord(value: unknown, key: 'caccia'): PlacedWord {
 	const record = ensureRecord(value, key, 'words');
-	return { word: stringField(record, key, 'word'), translation: stringField(record, key, 'translation'), definition: stringField(record, key, 'definition'), row: 0, col: 0, direction: 'horizontal' satisfies Direction, points: positiveIntegerField(record, key, 'points'), cells: arrayField(record, key, 'cells').map((cell) => parseCellPosition(cell, key)) };
+	return { word: stringField(record, key, 'word'), translation: stringField(record, key, 'translation'), definition: stringField(record, key, 'definition'), row: positiveIntegerOrZeroField(record, key, 'row'), col: positiveIntegerOrZeroField(record, key, 'col'), direction: directionField(record, key), points: positiveIntegerField(record, key, 'points'), cells: arrayField(record, key, 'cells').map((cell) => parseCellPosition(cell, key)) };
+}
+
+function directionField(record: Record<string, unknown>, key: 'caccia'): Direction {
+	switch (record.direction) {
+		case 'horizontal':
+		case 'vertical':
+		case 'diagonal-down':
+		case 'diagonal-up':
+		case 'horizontal-reverse':
+		case 'vertical-reverse':
+		case 'diagonal-down-reverse':
+		case 'diagonal-up-reverse':
+			return record.direction;
+		default:
+			throw new DailyAdapterValidationError(key, 'direction');
+	}
 }
 
 function parseCellPosition(value: unknown, key: DailyPuzzleKey): { readonly row: number; readonly col: number } {

@@ -65,12 +65,15 @@ function activeAttemptFromRecord(
 	mode: 'official' | 'replay',
 	activeReplayAttemptId: string | undefined,
 ): ActiveDailyAttempt | undefined {
-	const candidates = record.inProgressPuzzles
-		.map((snapshot, order) => parseActiveAttemptSnapshot(snapshot, order))
-		.filter((candidate) => candidate !== null)
-		.filter((candidate) => candidate.context.attemptKind === mode)
-		.filter((candidate) => isAttemptStillOpen(record, candidate, activeReplayAttemptId));
-	return candidates.toSorted((left, right) => right.startedAt.localeCompare(left.startedAt) || right.order - left.order)[0];
+	let selected: ActiveAttemptCandidate | undefined;
+	for (const [order, snapshot] of record.inProgressPuzzles.entries()) {
+		const candidate = parseActiveAttemptSnapshot(snapshot, order);
+		if (candidate === null || candidate.context.attemptKind !== mode || !isAttemptStillOpen(record, candidate, activeReplayAttemptId)) continue;
+		if (selected === undefined || candidate.startedAt.localeCompare(selected.startedAt) > 0 || (candidate.startedAt === selected.startedAt && candidate.order > selected.order)) {
+			selected = candidate;
+		}
+	}
+	return selected;
 }
 
 function parseActiveAttemptSnapshot(snapshot: PuzzleProgressSnapshot, order: number): ActiveAttemptCandidate | null {

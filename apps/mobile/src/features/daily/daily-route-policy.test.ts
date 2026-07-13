@@ -36,7 +36,8 @@ describe('daily route policy', () => {
 		expect(home).toContain('DAILY_HOME_ROUTE.title');
 		expect(home).toContain('Allenamento libero');
 		expect(home).not.toContain('Tutti i giochi');
-			expect(source('features/daily/use-daily-route-controller.ts')).toContain('challengeStepHref');
+		expect(source('features/daily/use-daily-route-controller.ts')).toContain('launchDailyRoutePuzzle');
+		expect(source('features/daily/daily-route-launch.ts')).toContain('challengeStepHref');
 			expect(source('app/daily.tsx')).toContain('useDailyRouteController');
 			expect(source('app/daily.tsx')).not.toContain('useLocalSearchParams');
 			expect(source('app/daily.tsx')).not.toContain('startPuzzleForMode');

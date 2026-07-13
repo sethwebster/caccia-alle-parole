@@ -8,6 +8,7 @@ import { GamePalette } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 import { useSubmitPulse } from './hooks';
+import { findParoliereCellAtPoint } from './paroliere-board-hit-test';
 import { GRID_GAP, styles } from './paroliere-board.styles';
 import {
 	GRID_SIZE,
@@ -103,21 +104,12 @@ function LetterGrid({
 	const [gestureState] = useState(() => new DragGestureState());
 
 	const cellAt = (x: number, y: number): PathCell | null => {
-		if (size <= 0) return null;
-		const tile = (size - GRID_GAP * (GRID_SIZE - 1)) / GRID_SIZE;
-		const step = tile + GRID_GAP;
-		const col = Math.floor(x / step);
-		const row = Math.floor(y / step);
-		if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) return null;
-		const dx = x - (col * step + tile / 2);
-		const dy = y - (row * step + tile / 2);
-		if (Math.abs(dx) > tile * 0.44 || Math.abs(dy) > tile * 0.44) return null;
-		return { row, col };
+		return findParoliereCellAtPoint({ boardSize: size, gap: GRID_GAP, gridSize: GRID_SIZE, x, y });
 	};
 
 	const pan = Gesture.Pan()
 		.runOnJS(true)
-		.minDistance(1)
+		.minDistance(0)
 		.onBegin((event) => {
 			const cell = cellAt(event.x, event.y);
 			gestureState.begin(cell !== null);

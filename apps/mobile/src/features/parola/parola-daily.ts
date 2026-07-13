@@ -5,7 +5,7 @@ import { type PuzzleTerminalMutation, dailyProgressMutationQueue, type DailyProg
 import type { ChallengeId, ChallengeSource, TerminalAttemptContext, TerminalReason } from '@/features/daily/types';
 import type { Word, WordleState } from '@/lib/types';
 
-import { normalizeWord } from './parola-logic';
+import { WORD_LENGTH, normalizeWord } from './parola-logic';
 
 const LEGACY_WORDLE_STORAGE_KEY = 'wordleGameState';
 
@@ -36,6 +36,14 @@ export class ParolaDailyAttemptKindError extends Error {
 
 	constructor(readonly attemptKind: TerminalAttemptContext['attemptKind']) {
 		super(`Expected official Paròle attempt, received ${attemptKind}`);
+	}
+}
+
+export class ParolaDailyTargetError extends Error {
+	readonly name = 'ParolaDailyTargetError';
+
+	constructor(readonly field: 'targetWord') {
+		super(`Invalid Paròle daily ${field}`);
 	}
 }
 
@@ -114,7 +122,10 @@ function parolaPuzzle(bundle: DailyCatalogBundle): DailyCatalogPuzzleSpec {
 }
 
 export function stateFromPuzzle(challengeId: ChallengeId, puzzle: DailyCatalogPuzzleSpec): WordleState {
-	const targetWord = normalizeWord(puzzle.target.toUpperCase());
+	const spec = dailyPuzzleAdapters.parola.parseSpec(puzzle);
+	if (spec.payload.targetWord !== puzzle.target) throw new ParolaDailyTargetError('targetWord');
+	const targetWord = normalizeWord(spec.payload.targetWord.toUpperCase());
+	if (targetWord.length !== WORD_LENGTH) throw new ParolaDailyTargetError('targetWord');
 	return {
 		targetWord,
 		targetWordData: wordDataForPuzzle(puzzle),
@@ -127,11 +138,9 @@ export function stateFromPuzzle(challengeId: ChallengeId, puzzle: DailyCatalogPu
 }
 
 function wordDataForPuzzle(puzzle: DailyCatalogPuzzleSpec): Word {
-	return wordleWords.find((word) => normalizeWord(word.word.toUpperCase()) === normalizeWord(puzzle.target.toUpperCase())) ?? {
-		word: puzzle.target,
-		translation: puzzle.themeLink,
-		definition: puzzle.themeLink,
-	};
+	const word = wordleWords.find((candidate) => normalizeWord(candidate.word.toUpperCase()) === normalizeWord(puzzle.target.toUpperCase()));
+	if (word === undefined) throw new ParolaDailyTargetError('targetWord');
+	return word;
 }
 
 type LegacyWordleTerminalState = {

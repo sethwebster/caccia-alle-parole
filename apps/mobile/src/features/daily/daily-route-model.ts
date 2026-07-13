@@ -2,7 +2,7 @@ import type { DailyChallengeReadySnapshot, DailyChallengeSnapshot, DailyPuzzleRu
 import { DAILY_COPY, type DailyPuzzleStatusTone, type DailyStateCopy } from './daily-copy';
 import { formatCatalogSource, formatCatalogVersion, formatCatalogWindow, formatDailyChallengeDate, formatDailyProgress, formatReplayCount } from './daily-format';
 import { buildDailyResultShareModel, type DailyResultShareModel } from './daily-share';
-import { dailyCatalogUpdateState, dailyProgressErrorState } from './daily-state-copy';
+import { dailyCatalogUpdateState, dailyProgressErrorState, dailySubscriptionRequiredState } from './daily-state-copy';
 import { PRACTICE_ROUTES, type GameHref } from './route-policy';
 import type { ChallengeId, ChallengeSource, DailyPuzzleKey } from './types';
 
@@ -40,7 +40,11 @@ export type DailyRouteReadyModel = {
 	readonly puzzles: readonly DailyRoutePuzzleModel[];
 };
 
-export type DailyRouteModel = DailyRouteReadyModel | ({ readonly kind: 'loading' } & DailyStateCopy) | ({ readonly kind: 'error' } & DailyStateCopy);
+export type DailyRouteModel =
+	| DailyRouteReadyModel
+	| ({ readonly kind: 'loading' } & DailyStateCopy)
+	| ({ readonly kind: 'error' } & DailyStateCopy)
+	| ({ readonly kind: 'subscriptionRequired' } & DailyStateCopy);
 
 type DailyRouteThemeModel =
 	| { readonly gate: 'locked'; readonly title: string; readonly body: string }
@@ -90,6 +94,8 @@ export function buildDailyRouteModel(snapshot: DailyChallengeSnapshot): DailyRou
 			return { kind: 'error', ...dailyProgressErrorState(snapshot.error) };
 		case 'updateRequired':
 			return { kind: 'error', ...dailyCatalogUpdateState(snapshot.reason) };
+		case 'subscriptionRequired':
+			return { kind: 'subscriptionRequired', ...dailySubscriptionRequiredState() };
 	}
 }
 

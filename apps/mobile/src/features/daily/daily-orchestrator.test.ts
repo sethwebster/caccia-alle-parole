@@ -5,6 +5,7 @@ import { makeChallengeId } from './date';
 import { DailyChallengeOrchestrator } from './orchestrator-service';
 import type { DailyChallengeReadySnapshot } from './orchestrator-model';
 import { createDailyProgressStore, DailyProgressMutationQueue } from './progress';
+import { DAILY_PROGRESS_KEY, DAILY_PROGRESS_QUARANTINE_KEY } from './progress-model';
 import type { DailyPuzzleKey, TerminalReason } from './types';
 
 vi.mock('expo-observe', () => ({ Observe: { logEvent: vi.fn() } }));
@@ -20,6 +21,8 @@ class MemoryProgressStorage {
 		this.values.set(key, value);
 	}
 }
+
+const DAILY_PROGRESS_V1_KEY = 'daily-progress:v1';
 
 type Deferred<T> = {
 	readonly promise: Promise<T>;
@@ -63,7 +66,7 @@ beforeEach(() => {
 
 function makeOrchestrator(storage = new MemoryProgressStorage()): DailyChallengeOrchestrator {
 	const store = createDailyProgressStore(storage);
-	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store) });
+	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store), entitlements: { currentEntitlement: async () => true } });
 }
 
 async function expectLoaded(orchestrator: DailyChallengeOrchestrator, date = '2026-07-09') {
@@ -325,5 +328,53 @@ describe('daily challenge orchestrator replay and resume safety', () => {
 		const result = await restarted.recordTerminal({ context: attempt.context, reason: 'win', completedAt: new Date('2026-07-09T18:00:00') });
 		expect(result.kind).toBe('accepted');
 		expect(expectReady(restarted).record?.officialAttempt?.terminalEvents[0]?.puzzleKey).toBe('parola');
+	});
+
+	it('resumes the newest persisted official attempt after app restart without Array toSorted', async () => {
+		// Given: multiple open official attempts were persisted before restart.
+		const storage = new MemoryProgressStorage();
+		const first = makeOrchestrator(storage);
+		await expectLoaded(first);
+		await first.startPuzzle({ puzzleKey: 'parola', now: new Date('2026-07-09T12:00:00') });
+		await first.startPuzzle({ puzzleKey: 'caccia', now: new Date('2026-07-09T13:00:00') });
+		const newestByOrder = await first.startPuzzle({ puzzleKey: 'paroliere', now: new Date('2026-07-09T13:00:00') });
+
+		// When: Hermes lacks Array.prototype.toSorted and a new orchestrator loads persisted progress.
+		const restarted = makeOrchestrator(storage);
+		const descriptor = Object.getOwnPropertyDescriptor(Array.prototype, 'toSorted');
+		Reflect.defineProperty(Array.prototype, 'toSorted', { configurable: true, writable: true, value: undefined });
+		let loaded: DailyChallengeReadySnapshot;
+		try {
+			loaded = await expectLoaded(restarted);
+		} finally {
+			if (descriptor === undefined) {
+				delete (Array.prototype as { toSorted?: unknown }).toSorted;
+			} else {
+				Reflect.defineProperty(Array.prototype, 'toSorted', descriptor);
+			}
+		}
+
+		// Then: it resumes the newest open attempt, using persisted order as the tie-breaker.
+		expect(loaded.phase).toBe('inProgress');
+		expect(loaded.activeAttempt?.context).toEqual(newestByOrder.context);
+	});
+
+	it('loads ready and accepts mutations after quarantining unrecoverable legacy progress', async () => {
+		// Given: legacy storage contains malformed Daily progress that cannot be migrated safely.
+		const storage = new MemoryProgressStorage();
+		storage.values.set(DAILY_PROGRESS_V1_KEY, JSON.stringify({ schemaVersion: 1, challenges: [{ challengeId: '2026-02-31' }], credits: [], mutationEventIds: [] }));
+		const orchestrator = makeOrchestrator(storage);
+
+		// When: Daily starts and the player records a puzzle result.
+		const loaded = await expectLoaded(orchestrator);
+		const attempt = await orchestrator.startPuzzle({ puzzleKey: 'parola' });
+		const result = await orchestrator.recordTerminal({ context: attempt.context, reason: 'win', completedAt: new Date('2026-07-09T18:00:00') });
+
+		// Then: startup did not surface a progress error, recovery preserved the raw legacy bytes, and the queue writes v2 progress.
+		expect(loaded.progress.challenges).toEqual([]);
+		expect(result.kind).toBe('accepted');
+		expect(storage.values.get(DAILY_PROGRESS_V1_KEY)).toContain('2026-02-31');
+		expect(storage.values.get(DAILY_PROGRESS_QUARANTINE_KEY)).toContain('2026-02-31');
+		expect(storage.values.get(DAILY_PROGRESS_KEY)).toContain('terminal:2026-07-09:parola:official:1');
 	});
 });

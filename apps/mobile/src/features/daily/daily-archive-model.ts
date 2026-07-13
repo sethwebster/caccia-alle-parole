@@ -14,6 +14,7 @@ export type DailyArchiveItem = {
 	readonly statusTone: 'today' | 'missed' | 'playing' | 'completed' | 'replay';
 	readonly replayLabel: string;
 	readonly canReplay: boolean;
+	readonly requiresSubscription: boolean;
 	readonly officialLabel: string;
 	readonly sourceLabel: string;
 	readonly catalogLabel: string;
@@ -25,8 +26,9 @@ export type DailyArchiveModel =
 	| { readonly kind: 'ready'; readonly title: string; readonly localOnlyCaveat: string; readonly items: readonly DailyArchiveItem[] }
 	| ({ readonly kind: 'error' } & DailyStateCopy);
 
-export async function loadDailyArchiveModel(input: { readonly now?: Date; readonly store?: DailyProgressStore } = {}): Promise<DailyArchiveModel> {
+export async function loadDailyArchiveModel(input: { readonly now?: Date; readonly store?: DailyProgressStore; readonly entitled?: boolean } = {}): Promise<DailyArchiveModel> {
 	const store = input.store ?? createDailyProgressStore();
+	const entitled = input.entitled ?? false;
 	const loaded = await store.load();
 	if (!loaded.ok) return { kind: 'error', ...dailyProgressErrorState(loaded.error) };
 	if (loaded.value.kind === 'quarantined') return { kind: 'error', eyebrow: 'RECUPERO ARCHIVIO', title: 'Archivio da recuperare', message: loaded.value.message, detail: 'I dati originali restano protetti finché la cronologia non torna coerente.', tone: 'warning' };
@@ -36,7 +38,7 @@ export async function loadDailyArchiveModel(input: { readonly now?: Date; readon
 		kind: 'ready',
 		title: DAILY_COPY.archive.title,
 		localOnlyCaveat: DAILY_COPY.archive.localOnlyCaveat,
-		items: releasedChallengeIds(today, progress).map((challengeId) => archiveItem(challengeId, today, progress)),
+		items: releasedChallengeIds(today, progress).map((challengeId) => archiveItem(challengeId, today, progress, entitled)),
 	};
 }
 
@@ -60,24 +62,33 @@ function catalogReleasedIds(today: ChallengeId): readonly ChallengeId[] {
 	return ids;
 }
 
-function archiveItem(challengeId: ChallengeId, today: ChallengeId, progress: DailyProgress): DailyArchiveItem {
+function archiveItem(challengeId: ChallengeId, today: ChallengeId, progress: DailyProgress, entitled: boolean): DailyArchiveItem {
 	const record = progress.challenges.find((candidate) => candidate.challengeId === challengeId);
 	const releasedBeforeToday = challengeId < today;
 	const completed = record === undefined ? false : hasAllOfficialTerminalEvents(record);
-	const canReplay = releasedBeforeToday || completed;
+	const replayable = releasedBeforeToday || completed;
+	const requiresSubscription = replayable && !entitled;
+	const canReplay = replayable && entitled;
 	const status = archiveStatus({ challengeId, today, record, completed });
 	return {
 		challengeId,
 		dateLabel: formatDailyChallengeDate(challengeId),
 		statusLabel: status.label,
 		statusTone: status.tone,
-		replayLabel: canReplay ? (completed ? DAILY_COPY.archive.replay.completed : DAILY_COPY.archive.replay.missed) : DAILY_COPY.archive.replay.locked,
+		replayLabel: replayLabel({ replayable, requiresSubscription, completed }),
 		canReplay,
+		requiresSubscription,
 		officialLabel: officialLabel(record, completed),
 		sourceLabel: sourceLabel(record),
 		catalogLabel: catalogLabel(challengeId, record),
 		replayCount: record?.replayAttempts.length ?? 0,
 	};
+}
+
+function replayLabel(input: { readonly replayable: boolean; readonly requiresSubscription: boolean; readonly completed: boolean }): string {
+	if (!input.replayable) return DAILY_COPY.archive.replay.locked;
+	if (input.requiresSubscription) return DAILY_COPY.archive.replay.premium;
+	return input.completed ? DAILY_COPY.archive.replay.completed : DAILY_COPY.archive.replay.missed;
 }
 
 function archiveStatus(input: { readonly challengeId: ChallengeId; readonly today: ChallengeId; readonly record: DailyChallengeProgressRecord | undefined; readonly completed: boolean }): { readonly label: string; readonly tone: DailyArchiveItem['statusTone'] } {

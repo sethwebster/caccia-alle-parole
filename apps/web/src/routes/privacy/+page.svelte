@@ -4,21 +4,43 @@
 
 <svelte:head>
   <title>Informativa Privacy — Caccia Paròle</title>
-  <meta name="description" content="Informativa sulla privacy dell'app Caccia Paròle: nessun account, nessun tracciamento, dati solo sul tuo dispositivo." />
+  <meta name="description" content="Informativa sulla privacy dell'app Caccia Paròle: nessun account, nessuna pubblicità, dati di gioco solo sul tuo dispositivo." />
 </svelte:head>
 
 <div class="privacy">
   <p class="overline">INFORMATIVA PRIVACY</p>
-  <h1>La tua privacy, in breve: non raccogliamo niente.</h1>
-  <p class="updated">Ultimo aggiornamento: 8 luglio 2026</p>
+  <h1>La tua privacy, in breve: raccogliamo il minimo indispensabile.</h1>
+  <p class="updated">Ultimo aggiornamento: 13 luglio 2026</p>
 
   <section>
-    <h2>Nessun account, nessun server</h2>
+    <h2>Nessun account</h2>
     <p>
-      Caccia Paròle non richiede registrazione e non ha server propri. Tutti i
-      dati di gioco — progressi, punteggi, serie di vittorie, nome e immagine
-      del profilo — sono salvati esclusivamente sul tuo dispositivo e non
-      vengono mai trasmessi a noi né a terzi.
+      Caccia Paròle non richiede registrazione. Tutti i dati di gioco —
+      progressi, punteggi, serie di vittorie, nome e immagine del profilo —
+      sono salvati esclusivamente sul tuo dispositivo e non vengono trasmessi
+      a noi né a terzi.
+    </p>
+  </section>
+
+  <section>
+    <h2>Notifiche push</h2>
+    <p>
+      Se attivi i promemoria della Sfida Giornaliera, salviamo sul nostro
+      server (Cloudflare) il token di notifica del dispositivo insieme a un
+      identificatore anonimo generato dall'app. Servono solo a inviarti i
+      promemoria: non sono collegati a nome, email o altri dati personali e
+      non vengono condivisi con terzi. Disattivando le notifiche o
+      disinstallando l'app il token smette di essere usato; puoi chiederne la
+      cancellazione scrivendoci.
+    </p>
+  </section>
+
+  <section>
+    <h2>Abbonamenti</h2>
+    <p>
+      Gli abbonamenti sono gestiti interamente da Apple tramite l'App Store.
+      Non vediamo né conserviamo dati di pagamento: l'app verifica soltanto,
+      tramite i servizi Apple, se un abbonamento è attivo sul dispositivo.
     </p>
   </section>
 
@@ -34,18 +56,21 @@
   </section>
 
   <section>
-    <h2>Nessun tracciamento</h2>
+    <h2>Nessuna pubblicità né profilazione</h2>
     <p>
-      L'app non contiene pubblicità, strumenti di analisi, SDK di terze parti a
-      fini di marketing o profilazione, e non usa identificatori pubblicitari.
+      L'app non contiene pubblicità, SDK di marketing o profilazione e non usa
+      identificatori pubblicitari. Raccogliamo solo statistiche d'uso e
+      diagnostica anonime (tramite i servizi Expo) per capire se l'app
+      funziona correttamente; non sono collegate alla tua identità.
     </p>
   </section>
 
   <section>
     <h2>Eliminazione dei dati</h2>
     <p>
-      Poiché tutti i dati risiedono sul tuo dispositivo, per eliminarli è
-      sufficiente disinstallare l'app.
+      I dati di gioco risiedono sul tuo dispositivo: per eliminarli è
+      sufficiente disinstallare l'app. Per la cancellazione del token di
+      notifica dal nostro server scrivici all'indirizzo qui sotto.
     </p>
   </section>
 

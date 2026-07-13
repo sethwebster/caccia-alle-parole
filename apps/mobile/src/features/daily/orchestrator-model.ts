@@ -1,6 +1,6 @@
 import type { DailyCatalogBundle, DailyCatalogResolution } from './catalog';
 import type { DailyChallengeProgressRecord, DailyProgress, ProgressError } from './progress-model';
-import type { DailyPuzzleKey, TerminalAttemptContext, TerminalReason } from './types';
+import type { ChallengeId, DailyPuzzleKey, TerminalAttemptContext, TerminalReason } from './types';
 
 export const ACTIVE_ATTEMPT_STATE_KIND = 'daily-orchestrator-active-attempt-v1';
 
@@ -44,7 +44,8 @@ export type DailyChallengeReadySnapshot = {
 export type DailyChallengeSnapshot =
 	| DailyChallengeReadySnapshot
 	| Extract<DailyCatalogResolution, { readonly kind: 'updateRequired' }>
-	| { readonly kind: 'progressError'; readonly error: ProgressError };
+	| { readonly kind: 'progressError'; readonly error: ProgressError }
+	| { readonly kind: 'subscriptionRequired'; readonly challengeId: ChallengeId };
 
 export type TerminalRecordResult =
 	| { readonly kind: 'accepted'; readonly snapshot: DailyChallengeReadySnapshot }

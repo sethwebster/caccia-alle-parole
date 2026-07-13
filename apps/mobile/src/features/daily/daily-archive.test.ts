@@ -27,7 +27,7 @@ function makeStore(storage: MemoryProgressStorage) {
 
 function makeOrchestrator(storage: MemoryProgressStorage): DailyChallengeOrchestrator {
 	const store = makeStore(storage);
-	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store) });
+	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store), entitlements: { currentEntitlement: async () => true } });
 }
 
 async function loadReady(orchestrator: DailyChallengeOrchestrator, challengeId: ChallengeId) {
@@ -67,7 +67,7 @@ describe('daily archive and replay lifecycle', () => {
 		const challengeId = makeChallengeId('2026-01-26');
 		await finishOfficial(makeOrchestrator(storage), challengeId);
 
-		const model = await loadDailyArchiveModel({ now: new Date('2026-01-27T10:00:00'), store: makeStore(storage) });
+		const model = await loadDailyArchiveModel({ now: new Date('2026-01-27T10:00:00'), store: makeStore(storage), entitled: true });
 
 		expect(model.kind).toBe('ready');
 		if (model.kind !== 'ready') throw new Error('expected ready archive');
@@ -77,7 +77,7 @@ describe('daily archive and replay lifecycle', () => {
 	it('makes yesterday missed challenges playable as replay without streak credit', async () => {
 		const storage = new MemoryProgressStorage();
 		const yesterday = makeChallengeId('2026-01-26');
-		const archive = await loadDailyArchiveModel({ now: new Date('2026-01-27T10:00:00'), store: makeStore(storage) });
+		const archive = await loadDailyArchiveModel({ now: new Date('2026-01-27T10:00:00'), store: makeStore(storage), entitled: true });
 
 		expect(archive.kind).toBe('ready');
 		if (archive.kind !== 'ready') throw new Error('expected ready archive');
@@ -99,7 +99,7 @@ describe('daily archive and replay lifecycle', () => {
 	it('does not treat an uncompleted today challenge as archive replay', async () => {
 		const today = makeChallengeId('2026-01-26');
 
-		const model = await loadDailyArchiveModel({ now: new Date('2026-01-26T10:00:00'), store: makeStore(new MemoryProgressStorage()) });
+		const model = await loadDailyArchiveModel({ now: new Date('2026-01-26T10:00:00'), store: makeStore(new MemoryProgressStorage()), entitled: true });
 
 		expect(model.kind).toBe('ready');
 		if (model.kind !== 'ready') throw new Error('expected ready archive');

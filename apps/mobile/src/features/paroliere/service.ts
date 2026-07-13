@@ -166,15 +166,17 @@ export class ParoliereService {
 	extendSelection = (cell: PathCell): void => {
 		const s = this.state;
 		if (s.gameState !== 'playing' || s.currentPath.length === 0) return;
-		if (s.currentPath.some((c) => c.row === cell.row && c.col === cell.col)) return;
+		const selectedIndex = s.currentPath.findIndex((c) => c.row === cell.row && c.col === cell.col);
+		if (selectedIndex === s.currentPath.length - 1) return;
+		if (selectedIndex >= 0) {
+			const currentPath = s.currentPath.slice(0, selectedIndex + 1);
+			this.set({ ...s, currentPath, currentWord: currentPath.map((c) => s.grid[c.row][c.col]).join('') });
+			return;
+		}
 		const last = s.currentPath[s.currentPath.length - 1];
 		if (Math.abs(last.row - cell.row) > 1 || Math.abs(last.col - cell.col) > 1) return;
 		const currentPath = [...s.currentPath, cell];
-		this.set({
-			...s,
-			currentPath,
-			currentWord: currentPath.map((c) => s.grid[c.row][c.col]).join(''),
-		});
+		this.set({ ...s, currentPath, currentWord: currentPath.map((c) => s.grid[c.row][c.col]).join('') });
 	};
 
 	/** Pointer released: score the path if it spells a new dictionary word, else clear. */

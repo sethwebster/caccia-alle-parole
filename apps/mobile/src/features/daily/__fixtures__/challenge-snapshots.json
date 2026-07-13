@@ -48,12 +48,12 @@
             "answerIndex": 0
           },
           "themeId": "theme-scuola",
-          "themeLink": "Paròle collega VOTO a Giornata di scuola",
+          "themeLink": "Paròle collega POSTO a Giornata di scuola",
           "generatorVersion": "daily-catalog-generator-v1",
           "dictionaryVersion": "it-bundled-v1",
-          "target": "VOTO",
+          "target": "POSTO",
           "payload": {
-            "targetWord": "VOTO",
+            "targetWord": "POSTO",
             "maxAttempts": 6
           }
         },
@@ -385,12 +385,12 @@
             "answerIndex": 2
           },
           "themeId": "theme-mare",
-          "themeLink": "Paròle collega SOLE a Estate al mare",
+          "themeLink": "Paròle collega SUONO a Estate al mare",
           "generatorVersion": "daily-catalog-generator-v1",
           "dictionaryVersion": "it-bundled-v1",
-          "target": "SOLE",
+          "target": "SUONO",
           "payload": {
-            "targetWord": "SOLE",
+            "targetWord": "SUONO",
             "maxAttempts": 6
           }
         },
@@ -1080,12 +1080,12 @@
             "answerIndex": 0
           },
           "themeId": "theme-scuola",
-          "themeLink": "Paròle collega VOTO a Giornata di scuola",
+          "themeLink": "Paròle collega POSTO a Giornata di scuola",
           "generatorVersion": "daily-catalog-generator-v1",
           "dictionaryVersion": "it-bundled-v1",
-          "target": "VOTO",
+          "target": "POSTO",
           "payload": {
-            "targetWord": "VOTO",
+            "targetWord": "POSTO",
             "maxAttempts": 6
           }
         },
@@ -1766,12 +1766,12 @@
             "answerIndex": 3
           },
           "themeId": "theme-mercato",
-          "themeLink": "Paròle collega BANCO a Mercato italiano",
+          "themeLink": "Paròle collega SPESA a Mercato italiano",
           "generatorVersion": "daily-catalog-generator-v1",
           "dictionaryVersion": "it-bundled-v1",
-          "target": "BANCO",
+          "target": "SPESA",
           "payload": {
-            "targetWord": "BANCO",
+            "targetWord": "SPESA",
             "maxAttempts": 6
           }
         },

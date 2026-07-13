@@ -15,6 +15,7 @@ export type DailyPuzzleStatusTone = 'idle' | 'active' | 'done' | 'lost';
 export const DAILY_COPY = {
 	state: {
 		loading: { eyebrow: 'RITO DEL GIORNO', title: 'Prepariamo la sfida', message: 'Stiamo caricando catalogo e progressi locali.', detail: 'Resta qui: i cinque giochi stanno per arrivare.', tone: 'loading' },
+			loadError: { eyebrow: 'CARICAMENTO SFIDA', title: 'Sfida non caricata', message: 'Non siamo riusciti a caricare la Sfida Giornaliera su questo dispositivo.', detail: 'Chiudi e riapri l’app: i progressi ufficiali restano protetti.', tone: 'error' },
 		archiveLoading: { eyebrow: 'ARCHIVIO LOCALE', title: 'Archivio Sfide', message: 'Caricamento della cronologia salvata sul dispositivo.', detail: 'Nessun account e nessuna classifica globale.', tone: 'loading' },
 		archiveEmpty: { eyebrow: 'ARCHIVIO LOCALE', title: 'Nessuna sfida archiviata', message: 'Completa la Sfida Giornaliera o torna domani per vedere le giornate passate.', detail: 'Le voci appariranno qui appena saranno disponibili per il replay.', tone: 'warning' },
 	},
@@ -85,7 +86,7 @@ export const DAILY_COPY = {
 		overline: 'ARCHIVIO LOCALE',
 		localOnlyCaveat: 'Cronologia salvata solo su questo dispositivo: niente account, server o classifica globale.',
 		status: { completed: 'Ufficiale completata', replayOnly: 'Replay locali', playing: 'Ufficiale in corso', today: 'Sfida di oggi', missed: 'Mancata' },
-		replay: { completed: 'Rigioca in replay', missed: 'Gioca in replay', locked: 'Disponibile dopo la sfida', countLabel: 'Replay' },
+		replay: { completed: 'Rigioca in replay', missed: 'Gioca in replay', locked: 'Disponibile dopo la sfida', premium: 'Sblocca con Premium', countLabel: 'Replay' },
 		official: { none: 'Nessun risultato ufficiale', completed: 'Primo risultato ufficiale bloccato', playing: 'Ufficiale non completata' },
 		meta: { source: 'Origine', catalog: 'Catalogo' },
 	},

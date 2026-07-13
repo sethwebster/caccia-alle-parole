@@ -1,4 +1,9 @@
+import { GATE_COPY } from '@/features/subscription/subscription-copy';
+
 import type { DailyCatalogResolution } from './catalog';
+import type { DailyLoadError } from './daily-load-state';
+import type { DailyRouteLaunchError } from './daily-route-launch';
+import type { DailyRouteModel } from './daily-route-model';
 import { type DailyStateCopy, DAILY_COPY } from './daily-copy';
 import type { ProgressError } from './progress-model';
 
@@ -6,6 +11,10 @@ type UpdateRequiredReason = Extract<DailyCatalogResolution, { readonly kind: 'up
 
 export function loadingDailyState(): DailyStateCopy {
 	return DAILY_COPY.state.loading;
+}
+
+export function dailyLoadErrorState(): DailyStateCopy {
+	return DAILY_COPY.state.loadError;
 }
 
 export function invalidDailyRouteState(): DailyStateCopy {
@@ -34,4 +43,21 @@ export function dailyCatalogUpdateState(reason: UpdateRequiredReason): DailyStat
 		case 'corruptCatalog':
 			return { eyebrow: 'CATALOGO SFIDA', title: 'Catalogo da aggiornare', message: 'Il catalogo incluso non supera i controlli della Sfida Giornaliera.', detail: 'Aggiorna l’app: non generiamo contenuti alternativi per proteggere la sfida ufficiale.', tone: 'error' };
 	}
+}
+
+export function dailySubscriptionRequiredState(): DailyStateCopy {
+	const copy = GATE_COPY.it;
+	return { eyebrow: copy.eyebrow, title: copy.title, message: copy.message, detail: copy.detail, tone: 'warning' };
+}
+
+export function dailyLaunchErrorState(_error: DailyRouteLaunchError): DailyStateCopy {
+	return { eyebrow: 'AVVIO SFIDA', title: 'Sfida non avviata', message: 'Non siamo riusciti ad avviare la Sfida Giornaliera su questo dispositivo.', detail: 'Resta nella schermata: puoi riprovare senza perdere il progresso ufficiale.', tone: 'error' };
+}
+
+export function dailyRouteLaunchErrorModel(baseModel: DailyRouteModel, error: DailyRouteLaunchError | undefined): DailyRouteModel {
+	return error === undefined ? baseModel : { kind: 'error', ...dailyLaunchErrorState(error) };
+}
+
+export function dailyLoadErrorModel(baseModel: DailyRouteModel, error: DailyLoadError | undefined): DailyRouteModel {
+	return error === undefined ? baseModel : { kind: 'error', ...dailyLoadErrorState() };
 }

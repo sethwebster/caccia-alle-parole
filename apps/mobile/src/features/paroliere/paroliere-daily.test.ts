@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { TerminalAttemptContext } from '@/features/daily/types';
 import { makeChallengeId } from '@/features/daily/date';
 
+import { findParoliereCellAtPoint } from './paroliere-board-hit-test';
 import { ParoliereChallengeConfigError, ParoliereService } from './service';
 
 const activity = vi.hoisted(() => ({
@@ -21,6 +22,8 @@ const canonicalGrid = [
 	['L', 'U', 'N', 'A'],
 	['V', 'E', 'N', 'T'],
 ] as const;
+const boardHitTestGeometry = { boardSize: 360, gap: 10, gridSize: 4 } as const;
+const boardTileSize = (boardHitTestGeometry.boardSize - boardHitTestGeometry.gap * 3) / 4;
 
 const challengeContext: TerminalAttemptContext = {
 	challengeId: makeChallengeId('2026-01-26'),
@@ -109,6 +112,52 @@ describe('paroliere daily challenge mode', () => {
 			timeLeft: 90,
 		});
 		expect(service.getTerminalSummary()).toBeNull();
+	});
+
+	it('truncates the active path when extending over an earlier selected tile', () => {
+		const service = createChallengeService(90);
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+		service.extendSelection({ row: 0, col: 1 });
+		service.extendSelection({ row: 0, col: 2 });
+
+		service.extendSelection({ row: 0, col: 1 });
+
+		expect(service.getState().currentPath).toEqual([
+			{ row: 0, col: 0 },
+			{ row: 0, col: 1 },
+		]);
+		expect(service.getState().currentWord).toBe('MA');
+	});
+
+	it('hit-tests points near a tile edge as inside that tile', () => {
+		expect(
+			findParoliereCellAtPoint({
+				...boardHitTestGeometry,
+				x: boardTileSize - 0.25,
+				y: boardTileSize - 0.25,
+			}),
+		).toEqual({ row: 0, col: 0 });
+	});
+
+	it('hit-tests points in the gap between tiles as empty board space', () => {
+		expect(
+			findParoliereCellAtPoint({
+				...boardHitTestGeometry,
+				x: boardTileSize + boardHitTestGeometry.gap / 2,
+				y: boardTileSize / 2,
+			}),
+		).toBeNull();
+	});
+
+	it('hit-tests points outside the board as empty board space', () => {
+		expect(
+			findParoliereCellAtPoint({
+				...boardHitTestGeometry,
+				x: boardHitTestGeometry.boardSize,
+				y: boardTileSize / 2,
+			}),
+		).toBeNull();
 	});
 
 	it('reports a serializable loss summary when the timer finishes', () => {

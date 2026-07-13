@@ -24,7 +24,10 @@ export default function HomeScreen() {
   return (
     <View style={[styles.safe, { backgroundColor: surface.background }]}>
       <StatusBar style="light" />
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={[styles.scroll, { paddingBottom: styles.scroll.paddingBottom + insets.bottom }]}
+        showsVerticalScrollIndicator={false}
+      >
         <Hero topInset={insets.top} streak={daily.streak} name={username} />
 	        <View style={styles.floating}>
 	          <DailyChallengeCard daily={daily} />

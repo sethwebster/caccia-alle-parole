@@ -2,9 +2,10 @@ import { compareStreakDates, makeChallengeId, makeStreakDate } from './date';
 import type { DailyCatalogBundle } from './catalog';
 import type { ChallengeId, ChallengeSource, DailyPuzzleKey, StreakDate, TerminalReason } from './types';
 
-export const DAILY_PROGRESS_KEY = 'daily-progress:v1';
-export const DAILY_PROGRESS_QUARANTINE_KEY = 'daily-progress:v1:quarantine';
-export const DAILY_PROGRESS_SCHEMA_VERSION = 1;
+export const DAILY_PROGRESS_LEGACY_KEY = 'daily-progress:v1';
+export const DAILY_PROGRESS_KEY = 'daily-progress:v2';
+export const DAILY_PROGRESS_QUARANTINE_KEY = 'daily-progress:v2:quarantine';
+export const DAILY_PROGRESS_SCHEMA_VERSION = 2;
 
 export type ProgressStorageAdapter = {
 	readonly getItem: (key: string) => Promise<string | null>;
@@ -72,11 +73,20 @@ export type DailyStatsSummary = {
 };
 
 export type DailyProgress = {
-	readonly schemaVersion: 1;
+	readonly schemaVersion: 2;
 	readonly challenges: readonly DailyChallengeProgressRecord[];
 	readonly credits: readonly CompletionCreditRecord[];
 	readonly mutationEventIds: readonly string[];
 	readonly statsSummary: DailyStatsSummary;
+};
+
+export type DailyProgressQuarantineReason = 'invalidJson' | 'invalidShape';
+
+export type DailyProgressQuarantineEnvelope = {
+	readonly schemaVersion: 1;
+	readonly sourceKey: string;
+	readonly reason: DailyProgressQuarantineReason;
+	readonly raw: string;
 };
 
 export type DailyProgressLoadState =

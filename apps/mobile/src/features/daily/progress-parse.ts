@@ -1,7 +1,7 @@
 import { DailyAdapterValidationError, dailyPuzzleAdapters } from './adapters';
 import type { DailyCatalogBundle, DailyCatalogPuzzlePayload, DailyCatalogPuzzleSpec } from './catalog';
 import { makeCatalogEpoch, makeCatalogVersion, makeReleaseBaseChallengeId } from './date';
-import type { ChallengeSource, DailyPuzzleKey, ThemeQuizData, TerminalReason } from './types';
+import type { ChallengeSource, DailyPuzzleKey, ReleaseBaseChallengeId, ThemeQuizData, TerminalReason } from './types';
 import {
 	DAILY_PROGRESS_SCHEMA_VERSION,
 	emptyDailyProgress,
@@ -61,7 +61,7 @@ function parseCatalogBundleSnapshot(value: unknown): DailyCatalogBundle | null {
 	const challengeId = parseChallengeId(value.challengeId);
 	const streakDate = parseStreakDate(value.streakDate);
 	const source = parseChallengeSource(value.source);
-	const releaseBaseChallengeId = typeof value.releaseBaseChallengeId === 'string' ? makeReleaseBaseChallengeId(value.releaseBaseChallengeId) : null;
+	const releaseBaseChallengeId = parseReleaseBaseChallengeId(value.releaseBaseChallengeId);
 	const catalogEpoch = typeof value.catalogEpoch === 'string' ? makeCatalogEpoch(value.catalogEpoch) : null;
 	const catalogVersion = typeof value.catalogVersion === 'string' ? makeCatalogVersion(value.catalogVersion) : null;
 	const supportedFromChallengeId = parseChallengeId(value.supportedFromChallengeId);
@@ -115,6 +115,16 @@ function parseThemeQuizData(value: unknown): ThemeQuizData | null {
 	if (!isRecord(value) || typeof value.prompt !== 'string' || !Array.isArray(value.choices) || typeof value.answerIndex !== 'number') return null;
 	const choices = parseStringArray(value.choices);
 	return choices === null ? null : { prompt: value.prompt, choices, answerIndex: value.answerIndex };
+}
+
+function parseReleaseBaseChallengeId(value: unknown): ReleaseBaseChallengeId | null {
+	if (typeof value !== 'string') return null;
+	try {
+		return makeReleaseBaseChallengeId(value);
+	} catch (error) {
+		if (error instanceof Error) return null;
+		throw error;
+	}
 }
 
 function parseChallengeSource(value: unknown): ChallengeSource | null {

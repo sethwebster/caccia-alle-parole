@@ -92,6 +92,26 @@ describe('daily-catalog deterministic challenge resolution', () => {
 		});
 	});
 
+	it('rejects invalid Paròle target length in bundled snapshots', () => {
+		const invalid = {
+			...snapshots,
+			samples: {
+				...snapshots.samples,
+				'2026-01-26': {
+					...snapshots.samples['2026-01-26'],
+					puzzles: snapshots.samples['2026-01-26'].puzzles.map((puzzle) =>
+						puzzle.key === 'parola' ? { ...puzzle, target: 'MARE', payload: { ...puzzle.payload, targetWord: 'MARE' } } : puzzle,
+					),
+				},
+			},
+		};
+
+		expect(validateBundledDailyCatalog(invalid)).toEqual({
+			kind: 'invalid',
+			issues: expect.arrayContaining(['invalid daily catalog snapshot schema']),
+		});
+	});
+
 	it('validates canonical puzzle specs and hidden theme metadata for every bundle', () => {
 		const result = resolveDailyChallengeBundle({ challengeId: makeChallengeId('2027-01-26') });
 

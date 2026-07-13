@@ -1,9 +1,13 @@
+import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GameHeader } from '@/components/game/game-header';
+import { PaywallLocaleToggle } from '@/components/subscription/paywall-locale-toggle';
 import { DAILY_COPY, type DailyStateCopy } from '@/features/daily/daily-copy';
+import { usePaywallLocale } from '@/features/subscription/paywall-locale';
+import { GATE_COPY } from '@/features/subscription/subscription-copy';
 import { ACTIVE_PUZZLE_BORDER_COLOR, STATE_TONE_COLORS, STATUS_COLORS, styles } from '@/features/daily/daily-route.styles';
 import type { DailyRoutePuzzleModel, DailyRouteReadyModel } from '@/features/daily/daily-route-model';
 import { DailyThemeCard } from '@/features/daily/daily-theme-card';
@@ -22,6 +26,8 @@ export default function DailyRoute() {
 				<ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 					{model.kind === 'ready' ? (
 							<ReadyContent model={model} onLaunchCurrent={actions.launchCurrent} onLaunchPuzzle={actions.launchPuzzle} onGiveUp={actions.giveUpActive} onShare={actions.shareResult} onAnswerTheme={actions.answerTheme} />
+					) : model.kind === 'subscriptionRequired' ? (
+						<SubscriptionRequiredCard />
 					) : (
 						<StateCard state={model} />
 				)}
@@ -168,6 +174,21 @@ function Meta({ label, value }: { readonly label: string; readonly value: string
 			<Text style={[styles.metaLabel, { color: surface.textTertiary }]}>{label}</Text>
 			<Text style={[styles.metaValue, { color: surface.text }]}>{value}</Text>
 		</View>
+	);
+}
+
+function SubscriptionRequiredCard() {
+	const router = useRouter();
+	const { locale } = usePaywallLocale();
+	const copy = GATE_COPY[locale];
+	return (
+		<>
+			<PaywallLocaleToggle />
+			<StateCard state={{ ...copy, tone: 'warning' }} />
+			<Pressable accessibilityRole="button" onPress={() => router.push('/paywall')} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+				<Text style={styles.primaryButtonText}>{copy.cta}</Text>
+			</Pressable>
+		</>
 	);
 }
 

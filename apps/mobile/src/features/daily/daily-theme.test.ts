@@ -29,7 +29,7 @@ beforeEach(() => {
 
 function makeOrchestrator(storage = new MemoryProgressStorage()): DailyChallengeOrchestrator {
 	const store = createDailyProgressStore(storage);
-	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store) });
+	return new DailyChallengeOrchestrator({ store, queue: new DailyProgressMutationQueue(store), entitlements: { currentEntitlement: async () => true } });
 }
 
 async function loadOfficial(orchestrator: DailyChallengeOrchestrator): Promise<DailyChallengeReadySnapshot> {

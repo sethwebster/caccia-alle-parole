@@ -2,14 +2,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { InvalidLocalCivilDateError, makeChallengeId } from './date';
-import { buildDailyRouteModel, type DailyRouteModel, type DailyRoutePuzzleModel, type DailyRouteReadyModel } from './daily-route-model';
-import { invalidDailyRouteState, loadingDailyState } from './daily-state-copy';
+import { buildDailyRouteModel, type DailyRouteModel, type DailyRoutePuzzleModel } from './daily-route-model';
+import { DailyRouteLaunchError, launchDailyRoutePuzzle } from './daily-route-launch';
+import { dailyLoadErrorModel, dailyRouteLaunchErrorModel, invalidDailyRouteState, loadingDailyState } from './daily-state-copy';
 import type { ActiveDailyAttempt, TerminalRecordResult, ThemeAnswerRecordResult } from './orchestrator-model';
-import type { DailyChallengeOrchestrator } from './orchestrator-service';
-import { challengeStepHref } from './route-policy';
 import type { ChallengeId } from './types';
 import { useDailyChallenge } from './use-daily-challenge';
 import { useDailyShare } from './use-daily-share';
+import { startPuzzleForMode } from './daily-route-start';
 
 type RouteChallengeParam =
 	| { readonly kind: 'valid'; readonly challengeId?: ChallengeId }
@@ -26,31 +26,37 @@ type DailyRouteActions = {
 export function useDailyRouteController(): { readonly model: DailyRouteModel; readonly actions: DailyRouteActions } {
 	const router = useRouter();
 	const [actionError, setActionError] = useState<DailyRouteActionError>();
+	const [launchError, setLaunchError] = useState<DailyRouteLaunchError>();
 	if (actionError !== undefined) throw actionError;
 	const params = useLocalSearchParams<{ challengeId?: string; mode?: string }>();
 	const routeChallenge = parseRouteChallengeId(params.challengeId);
 	const mode = params.mode === 'replay' && routeChallenge.kind === 'valid' && routeChallenge.challengeId !== undefined ? 'replay' : 'official';
 	const daily = useDailyChallenge({ challengeId: routeChallenge.kind === 'valid' ? routeChallenge.challengeId : undefined, mode, enabled: routeChallenge.kind === 'valid' });
 	const shareDailyResult = useDailyShare();
-	const model: DailyRouteModel = routeChallenge.kind === 'invalid' ? { kind: 'error', ...invalidDailyRouteState() } : daily.loaded ? buildDailyRouteModel(daily.snapshot) : { kind: 'loading', ...loadingDailyState() };
+	const baseModel: DailyRouteModel = routeChallenge.kind === 'invalid' ? { kind: 'error', ...invalidDailyRouteState() } : daily.loaded ? buildDailyRouteModel(daily.snapshot) : { kind: 'loading', ...loadingDailyState() };
+	const model: DailyRouteModel = dailyRouteLaunchErrorModel(routeChallenge.kind === 'valid' ? dailyLoadErrorModel(baseModel, daily.loadError) : baseModel, launchError);
 
 	return {
 		model,
-			actions: {
+		actions: {
 			launchCurrent: () => {
 				if (model.kind !== 'ready' || model.currentPuzzleHref === undefined) return;
 				const href = model.currentPuzzleHref;
-				void (async () => {
-					const attempt = model.activePuzzleKey === undefined ? await startPuzzleForMode(daily.orchestrator, model) : activeAttemptFor(daily.snapshot);
-					router.push(challengeStepHref(href, attempt.context));
-				})();
+				void launchDailyRoutePuzzle({
+					href,
+					start: () => model.activePuzzleKey === undefined ? startPuzzleForMode(daily.orchestrator, model) : Promise.resolve(activeAttemptFor(daily.snapshot)),
+					push: router.push,
+					onError: setLaunchError,
+				});
 			},
 			launchPuzzle: (puzzle) => {
 				if (model.kind !== 'ready' || !puzzle.canLaunch) return;
-				void (async () => {
-					const attempt = model.activePuzzleKey === undefined || model.activePuzzleKey !== puzzle.key ? await startPuzzleForMode(daily.orchestrator, model, puzzle) : activeAttemptFor(daily.snapshot);
-					router.push(challengeStepHref(puzzle.href, attempt.context));
-				})();
+				void launchDailyRoutePuzzle({
+					href: puzzle.href,
+					start: () => model.activePuzzleKey === undefined || model.activePuzzleKey !== puzzle.key ? startPuzzleForMode(daily.orchestrator, model, puzzle) : Promise.resolve(activeAttemptFor(daily.snapshot)),
+					push: router.push,
+					onError: setLaunchError,
+				});
 			},
 			giveUpActive: () => {
 				void daily.orchestrator.giveUpActive().then((result) => handleTerminalResult(result, setActionError));
@@ -84,22 +90,8 @@ function handleThemeResult(result: ThemeAnswerRecordResult, setActionError: (err
 }
 
 function activeAttemptFor(snapshot: ReturnType<typeof useDailyChallenge>['snapshot']): ActiveDailyAttempt {
-	if (snapshot.kind !== 'ready' || snapshot.activeAttempt === undefined) throw new DailyRouteLaunchError();
+	if (snapshot.kind !== 'ready' || snapshot.activeAttempt === undefined) throw new DailyRouteLaunchError(new Error('Daily challenge launch requires an active attempt.'));
 	return snapshot.activeAttempt;
-}
-
-class DailyRouteLaunchError extends Error {
-	readonly name = 'DailyRouteLaunchError';
-
-	constructor() {
-		super('Daily challenge launch requires an active attempt.');
-	}
-}
-
-function startPuzzleForMode(orchestrator: DailyChallengeOrchestrator, model: DailyRouteReadyModel, puzzle?: DailyRoutePuzzleModel): Promise<ActiveDailyAttempt> {
-	const puzzleKey = puzzle?.key ?? model.activePuzzleKey ?? model.currentPuzzleKey;
-	if (puzzleKey !== undefined) return model.mode === 'replay' ? orchestrator.startReplay({ puzzleKey }) : orchestrator.startPuzzle({ puzzleKey });
-	return orchestrator.startCurrentPuzzle();
 }
 
 function parseRouteChallengeId(value: string | readonly string[] | undefined): RouteChallengeParam {

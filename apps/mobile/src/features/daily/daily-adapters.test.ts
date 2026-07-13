@@ -1,9 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+import { createDailyChallengeGame } from '@/features/caccia/word-search-daily';
+
 import { makeChallengeId } from './date';
 import { CANONICAL_PUZZLE_LABELS, TERMINAL_REASONS, type DailyPuzzleKey } from './types';
-import { dailyPuzzleAdapters, type DailyAdapterInput } from './adapters';
+import { DailyAdapterValidationError, dailyPuzzleAdapters, type DailyAdapterInput } from './adapters';
 
 const themeQuiz = { prompt: 'Tema?', choices: ['Casa', 'Cibo'], answerIndex: 0 };
 const baseContext = {
@@ -20,7 +22,7 @@ const validSpecs = {
 		generatorVersion: 'parola-v1',
 		dictionaryVersion: 'it-v1',
 		themeQuiz,
-		payload: { targetWord: 'MARE', maxAttempts: 6 },
+		payload: { targetWord: 'PASTA', maxAttempts: 6 },
 	},
 	caccia: {
 		key: 'caccia',
@@ -81,9 +83,65 @@ describe('daily-adapters canonical payload contracts', () => {
 		}
 	});
 
+	it('preserves non-default Caccia placements from catalog payloads through game creation', () => {
+		const spec = {
+			...validSpecs.caccia,
+			payload: {
+				category: 'parole',
+				difficulty: 'easy',
+				grid: [
+					['A', 'A', 'S', 'A'],
+					['D', 'A', 'O', 'A'],
+					['A', 'I', 'L', 'A'],
+					['A', 'A', 'E', 'A'],
+				],
+				words: [
+					{
+						word: 'SOLE',
+						translation: 'sun',
+						definition: 'Stella del giorno',
+						row: 0,
+						col: 2,
+						direction: 'vertical',
+						points: 40,
+						cells: [
+							{ row: 0, col: 2 },
+							{ row: 1, col: 2 },
+							{ row: 2, col: 2 },
+							{ row: 3, col: 2 },
+						],
+					},
+					{
+						word: 'DIE',
+						translation: 'dice',
+						definition: 'Dado in inglese',
+						row: 1,
+						col: 0,
+						direction: 'diagonal-down',
+						points: 30,
+						cells: [
+							{ row: 1, col: 0 },
+							{ row: 2, col: 1 },
+							{ row: 3, col: 2 },
+						],
+					},
+				],
+			},
+		} satisfies DailyAdapterInput;
+
+		const parsed = dailyPuzzleAdapters.caccia.parseSpec(spec);
+		const game = createDailyChallengeGame(parsed.payload);
+
+		expect(game.words).toEqual(spec.payload.words);
+		expect(game.grid[0]?.[2]?.placed).toBe(true);
+		expect(game.grid[1]?.[0]?.placed).toBe(true);
+	});
+
 	it('rejects malformed puzzle specs for each game', () => {
 		expect(() => dailyPuzzleAdapters.parola.parseSpec({ ...validSpecs.parola, payload: { targetWord: '', maxAttempts: 6 } })).toThrow('parola');
+		expect(() => dailyPuzzleAdapters.parola.parseSpec({ ...validSpecs.parola, payload: { targetWord: 'MARE', maxAttempts: 6 } })).toThrow('targetWord');
 		expect(() => dailyPuzzleAdapters.caccia.parseSpec({ ...validSpecs.caccia, payload: { ...validSpecs.caccia.payload, words: [] } })).toThrow('caccia');
+		expect(() => dailyPuzzleAdapters.caccia.parseSpec({ ...validSpecs.caccia, payload: { ...validSpecs.caccia.payload, words: [{ ...validSpecs.caccia.payload.words[0], direction: 'sideways' }] } })).toThrow(DailyAdapterValidationError);
 		expect(() => dailyPuzzleAdapters.paroliere.parseSpec({ ...validSpecs.paroliere, payload: { grid: [['A']], durationSeconds: 180 } })).toThrow('paroliere');
 		expect(() => dailyPuzzleAdapters.impiccato.parseSpec({ ...validSpecs.impiccato, label: 'Impiccato' })).toThrow('impiccato');
 		expect(() => dailyPuzzleAdapters.anagrammi.parseSpec({ ...validSpecs.anagrammi, payload: { ...validSpecs.anagrammi.payload, tiles: ['L', 'U', 'N', 'E'] } })).toThrow('anagrammi');

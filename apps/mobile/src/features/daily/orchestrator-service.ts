@@ -1,5 +1,6 @@
 import { resolveDailyChallengeBundle } from './catalog';
 import { challengeIdForDate } from './date';
+import { requireDailyEntitlementReader, type DailyEntitlementReader } from './entitlement-reader';
 import { activeAttemptMatches, buildActiveAttemptState, deriveDailyChallengeSnapshot, makeAttemptContext, sameAttemptContext } from './orchestrator-machine';
 import type { ActiveDailyAttempt, DailyChallengeReadySnapshot, DailyChallengeSnapshot, StartAttemptInput, TerminalRecordResult, ThemeAnswerRecordResult } from './orchestrator-model';
 import { createDailyProgressStore, dailyProgressMutationQueue, type DailyProgressMutationQueue, type DailyProgressStore } from './progress';
@@ -10,6 +11,7 @@ import { logDailyChallengeCompleted, logDailyChallengeStarted, logDailyPuzzleEnd
 type OrchestratorServices = {
 	readonly store?: DailyProgressStore;
 	readonly queue?: DailyProgressMutationQueue;
+	readonly entitlements?: DailyEntitlementReader;
 };
 
 type LoadOfficialInput = {
@@ -52,6 +54,7 @@ const initialSnapshot: DailyChallengeSnapshot = {
 export class DailyChallengeOrchestrator {
 	private readonly store: DailyProgressStore;
 	private readonly queue: DailyProgressMutationQueue;
+	private readonly entitlements: DailyEntitlementReader | undefined;
 	private snapshot: DailyChallengeSnapshot = initialSnapshot;
 	private activeReplayAttemptId: string | undefined;
 	private loadGeneration = 0;
@@ -60,6 +63,7 @@ export class DailyChallengeOrchestrator {
 	constructor(services: OrchestratorServices = {}) {
 		this.store = services.store ?? createDailyProgressStore();
 		this.queue = services.queue ?? dailyProgressMutationQueue;
+		this.entitlements = services.entitlements;
 	}
 
 	subscribe = (listener: () => void): (() => void) => {
@@ -74,8 +78,9 @@ export class DailyChallengeOrchestrator {
 	async loadOfficial(input: LoadOfficialInput = {}): Promise<DailyChallengeSnapshot> {
 		const generation = this.beginLoad();
 		const resolution = resolveDailyChallengeBundle({ challengeId: input.challengeId, today: input.now });
-		const progress = await this.loadProgress();
+		const [entitled, progress] = await Promise.all([this.currentEntitlement(), this.loadProgress()]);
 		if (!this.isCurrentLoad(generation)) return this.snapshot;
+		if (!entitled) return this.setSnapshot({ kind: 'subscriptionRequired', challengeId: input.challengeId ?? challengeIdForDate(input.now ?? new Date()) });
 		this.activeReplayAttemptId = undefined;
 		if (!progress.ok) return this.setSnapshot({ kind: 'progressError', error: progress.error });
 		if (resolution.kind === 'updateRequired') {
@@ -89,8 +94,9 @@ export class DailyChallengeOrchestrator {
 	async loadReplay(input: LoadReplayInput): Promise<DailyChallengeSnapshot> {
 		const generation = this.beginLoad();
 		const resolution = resolveDailyChallengeBundle({ challengeId: input.challengeId, today: input.now });
-		const progress = await this.loadProgress();
+		const [entitled, progress] = await Promise.all([this.currentEntitlement(), this.loadProgress()]);
 		if (!this.isCurrentLoad(generation)) return this.snapshot;
+		if (!entitled) return this.setSnapshot({ kind: 'subscriptionRequired', challengeId: input.challengeId });
 		if (!progress.ok) return this.setSnapshot({ kind: 'progressError', error: progress.error });
 		const bundle = archivedSnapshotFor(progress.value, input.challengeId) ?? (resolution.kind === 'ready' ? resolution.bundle : undefined);
 		if (bundle === undefined) return this.setSnapshot({ kind: 'updateRequired', challengeId: input.challengeId, reason: 'outsideSupportedRange', metadata: resolution.metadata });
@@ -103,15 +109,14 @@ export class DailyChallengeOrchestrator {
 		const ready = this.requireReadyOfficial();
 		const startedAt = input.now ?? new Date();
 		const context = makeAttemptContext({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, attemptKind: 'official', ordinal: 1 });
+		const activeAttempt = { context, startedAt: startedAt.toISOString() };
 		const saved = await this.queue.savePuzzleProgress({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, state: buildActiveAttemptState(context, startedAt), source: ready.bundle.source, bundleSnapshot: ready.bundle, updatedAt: startedAt });
 		if (!saved.ok) {
 			this.setSnapshot({ kind: 'progressError', error: saved.error });
-			return { context, startedAt: startedAt.toISOString() };
+			throw new DailyChallengeOrchestratorStateError('progressError');
 		}
 		logDailyChallengeStarted({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, mode: 'official' });
 		this.setSnapshot(deriveDailyChallengeSnapshot({ bundle: ready.bundle, progress: saved.value, mode: 'official' }));
-		const activeAttempt = this.getReadySnapshot().activeAttempt;
-		if (activeAttempt === undefined) return { context, startedAt: startedAt.toISOString() };
 		return activeAttempt;
 	}
 
@@ -141,15 +146,14 @@ export class DailyChallengeOrchestrator {
 			? makeAttemptContext({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, attemptKind: 'replay', ordinal })
 			: makeReplayAttemptContext({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, attemptId: this.activeReplayAttemptId });
 		this.activeReplayAttemptId = context.attemptId;
+		const activeAttempt = { context, startedAt: startedAt.toISOString() };
 		const saved = await this.queue.savePuzzleProgress({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, state: buildActiveAttemptState(context, startedAt), source: ready.bundle.source, bundleSnapshot: ready.bundle, updatedAt: startedAt });
 		if (!saved.ok) {
 			this.setSnapshot({ kind: 'progressError', error: saved.error });
-			return { context, startedAt: startedAt.toISOString() };
+			throw new DailyChallengeOrchestratorStateError('progressError');
 		}
 		logDailyChallengeStarted({ challengeId: ready.bundle.challengeId, puzzleKey: input.puzzleKey, mode: 'replay' });
 		this.setSnapshot(deriveDailyChallengeSnapshot({ bundle: ready.bundle, progress: saved.value, mode: 'replay', activeReplayAttemptId: context.attemptId }));
-		const activeAttempt = this.getReadySnapshot().activeAttempt;
-		if (activeAttempt === undefined) return { context, startedAt: startedAt.toISOString() };
 		return activeAttempt;
 	}
 
@@ -201,6 +205,10 @@ export class DailyChallengeOrchestrator {
 		const snapshot = this.setSnapshot(deriveDailyChallengeSnapshot({ bundle: ready.bundle, progress: recorded.value, mode: 'official' }));
 		logDailyThemeAnswered({ challengeId: ready.bundle.challengeId, correct: input.answerIndex === ready.bundle.theme.answerIndex });
 		return { kind: 'accepted', snapshot };
+	}
+
+	private currentEntitlement(): Promise<boolean> {
+		return (this.entitlements ?? requireDailyEntitlementReader()).currentEntitlement();
 	}
 
 	private async loadProgress() {
