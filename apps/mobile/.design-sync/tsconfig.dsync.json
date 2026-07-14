@@ -1,0 +1,16 @@
+{
+  // Read by the converter's esbuild tsconfig-paths plugin (compilerOptions of
+  // THIS file only — no extends resolution). Maps the app's @/ aliases, routes
+  // react-native to react-native-web for the browser bundle, and swaps
+  // expo-router for a static-preview stub.
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/assets/*": ["./assets/*"],
+      "react-native": ["./node_modules/react-native-web/dist/index.js"],
+      "react-native-svg": ["./node_modules/react-native-svg/lib/module/ReactNativeSVG.web.js"],
+      "expo-router": ["./.design-sync/stubs/expo-router.ts"]
+    }
+  }
+}

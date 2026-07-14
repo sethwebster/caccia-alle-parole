@@ -3,6 +3,9 @@ node_modules/
 *.log
 .env
 .svelte-kit/
+.vite/
+.expo/
+dist/
 build/
 .vercel/
 .netlify/
@@ -13,3 +16,4 @@ vite.config.ts.timestamp-*
 .claude/
 .playwright-mcp/
 graphify-out/
+.omo
