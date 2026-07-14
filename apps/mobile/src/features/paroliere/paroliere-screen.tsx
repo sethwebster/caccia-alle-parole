@@ -8,6 +8,8 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
+import { confirmAbandonDailyAttempt } from '@/features/daily/confirm-abandon';
+import { DAILY_COPY } from '@/features/daily/daily-copy';
 import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
 import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { parseDailyAdapterSpec } from '@/features/daily/use-daily-game-route-mode';
@@ -27,31 +29,36 @@ const RULES = [
 export function ParoliereScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
 	const router = useRouter();
+	const attemptStartedAt = routeSession.attemptStartedAt;
 	const challengeConfig = useMemo(() => {
-		if (routeSession.challenge === undefined) return undefined;
+		if (routeSession.challenge === undefined || attemptStartedAt === undefined) return undefined;
 		const spec = parseDailyAdapterSpec(routeSession.challenge, 'paroliere');
 		return {
 			context: routeSession.challenge.context,
 			grid: spec.payload.grid,
 			durationSeconds: spec.payload.durationSeconds,
+			startedAtMs: Date.parse(attemptStartedAt),
 		};
-	}, [routeSession.challenge]);
+	}, [attemptStartedAt, routeSession.challenge]);
 	const challengeRouteLoading = routeSession.playMode.kind === 'challenge' && routeSession.challenge === undefined;
-	const { state, service } = useParoliereGame(challengeConfig);
-	useDailyTerminalRecorder(routeSession.challenge, service.getTerminalSummary()?.reason);
+	const { state, service, terminalSummary } = useParoliereGame(challengeConfig);
+	useDailyTerminalRecorder(routeSession.challenge, terminalSummary?.reason);
 	useScreenInteractive();
 	const { modalVisible, dismissModal, burst } = useResultReveal(state);
+	const isChallenge = routeSession.playMode.kind === 'challenge';
 
 	return (
 		<SafeAreaView style={[styles.safe, { backgroundColor: surface.background }]} edges={['top', 'bottom']}>
 			<GameHeader
 				title="Paroliere+"
 				subtitle={formatPlayModeSubtitle(routeSession.playMode, state.gameState === 'playing' ? 'Sfida a Tempo' : undefined)}
-				onAction={state.gameState === 'playing' ? service.endGame : undefined}
+				onAction={state.gameState !== 'playing' ? undefined : isChallenge ? () => confirmAbandonDailyAttempt(service.endGame) : service.endGame}
 			/>
 				<View style={styles.content}>
 					{challengeRouteLoading ? (
 						<ChallengeLoadingCard />
+					) : isChallenge && challengeConfig === undefined ? (
+						<ChallengeEndedCard onBack={() => router.back()} />
 					) : state.gameState === 'setup' ? (
 						<SetupCard onStart={service.startGame} />
 					) : (
@@ -63,16 +70,21 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 				visible={modalVisible}
 				icon="🏆"
 				title="Partita Finita!"
-				primaryLabel="Gioca Ancora"
+				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Gioca Ancora'}
 				onPrimary={() => {
 					dismissModal();
-					service.startGame();
+					if (isChallenge) router.back();
+					else service.startGame();
 				}}
-				secondaryLabel="Torna al Menu"
-				onSecondary={() => {
-					dismissModal();
-					router.replace('/');
-				}}
+				secondaryLabel={isChallenge ? undefined : 'Torna al Menu'}
+				onSecondary={
+					isChallenge
+						? undefined
+						: () => {
+								dismissModal();
+								router.replace('/');
+							}
+				}
 				onDismiss={dismissModal}
 			>
 				<View style={styles.resultStats}>
@@ -81,6 +93,22 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 				</View>
 			</ResultModal>
 		</SafeAreaView>
+	);
+}
+
+function ChallengeEndedCard({ onBack }: { readonly onBack: () => void }) {
+	const surface = useGameSurface();
+	return (
+		<View style={styles.setupWrap}>
+			<View style={[styles.setupCard, { backgroundColor: surface.card, borderColor: surface.border }]}>
+				<Text style={styles.setupIcon}>🏁</Text>
+				<Text style={[styles.setupTitle, { color: surface.text }]}>Tentativo concluso</Text>
+				<Text style={[styles.setupDesc, { color: surface.textSecondary }]}>Il risultato ufficiale di oggi è già registrato nella sfida.</Text>
+				<Pressable onPress={onBack} style={({ pressed }) => [styles.startBtn, pressed && styles.pressed]}>
+					<Text style={styles.startText}>{DAILY_COPY.challenge.returnToHub}</Text>
+				</Pressable>
+			</View>
+		</View>
 	);
 }
 

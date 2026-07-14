@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +9,7 @@ import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
+import { DAILY_COPY } from '@/features/daily/daily-copy';
 import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
 import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
@@ -25,6 +27,8 @@ import { styles } from '@/features/impiccato/impiccato-screen.styles';
 
 export function ImpiccatoScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
+	const router = useRouter();
+	const isChallenge = routeSession.playMode.kind === 'challenge';
 	const { round, guess, startRound, modalVisible, dismissModal, confettiBurst } = useImpiccatoGame(routeSession);
 	useScreenInteractive(round !== null);
 	useWebKeyboard(guess);
@@ -34,7 +38,7 @@ export function ImpiccatoScreen({ routeSession }: { readonly routeSession: Daily
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
-			<GameHeader title="Il Palloncino" subtitle={formatPlayModeSubtitle(routeSession.playMode, 'Non farlo scoppiare!')} onAction={() => startRound(false)} />
+			<GameHeader title="Il Palloncino" subtitle={formatPlayModeSubtitle(routeSession.playMode, 'Non farlo scoppiare!')} onAction={isChallenge ? undefined : () => startRound(false)} />
 				{challengeRouteLoading ? (
 					<ChallengeLoading />
 				) : round ? (
@@ -111,16 +115,21 @@ export function ImpiccatoScreen({ routeSession }: { readonly routeSession: Daily
 				visible={modalVisible && round !== null}
 				icon={won ? '🎉' : '💥'}
 				title={won ? 'Vittoria!' : 'Scoppiato!'}
-				primaryLabel="Continua Sfida"
+				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Continua Sfida'}
 				onPrimary={() => {
 					dismissModal();
-					startRound(true);
+					if (isChallenge) router.back();
+					else startRound(true);
 				}}
-				secondaryLabel="Nuova Partita"
-				onSecondary={() => {
-					dismissModal();
-					startRound(false);
-				}}
+				secondaryLabel={isChallenge ? undefined : 'Nuova Partita'}
+				onSecondary={
+					isChallenge
+						? undefined
+						: () => {
+								dismissModal();
+								startRound(false);
+							}
+				}
 				onDismiss={dismissModal}
 			>
 				{round ? <AnswerCard round={round} /> : null}

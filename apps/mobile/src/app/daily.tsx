@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GameHeader } from '@/components/game/game-header';
 import { PaywallLocaleToggle } from '@/components/subscription/paywall-locale-toggle';
+import { confirmAbandonDailyAttempt } from '@/features/daily/confirm-abandon';
 import { DAILY_COPY, type DailyStateCopy } from '@/features/daily/daily-copy';
 import { usePaywallLocale } from '@/features/subscription/paywall-locale';
 import { GATE_COPY } from '@/features/subscription/subscription-copy';
@@ -18,6 +19,7 @@ import { useGameSurface } from '@/hooks/use-game-surface';
 export default function DailyRoute() {
 	const surface = useGameSurface();
 	const { model, actions } = useDailyRouteController();
+	const confirmGiveUp = () => confirmAbandonDailyAttempt(actions.giveUpActive);
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}> 
@@ -25,7 +27,7 @@ export default function DailyRoute() {
 			<GameHeader title={DAILY_HOME_ROUTE.title} subtitle={DAILY_COPY.route.headerSubtitle} />
 				<ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 					{model.kind === 'ready' ? (
-							<ReadyContent model={model} onLaunchCurrent={actions.launchCurrent} onLaunchPuzzle={actions.launchPuzzle} onGiveUp={actions.giveUpActive} onShare={actions.shareResult} onAnswerTheme={actions.answerTheme} />
+							<ReadyContent model={model} onLaunchCurrent={actions.launchCurrent} onLaunchPuzzle={actions.launchPuzzle} onGiveUp={confirmGiveUp} onShare={actions.shareResult} onAnswerTheme={actions.answerTheme} />
 					) : model.kind === 'subscriptionRequired' ? (
 						<SubscriptionRequiredCard />
 					) : (

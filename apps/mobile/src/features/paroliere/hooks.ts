@@ -1,14 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
-import { ParoliereService, type ParoliereChallengeConfig, type ParoliereState, type SubmitOutcome } from './service';
+import { ParoliereService, type ParoliereChallengeConfig, type ParoliereState, type ParoliereTerminalSummary, type SubmitOutcome } from './service';
 
 /** Owns a per-mount service instance and subscribes the screen to its state. */
-export function useParoliereGame(challenge?: ParoliereChallengeConfig): { state: ParoliereState; service: ParoliereService } {
+export function useParoliereGame(challenge?: ParoliereChallengeConfig): { state: ParoliereState; service: ParoliereService; terminalSummary: ParoliereTerminalSummary | null } {
 	const service = useMemo(() => new ParoliereService({ challenge }), [challenge]);
 	const state = useSyncExternalStore(service.subscribe, service.getState, service.getState);
+	// Subscribed read: a plain service.getTerminalSummary() call in render gets
+	// memoized by React Compiler and never sees the terminal, so the daily
+	// challenge result would silently go unrecorded.
+	const terminalSummary = useSyncExternalStore(service.subscribe, service.getTerminalSummary, service.getTerminalSummary);
 	useServiceTeardown(service);
-	return { state, service };
+	useChallengeAutoStart(service, challenge);
+	return { state, service, terminalSummary };
+}
+
+/**
+ * Official rounds start when the attempt starts (the countdown is anchored to
+ * it), so the setup card would silently burn play time — skip it.
+ */
+function useChallengeAutoStart(service: ParoliereService, challenge: ParoliereChallengeConfig | undefined): void {
+	useEffect(() => {
+		if (challenge !== undefined && service.getState().gameState === 'setup') service.startGame();
+	}, [challenge, service]);
 }
 
 /** Stops the countdown and ends the Live Activity when the screen unmounts. */

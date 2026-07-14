@@ -19,6 +19,8 @@ export type DailyGameChallengeRoute = {
 export type DailyGameRouteSession = {
 	readonly playMode: GamePlayMode;
 	readonly challenge?: DailyGameChallengeRoute;
+	/** ISO start of the live attempt; undefined once the attempt is terminal. */
+	readonly attemptStartedAt?: string;
 };
 
 export class DailyGameRouteSessionError extends Error {
@@ -68,10 +70,14 @@ export function useDailyGameRouteMode(puzzleKey: DailyPuzzleKey): DailyGameRoute
 		throw new DailyGameRouteSessionError('activeAttempt');
 	}
 	const puzzle = routeSnapshot?.bundle.puzzles.find((candidate) => candidate.key === puzzleKey);
+	const attemptStartedAt =
+		context !== undefined && routeSnapshot?.activeAttempt !== undefined && activeAttemptMatches(routeSnapshot.activeAttempt, context)
+			? routeSnapshot.activeAttempt.startedAt
+			: undefined;
 	const session = useMemo<DailyGameRouteSession>(() => {
 		if (context === undefined || puzzle === undefined) return { playMode };
-		return { playMode, challenge: { context, puzzle, recordTerminal } };
-	}, [context, playMode, puzzle, recordTerminal]);
+		return { playMode, challenge: { context, puzzle, recordTerminal }, attemptStartedAt };
+	}, [attemptStartedAt, context, playMode, puzzle, recordTerminal]);
 	if (context !== undefined && routeSnapshot !== undefined && puzzle === undefined) throw new DailyGameRouteSessionError('puzzle');
 	return session;
 }

@@ -90,6 +90,13 @@ export const DAILY_COPY = {
 		official: { none: 'Nessun risultato ufficiale', completed: 'Primo risultato ufficiale bloccato', playing: 'Ufficiale non completata' },
 		meta: { source: 'Origine', catalog: 'Catalogo' },
 	},
+	abandon: {
+		title: 'Abbandonare il gioco?',
+		message: 'Chiude il tentativo ufficiale di oggi per questo gioco: non potrai rigiocarlo nella sfida.',
+		cancel: 'Annulla',
+		confirm: 'Abbandona',
+	},
+	challenge: { returnToHub: 'Torna alla Sfida' },
 	catalog: { title: 'Catalogo deterministico', installed: 'Catalogo incluso', localCopy: 'Copia locale salvata', preview: 'Anteprima generata', available: 'Disponibile', requiresLocalCopy: 'Serve una copia locale' },
 	replayBadge: { active: 'Replay locale attivo', savedSingular: '1 replay locale salvato' },
 } as const;

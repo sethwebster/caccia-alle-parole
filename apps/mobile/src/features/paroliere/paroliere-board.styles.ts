@@ -28,7 +28,8 @@ export const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	pulseText: { color: '#fff', fontSize: 24, fontFamily: GameFonts.display800, letterSpacing: 2 },
-	grid: { width: '100%', maxWidth: 360, aspectRatio: 1, gap: GRID_GAP },
+	gridWrap: { alignSelf: 'stretch', flexGrow: 1, flexShrink: 1, minHeight: 220, alignItems: 'center', justifyContent: 'center' },
+	grid: { gap: GRID_GAP },
 	gridRow: { flex: 1, flexDirection: 'row', gap: GRID_GAP },
 	tile: {
 		flex: 1,

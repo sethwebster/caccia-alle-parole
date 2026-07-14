@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +9,7 @@ import { ResultModal } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { formatCategory } from '@/data/word-data';
+import { DAILY_COPY } from '@/features/daily/daily-copy';
 import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
 import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
@@ -24,6 +26,8 @@ function formatTime(totalSeconds: number): string {
 
 export function AnagrammiScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
+	const router = useRouter();
+	const isChallenge = routeSession.playMode.kind === 'challenge';
 	const game = useAnagrammi(routeSession);
 	useScreenInteractive(game.hydrated);
 	const { state } = game;
@@ -32,7 +36,7 @@ export function AnagrammiScreen({ routeSession }: { readonly routeSession: Daily
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
-			<GameHeader title="Anagrammi+" subtitle={formatPlayModeSubtitle(routeSession.playMode, 'Dominio Verbale')} onAction={game.reset} />
+			<GameHeader title="Anagrammi+" subtitle={formatPlayModeSubtitle(routeSession.playMode, 'Dominio Verbale')} onAction={isChallenge ? undefined : game.reset} />
 			{game.hydrated ? (
 				<View style={styles.content}>
 					<View style={styles.stats}>
@@ -149,8 +153,8 @@ export function AnagrammiScreen({ routeSession }: { readonly routeSession: Daily
 				title={state.status === 'correct' ? 'Ottimo Anagramma!' : 'Tempo Scaduto'}
 				primaryLabel="Prossima Parola"
 				onPrimary={game.next}
-				secondaryLabel="Ricomincia Sfida"
-				onSecondary={game.reset}
+				secondaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Ricomincia Sfida'}
+				onSecondary={isChallenge ? () => router.back() : game.reset}
 				onDismiss={game.dismissModal}
 			>
 				<View style={[styles.answerCard, { backgroundColor: surface.tile, borderColor: surface.border }]}>

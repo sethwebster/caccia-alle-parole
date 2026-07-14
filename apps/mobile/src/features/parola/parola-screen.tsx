@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
@@ -17,6 +18,7 @@ import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
+import { DAILY_COPY } from '@/features/daily/daily-copy';
 import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
 import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
@@ -49,6 +51,8 @@ const DAILY_CAPTION = `La parola del giorno · ${new Date().toLocaleDateString('
 
 export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
+	const router = useRouter();
+	const isChallenge = routeSession.playMode.kind === 'challenge';
 	const game = useParolaGame(routeSession);
 	useScreenInteractive(game.hydrated);
 	const won = game.state.gameState === 'won';
@@ -82,8 +86,15 @@ export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGam
 				title={won ? 'Bravo!' : 'Riprova domani'}
 				primaryLabel={game.copied ? 'Copiato!' : 'Condividi Risultato'}
 				onPrimary={game.share}
-				secondaryLabel="Chiudi"
-				onSecondary={game.dismissModal}
+				secondaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Chiudi'}
+				onSecondary={
+					isChallenge
+						? () => {
+								game.dismissModal();
+								router.back();
+							}
+						: game.dismissModal
+				}
 				onDismiss={game.dismissModal}
 			>
 				<TargetCard word={game.state.targetWord} data={game.state.targetWordData} />

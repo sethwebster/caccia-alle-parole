@@ -100,11 +100,14 @@ function LetterGrid({
 	service: ParoliereService;
 }) {
 	const surface = useGameSurface();
-	const [size, setSize] = useState(0);
+	const [wrapSize, setWrapSize] = useState({ width: 0, height: 0 });
 	const [gestureState] = useState(() => new DragGestureState());
+	// True square sized to the space actually available, so rendered tiles and
+	// hit-test geometry can never drift apart when flex compresses the column.
+	const side = Math.floor(Math.min(wrapSize.width, wrapSize.height, 360));
 
 	const cellAt = (x: number, y: number): PathCell | null => {
-		return findParoliereCellAtPoint({ boardSize: size, gap: GRID_GAP, gridSize: GRID_SIZE, x, y });
+		return findParoliereCellAtPoint({ boardSize: side, gap: GRID_GAP, gridSize: GRID_SIZE, x, y });
 	};
 
 	const pan = Gesture.Pan()
@@ -154,9 +157,14 @@ function LetterGrid({
 	}
 
 	return (
-		<GestureDetector gesture={pan}>
-			<View style={styles.grid} onLayout={(event) => setSize(event.nativeEvent.layout.width)}>
-				{renderedRows.map((row) => (
+		<View
+			style={styles.gridWrap}
+			onLayout={(event) => setWrapSize({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height })}
+		>
+			{side > 0 ? (
+				<GestureDetector gesture={pan}>
+					<View style={[styles.grid, { width: side, height: side }]}>
+						{renderedRows.map((row) => (
 					<View key={row.key} style={styles.gridRow}>
 						{row.letters.map((cell) => (
 							<View
@@ -172,11 +180,13 @@ function LetterGrid({
 									{cell.letter}
 								</Text>
 							</View>
+								))}
+							</View>
 						))}
 					</View>
-				))}
-			</View>
-		</GestureDetector>
+				</GestureDetector>
+			) : null}
+		</View>
 	);
 }
 

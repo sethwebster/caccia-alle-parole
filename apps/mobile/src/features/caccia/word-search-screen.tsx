@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
@@ -11,6 +12,7 @@ import { ResultModal, ResultStat } from '@/components/game/result-modal';
 import { StatPill } from '@/components/game/stat-pill';
 import { GameFonts, GamePalette } from '@/constants/game-theme';
 import { categories, formatCategory } from '@/data/word-data';
+import { DAILY_COPY } from '@/features/daily/daily-copy';
 import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
 import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
 import { useGameSurface } from '@/hooks/use-game-surface';
@@ -40,6 +42,8 @@ const cellShake = new Keyframe({
 
 export function WordSearchScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
 	const surface = useGameSurface();
+	const router = useRouter();
+	const isChallenge = routeSession.playMode.kind === 'challenge';
 	const {
 		game,
 		hydrated,
@@ -74,7 +78,7 @@ export function WordSearchScreen({ routeSession }: { readonly routeSession: Dail
 			style={[styles.safe, { backgroundColor: surface.background }]}
 			edges={['top', 'bottom']}
 		>
-		<GameHeader title="Caccia" subtitle={formatPlayModeSubtitle(routeSession.playMode, subtitle)} onAction={resetToSetup} />
+		<GameHeader title="Caccia" subtitle={formatPlayModeSubtitle(routeSession.playMode, subtitle)} onAction={isChallenge ? undefined : resetToSetup} />
 			{!hydrated ? null : !isActive ? (
 				<SetupPanel
 					pickedCategory={pickedCategory}
@@ -100,10 +104,10 @@ export function WordSearchScreen({ routeSession }: { readonly routeSession: Dail
 						? `Hai trovato tutte le parole in ${formatCategory(game.category)}!`
 						: undefined
 				}
-				primaryLabel="Rigioca"
-				onPrimary={replay}
-				secondaryLabel="Nuova Partita"
-				onSecondary={resetToSetup}
+				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Rigioca'}
+				onPrimary={isChallenge ? () => router.back() : replay}
+				secondaryLabel={isChallenge ? undefined : 'Nuova Partita'}
+				onSecondary={isChallenge ? undefined : resetToSetup}
 				onDismiss={closeModal}
 			>
 				<View style={[styles.modalStats, { backgroundColor: surface.tile, borderColor: surface.border }]}>

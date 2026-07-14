@@ -196,8 +196,12 @@ export function useAnagrammi(routeSession: DailyGameRouteSession) {
 }
 
 function useChallengeAnagrammi(routeSession: DailyGameRouteSession, dispatch: Dispatch<ReplaceChallengeAction>): void {
+	const { challenge, attemptStartedAt } = routeSession;
 	useEffect(() => {
-		if (routeSession.challenge === undefined) return;
-		dispatch({ type: 'replace-challenge', state: createAnagrammiChallengeState(parseDailyAdapterSpec(routeSession.challenge, 'anagrammi').payload, Date.now()) });
-	}, [routeSession.challenge, dispatch]);
+		// Deadline anchors to the official attempt start so leaving and coming
+		// back never refills the clock. No start time means the attempt already
+		// ended: keep the terminal state on screen instead of rebuilding.
+		if (challenge === undefined || attemptStartedAt === undefined) return;
+		dispatch({ type: 'replace-challenge', state: createAnagrammiChallengeState(parseDailyAdapterSpec(challenge, 'anagrammi').payload, Date.parse(attemptStartedAt)) });
+	}, [attemptStartedAt, challenge, dispatch]);
 }

@@ -130,14 +130,24 @@ describe('paroliere daily challenge mode', () => {
 		expect(service.getState().currentWord).toBe('MA');
 	});
 
-	it('hit-tests points near a tile edge as inside that tile', () => {
+	it('hit-tests points near a tile centre as inside that tile', () => {
+		expect(
+			findParoliereCellAtPoint({
+				...boardHitTestGeometry,
+				x: boardTileSize / 2,
+				y: boardTileSize / 2,
+			}),
+		).toEqual({ row: 0, col: 0 });
+	});
+
+	it('hit-tests tile corners as dead zones so diagonal drags cannot clip neighbours', () => {
 		expect(
 			findParoliereCellAtPoint({
 				...boardHitTestGeometry,
 				x: boardTileSize - 0.25,
 				y: boardTileSize - 0.25,
 			}),
-		).toEqual({ row: 0, col: 0 });
+		).toBeNull();
 	});
 
 	it('hit-tests points in the gap between tiles as empty board space', () => {

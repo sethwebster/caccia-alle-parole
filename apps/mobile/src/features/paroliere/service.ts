@@ -32,6 +32,8 @@ export type ParoliereChallengeConfig = {
 	readonly context: TerminalAttemptContext;
 	readonly durationSeconds: number;
 	readonly grid: readonly (readonly string[])[];
+	/** Epoch ms of the official attempt start: the countdown is anchored here so leaving and returning never refills the clock. */
+	readonly startedAtMs?: number;
 };
 
 export type ParoliereServiceOptions = {
@@ -88,10 +90,16 @@ function initialState(challenge: ParoliereChallengeConfig | null): ParoliereStat
 		currentPath: [],
 		currentWord: '',
 		score: 0,
-		timeLeft: challenge?.durationSeconds ?? GAME_DURATION,
+		timeLeft: challenge === null ? GAME_DURATION : challengeRemainingSeconds(challenge),
 		gameState: 'setup',
 		lastOutcome: null,
 	};
+}
+
+function challengeRemainingSeconds(challenge: ParoliereChallengeConfig): number {
+	if (challenge.startedAtMs === undefined) return challenge.durationSeconds;
+	const elapsed = Math.floor((Date.now() - challenge.startedAtMs) / 1000);
+	return Math.max(0, challenge.durationSeconds - elapsed);
 }
 
 function copyGrid(grid: readonly (readonly string[])[]): string[][] {
@@ -101,6 +109,7 @@ function copyGrid(grid: readonly (readonly string[])[]): string[][] {
 function validateChallengeConfig(challenge: ParoliereChallengeConfig): void {
 	if (challenge.context.puzzleKey !== 'paroliere') throw new ParoliereChallengeConfigError('context');
 	if (!Number.isInteger(challenge.durationSeconds) || challenge.durationSeconds <= 0) throw new ParoliereChallengeConfigError('durationSeconds');
+	if (challenge.startedAtMs !== undefined && (!Number.isFinite(challenge.startedAtMs) || challenge.startedAtMs <= 0)) throw new ParoliereChallengeConfigError('durationSeconds');
 	if (challenge.grid.length !== GRID_SIZE) throw new ParoliereChallengeConfigError('grid');
 	for (const row of challenge.grid) {
 		if (row.length !== GRID_SIZE || row.some((cell) => !/^[A-ZÀ-Ù]$/.test(cell))) throw new ParoliereChallengeConfigError('grid');
@@ -239,25 +248,29 @@ export class ParoliereService {
 
 	private finish(timeLeft: number, reason: ParoliereChallengeTerminalReason): void {
 		this.stopTimer();
-		this.set({
+		const finished = {
 			...this.state,
 			timeLeft,
-			gameState: 'finished',
+			gameState: 'finished' as const,
 			currentPath: [],
 			currentWord: '',
-		});
-		Observe.logEvent('paroliere.finished', {
-			attributes: { score: this.state.score, words: this.state.foundWords.length },
-		});
+		};
+		// Publish the summary BEFORE notifying: useSyncExternalStore re-renders
+		// synchronously on set(), and the terminal recorder reads the summary in
+		// that render. Notify-first left the daily challenge terminal unrecorded.
 		this.terminalSummary = this.challenge === null ? null : {
 			context: this.challenge.context,
-			foundWords: [...this.state.foundWords],
+			foundWords: [...finished.foundWords],
 			puzzleKey: 'paroliere',
 			reason,
-			score: this.state.score,
-			timeLeft: this.state.timeLeft,
-			totalWords: this.state.foundWords.length,
+			score: finished.score,
+			timeLeft: finished.timeLeft,
+			totalWords: finished.foundWords.length,
 		};
+		this.set(finished);
+		Observe.logEvent('paroliere.finished', {
+			attributes: { score: finished.score, words: finished.foundWords.length },
+		});
 		endParoliereActivity(this.activityState());
 	}
 
