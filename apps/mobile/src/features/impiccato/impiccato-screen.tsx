@@ -29,7 +29,7 @@ export function ImpiccatoScreen({ routeSession }: { readonly routeSession: Daily
 	const surface = useGameSurface();
 	const router = useRouter();
 	const isChallenge = routeSession.playMode.kind === 'challenge';
-	const { round, guess, startRound, modalVisible, dismissModal, confettiBurst } = useImpiccatoGame(routeSession);
+	const { round, guess, startRound, modalVisible, dismissModal, confettiBurst, dailyTerminal } = useImpiccatoGame(routeSession);
 	useScreenInteractive(round !== null);
 	useWebKeyboard(guess);
 	const challengeRouteLoading = routeSession.playMode.kind === 'challenge' && routeSession.challenge === undefined;
@@ -117,9 +117,15 @@ export function ImpiccatoScreen({ routeSession }: { readonly routeSession: Daily
 				title={won ? 'Vittoria!' : 'Scoppiato!'}
 				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Continua Sfida'}
 				onPrimary={() => {
-					dismissModal();
-					if (isChallenge) router.back();
-					else startRound(true);
+					if (isChallenge) {
+						void dailyTerminal.complete(() => {
+							dismissModal();
+							router.back();
+						});
+					} else {
+						dismissModal();
+						startRound(true);
+					}
 				}}
 				secondaryLabel={isChallenge ? undefined : 'Nuova Partita'}
 				onSecondary={

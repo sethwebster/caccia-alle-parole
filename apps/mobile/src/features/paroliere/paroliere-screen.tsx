@@ -42,7 +42,7 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 	}, [attemptStartedAt, routeSession.challenge]);
 	const challengeRouteLoading = routeSession.playMode.kind === 'challenge' && routeSession.challenge === undefined;
 	const { state, service, terminalSummary } = useParoliereGame(challengeConfig);
-	useDailyTerminalRecorder(routeSession.challenge, terminalSummary?.reason);
+	const dailyTerminal = useDailyTerminalRecorder(routeSession.challenge, terminalSummary?.reason);
 	useScreenInteractive();
 	const { modalVisible, dismissModal, burst } = useResultReveal(state);
 	const isChallenge = routeSession.playMode.kind === 'challenge';
@@ -72,9 +72,15 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 				title="Partita Finita!"
 				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Gioca Ancora'}
 				onPrimary={() => {
-					dismissModal();
-					if (isChallenge) router.back();
-					else service.startGame();
+					if (isChallenge) {
+						void dailyTerminal.complete(() => {
+							dismissModal();
+							router.back();
+						});
+					} else {
+						dismissModal();
+						service.startGame();
+					}
 				}}
 				secondaryLabel={isChallenge ? undefined : 'Torna al Menu'}
 				onSecondary={

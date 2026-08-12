@@ -9,6 +9,7 @@ import { activeAttemptMatches } from './orchestrator-machine';
 import { getDailyChallengeOrchestrator } from './orchestrator-service';
 import { resolveGamePlayMode, type GamePlayMode } from './route-policy';
 import type { DailyPuzzleKey, TerminalAttemptContext, TerminalReason } from './types';
+import { attemptStartedAtForRoute } from './daily-route-attempt';
 
 export type DailyGameChallengeRoute = {
 	readonly context: TerminalAttemptContext;
@@ -47,6 +48,9 @@ export function useDailyGameRouteMode(puzzleKey: DailyPuzzleKey): DailyGameRoute
 	);
 	const [orchestrator] = useState(getDailyChallengeOrchestrator);
 	const snapshot = useSyncExternalStore(orchestrator.subscribe, orchestrator.getSnapshot, orchestrator.getSnapshot);
+	const routeSnapshot = context === undefined || snapshot.kind !== 'ready' || snapshot.bundle.challengeId !== context.challengeId || snapshot.mode !== context.attemptKind ? undefined : snapshot;
+	const puzzleRuntime = routeSnapshot?.puzzles.find((candidate) => candidate.key === puzzleKey);
+	const attemptEnded = context !== undefined && puzzleRuntime?.status.kind === 'terminal' && puzzleRuntime.status.context.attemptId === context.attemptId;
 	const recordTerminal = useCallback(
 		(reason: TerminalReason) => {
 			if (context === undefined) throw new DailyGameRouteSessionError('context');
@@ -57,23 +61,20 @@ export function useDailyGameRouteMode(puzzleKey: DailyPuzzleKey): DailyGameRoute
 
 	useEffect(() => {
 		if (context === undefined) return;
-		const load = context.attemptKind === 'replay' ? orchestrator.loadReplay({ challengeId: context.challengeId }) : orchestrator.loadOfficial({ challengeId: context.challengeId });
+		if (attemptEnded || activeAttemptMatches(routeSnapshot?.activeAttempt, context)) return;
+		const load = context.attemptKind === 'replay'
+			? orchestrator.loadReplay({ challengeId: context.challengeId, activeReplayAttemptId: context.attemptId })
+			: orchestrator.loadOfficial({ challengeId: context.challengeId });
 		void load;
-	}, [context, orchestrator]);
+	}, [attemptEnded, context, orchestrator, routeSnapshot]);
 
-	const routeSnapshot = context === undefined || snapshot.kind !== 'ready' || snapshot.bundle.challengeId !== context.challengeId || snapshot.mode !== context.attemptKind ? undefined : snapshot;
 	// After this attempt records its terminal, the snapshot clears activeAttempt;
 	// that render is legitimate (the game shows its result UI), not a route error.
-	const puzzleRuntime = routeSnapshot?.puzzles.find((candidate) => candidate.key === puzzleKey);
-	const attemptEnded = context !== undefined && puzzleRuntime?.status.kind === 'terminal' && puzzleRuntime.status.context.attemptId === context.attemptId;
 	if (context !== undefined && routeSnapshot !== undefined && !attemptEnded && (routeSnapshot.activeAttempt === undefined || !activeAttemptMatches(routeSnapshot.activeAttempt, context))) {
 		throw new DailyGameRouteSessionError('activeAttempt');
 	}
 	const puzzle = routeSnapshot?.bundle.puzzles.find((candidate) => candidate.key === puzzleKey);
-	const attemptStartedAt =
-		context !== undefined && routeSnapshot?.activeAttempt !== undefined && activeAttemptMatches(routeSnapshot.activeAttempt, context)
-			? routeSnapshot.activeAttempt.startedAt
-			: undefined;
+	const attemptStartedAt = attemptStartedAtForRoute(routeSnapshot, context);
 	const session = useMemo<DailyGameRouteSession>(() => {
 		if (context === undefined || puzzle === undefined) return { playMode };
 		return { playMode, challenge: { context, puzzle, recordTerminal }, attemptStartedAt };

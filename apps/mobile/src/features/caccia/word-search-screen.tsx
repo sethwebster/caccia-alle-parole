@@ -52,6 +52,7 @@ export function WordSearchScreen({ routeSession }: { readonly routeSession: Dail
 		closeModal,
 		burst,
 		flash,
+		dailyTerminal,
 		start,
 		replay,
 		reset,
@@ -105,7 +106,7 @@ export function WordSearchScreen({ routeSession }: { readonly routeSession: Dail
 						: undefined
 				}
 				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Rigioca'}
-				onPrimary={isChallenge ? () => router.back() : replay}
+				onPrimary={isChallenge ? () => void dailyTerminal.complete(() => router.back()) : replay}
 				secondaryLabel={isChallenge ? undefined : 'Nuova Partita'}
 				onSecondary={isChallenge ? undefined : resetToSetup}
 				onDismiss={closeModal}

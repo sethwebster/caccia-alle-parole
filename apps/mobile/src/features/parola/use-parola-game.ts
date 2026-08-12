@@ -164,7 +164,7 @@ export function useParolaGame(routeSession: DailyGameRouteSession) {
 	const fireConfetti = useCallback(() => setBurst((b) => b + 1), []);
 	const showModal = useCallback(() => setModalVisible(true), []);
 	useResultReveal(state.gameState, fireConfetti, showModal);
-	useDailyTerminalRecorder(routeSession.challenge, state.gameState === 'won' ? 'win' : state.gameState === 'lost' ? 'loss' : undefined);
+	const dailyTerminal = useDailyTerminalRecorder(routeSession.challenge, state.gameState === 'won' ? 'win' : state.gameState === 'lost' ? 'loss' : undefined);
 
 	const syncSubmittedGuess = useCallback(
 		(next: WordleState) => {
@@ -243,6 +243,7 @@ export function useParolaGame(routeSession: DailyGameRouteSession) {
 		copied,
 		modalVisible,
 		burst,
+		dailyTerminal,
 		puzzleNumber: getPuzzleNumber(),
 		onKey,
 		share,

@@ -89,10 +89,10 @@ export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGam
 				secondaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Chiudi'}
 				onSecondary={
 					isChallenge
-						? () => {
+						? () => void game.dailyTerminal.complete(() => {
 								game.dismissModal();
 								router.back();
-							}
+							})
 						: game.dismissModal
 				}
 				onDismiss={game.dismissModal}

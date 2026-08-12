@@ -49,8 +49,8 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Paròle collega POSTO a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "POSTO",
           "payload": {
             "targetWord": "POSTO",
@@ -72,34 +72,123 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Caccia alle Paròle collega LAVAGNA a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "LAVAGNA",
           "payload": {
             "category": "Giornata di scuola",
             "difficulty": "easy",
             "grid": [
               [
-                "Q",
-                "U",
+                "I",
                 "A",
-                "D",
-                "E",
                 "R",
-                "N",
-                "O"
-              ],
-              [
-                "L",
-                "A",
                 "V",
                 "A",
-                "G",
+                "E",
+                "F",
+                "M",
+                "R",
+                "P"
+              ],
+              [
+                "T",
+                "V",
                 "N",
+                "N",
+                "E",
+                "U",
+                "O",
+                "F",
+                "Q",
+                "E"
+              ],
+              [
+                "B",
+                "L",
+                "I",
                 "A",
+                "O",
+                "G",
+                "G",
+                "D",
+                "U",
                 "A"
               ],
               [
+                "S",
+                "V",
+                "D",
+                "P",
+                "R",
+                "R",
+                "B",
+                "O",
+                "A",
+                "E"
+              ],
+              [
+                "A",
+                "G",
+                "S",
+                "T",
+                "S",
+                "E",
+                "Z",
+                "A",
+                "D",
+                "P"
+              ],
+              [
+                "C",
+                "A",
+                "N",
+                "G",
+                "A",
+                "V",
+                "A",
+                "L",
+                "E",
+                "R"
+              ],
+              [
+                "N",
+                "U",
+                "D",
+                "I",
+                "H",
+                "T",
+                "A",
+                "E",
+                "R",
+                "L"
+              ],
+              [
+                "T",
+                "U",
+                "Q",
+                "O",
+                "L",
+                "L",
+                "M",
+                "O",
+                "N",
+                "D"
+              ],
+              [
+                "P",
+                "L",
+                "C",
+                "A",
+                "I",
+                "I",
+                "L",
+                "O",
+                "O",
+                "B"
+              ],
+              [
+                "N",
                 "C",
                 "O",
                 "M",
@@ -107,6 +196,7 @@
                 "I",
                 "T",
                 "O",
+                "I",
                 "A"
               ]
             ],
@@ -115,42 +205,42 @@
                 "word": "QUADERNO",
                 "translation": "Giornata di scuola",
                 "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 0,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 1,
+                "col": 8,
+                "direction": "vertical",
                 "points": 80,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 0
+                    "row": 1,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 1
+                    "row": 2,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 2
+                    "row": 3,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 3
+                    "row": 4,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 4
+                    "row": 5,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 5
+                    "row": 6,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 6
+                    "row": 7,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 7
+                    "row": 8,
+                    "col": 8
                   }
                 ]
               },
@@ -158,38 +248,38 @@
                 "word": "LAVAGNA",
                 "translation": "Giornata di scuola",
                 "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 1,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 5,
+                "col": 7,
+                "direction": "horizontal-reverse",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 1,
-                    "col": 0
+                    "row": 5,
+                    "col": 7
                   },
                   {
-                    "row": 1,
-                    "col": 1
+                    "row": 5,
+                    "col": 6
                   },
                   {
-                    "row": 1,
-                    "col": 2
-                  },
-                  {
-                    "row": 1,
-                    "col": 3
-                  },
-                  {
-                    "row": 1,
-                    "col": 4
-                  },
-                  {
-                    "row": 1,
+                    "row": 5,
                     "col": 5
                   },
                   {
-                    "row": 1,
-                    "col": 6
+                    "row": 5,
+                    "col": 4
+                  },
+                  {
+                    "row": 5,
+                    "col": 3
+                  },
+                  {
+                    "row": 5,
+                    "col": 2
+                  },
+                  {
+                    "row": 5,
+                    "col": 1
                   }
                 ]
               },
@@ -197,38 +287,38 @@
                 "word": "COMPITO",
                 "translation": "Giornata di scuola",
                 "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 2,
-                "col": 0,
+                "row": 9,
+                "col": 1,
                 "direction": "horizontal",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 2,
-                    "col": 0
-                  },
-                  {
-                    "row": 2,
+                    "row": 9,
                     "col": 1
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 2
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 3
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 4
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 5
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 6
+                  },
+                  {
+                    "row": 9,
+                    "col": 7
                   }
                 ]
               }
@@ -250,34 +340,34 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Paroliere+ collega LEZIONE a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "LEZIONE",
           "payload": {
             "grid": [
               [
-                "M",
-                "A",
-                "T",
-                "I"
-              ],
-              [
-                "T",
-                "A",
-                "L",
-                "E"
-              ],
-              [
+                "C",
                 "Z",
-                "I",
-                "O",
-                "N"
+                "D",
+                "C"
+              ],
+              [
+                "N",
+                "N",
+                "A",
+                "O"
               ],
               [
                 "E",
-                "C",
+                "O",
                 "A",
-                "R"
+                "L"
+              ],
+              [
+                "I",
+                "Z",
+                "E",
+                "N"
               ]
             ],
             "durationSeconds": 180
@@ -298,8 +388,8 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Il Palloncino collega MAESTRA a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "MAESTRA",
           "payload": {
             "targetWord": "MAESTRA",
@@ -324,8 +414,8 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Anagrammi+ collega SCUOLA a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "SCUOLA",
           "payload": {
             "targetWord": "SCUOLA",
@@ -386,8 +476,8 @@
           },
           "themeId": "theme-mare",
           "themeLink": "Paròle collega SUONO a Estate al mare",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "SUONO",
           "payload": {
             "targetWord": "SUONO",
@@ -409,47 +499,131 @@
           },
           "themeId": "theme-mare",
           "themeLink": "Caccia alle Paròle collega OMBRELLONE a Estate al mare",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "OMBRELLONE",
           "payload": {
             "category": "Estate al mare",
             "difficulty": "easy",
             "grid": [
               [
+                "C",
+                "D",
+                "I",
+                "A",
                 "O",
-                "M",
+                "N",
+                "G",
+                "A",
                 "B",
+                "O"
+              ],
+              [
+                "U",
+                "O",
+                "D",
+                "C",
+                "T",
+                "F",
+                "I",
+                "E",
+                "M",
+                "R"
+              ],
+              [
+                "I",
                 "R",
+                "N",
+                "S",
+                "E",
+                "N",
+                "I",
+                "B",
+                "O",
+                "N"
+              ],
+              [
+                "Q",
+                "E",
+                "N",
+                "C",
+                "O",
+                "E",
+                "R",
+                "I",
+                "Z",
+                "I"
+              ],
+              [
+                "A",
+                "U",
+                "A",
+                "E",
+                "H",
+                "E",
+                "I",
+                "O",
+                "E",
+                "N"
+              ],
+              [
+                "G",
+                "U",
+                "F",
+                "U",
+                "L",
+                "I",
+                "Q",
+                "F",
+                "V",
+                "B"
+              ],
+              [
+                "L",
+                "F",
+                "T",
+                "L",
+                "H",
+                "C",
+                "G",
+                "G",
+                "P",
+                "R"
+              ],
+              [
+                "E",
+                "E",
+                "O",
+                "V",
+                "D",
+                "F",
+                "T",
+                "L",
+                "R",
+                "T"
+              ],
+              [
+                "P",
+                "N",
+                "M",
+                "R",
+                "I",
+                "E",
+                "S",
+                "A",
+                "I",
+                "M"
+              ],
+              [
                 "E",
                 "L",
-                "L",
                 "O",
-                "N",
-                "E"
-              ],
-              [
-                "C",
+                "T",
+                "E",
                 "O",
+                "M",
+                "E",
                 "N",
-                "C",
-                "H",
-                "I",
-                "G",
-                "L",
-                "I",
-                "A"
-              ],
-              [
-                "B",
-                "A",
-                "G",
-                "N",
-                "O",
-                "A",
-                "A",
-                "A",
-                "A",
                 "A"
               ]
             ],
@@ -459,49 +633,49 @@
                 "translation": "Estate al mare",
                 "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
                 "row": 0,
-                "col": 0,
-                "direction": "horizontal",
+                "col": 9,
+                "direction": "diagonal-down-reverse",
                 "points": 100,
                 "cells": [
                   {
                     "row": 0,
-                    "col": 0
+                    "col": 9
                   },
                   {
-                    "row": 0,
-                    "col": 1
-                  },
-                  {
-                    "row": 0,
-                    "col": 2
-                  },
-                  {
-                    "row": 0,
-                    "col": 3
-                  },
-                  {
-                    "row": 0,
-                    "col": 4
-                  },
-                  {
-                    "row": 0,
-                    "col": 5
-                  },
-                  {
-                    "row": 0,
-                    "col": 6
-                  },
-                  {
-                    "row": 0,
-                    "col": 7
-                  },
-                  {
-                    "row": 0,
+                    "row": 1,
                     "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 9
+                    "row": 2,
+                    "col": 7
+                  },
+                  {
+                    "row": 3,
+                    "col": 6
+                  },
+                  {
+                    "row": 4,
+                    "col": 5
+                  },
+                  {
+                    "row": 5,
+                    "col": 4
+                  },
+                  {
+                    "row": 6,
+                    "col": 3
+                  },
+                  {
+                    "row": 7,
+                    "col": 2
+                  },
+                  {
+                    "row": 8,
+                    "col": 1
+                  },
+                  {
+                    "row": 9,
+                    "col": 0
                   }
                 ]
               },
@@ -509,13 +683,13 @@
                 "word": "CONCHIGLIA",
                 "translation": "Estate al mare",
                 "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
-                "row": 1,
+                "row": 0,
                 "col": 0,
-                "direction": "horizontal",
+                "direction": "diagonal-down",
                 "points": 100,
                 "cells": [
                   {
-                    "row": 1,
+                    "row": 0,
                     "col": 0
                   },
                   {
@@ -523,35 +697,35 @@
                     "col": 1
                   },
                   {
-                    "row": 1,
+                    "row": 2,
                     "col": 2
                   },
                   {
-                    "row": 1,
+                    "row": 3,
                     "col": 3
                   },
                   {
-                    "row": 1,
+                    "row": 4,
                     "col": 4
                   },
                   {
-                    "row": 1,
+                    "row": 5,
                     "col": 5
                   },
                   {
-                    "row": 1,
+                    "row": 6,
                     "col": 6
                   },
                   {
-                    "row": 1,
+                    "row": 7,
                     "col": 7
                   },
                   {
-                    "row": 1,
+                    "row": 8,
                     "col": 8
                   },
                   {
-                    "row": 1,
+                    "row": 9,
                     "col": 9
                   }
                 ]
@@ -560,29 +734,29 @@
                 "word": "BAGNO",
                 "translation": "Estate al mare",
                 "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
-                "row": 2,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 0,
+                "col": 8,
+                "direction": "horizontal-reverse",
                 "points": 50,
                 "cells": [
                   {
-                    "row": 2,
-                    "col": 0
+                    "row": 0,
+                    "col": 8
                   },
                   {
-                    "row": 2,
-                    "col": 1
+                    "row": 0,
+                    "col": 7
                   },
                   {
-                    "row": 2,
-                    "col": 2
+                    "row": 0,
+                    "col": 6
                   },
                   {
-                    "row": 2,
-                    "col": 3
+                    "row": 0,
+                    "col": 5
                   },
                   {
-                    "row": 2,
+                    "row": 0,
                     "col": 4
                   }
                 ]
@@ -605,34 +779,34 @@
           },
           "themeId": "theme-mare",
           "themeLink": "Paroliere+ collega VELIERO a Estate al mare",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "VELIERO",
           "payload": {
             "grid": [
               [
-                "M",
-                "A",
-                "R",
-                "E"
-              ],
-              [
-                "A",
+                "E",
                 "V",
                 "E",
-                "L"
-              ],
-              [
-                "I",
-                "E",
-                "R",
                 "O"
               ],
               [
-                "P",
-                "O",
+                "A",
+                "L",
+                "A",
+                "L"
+              ],
+              [
+                "E",
+                "E",
+                "I",
+                "D"
+              ],
+              [
                 "R",
-                "T"
+                "O",
+                "C",
+                "I"
               ]
             ],
             "durationSeconds": 180
@@ -653,8 +827,8 @@
           },
           "themeId": "theme-mare",
           "themeLink": "Il Palloncino collega COSTUME a Estate al mare",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "COSTUME",
           "payload": {
             "targetWord": "COSTUME",
@@ -679,8 +853,8 @@
           },
           "themeId": "theme-mare",
           "themeLink": "Anagrammi+ collega VACANZA a Estate al mare",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "VACANZA",
           "payload": {
             "targetWord": "VACANZA",
@@ -742,8 +916,8 @@
           },
           "themeId": "theme-cucina",
           "themeLink": "Paròle collega PASTA a Cucina di casa",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "PASTA",
           "payload": {
             "targetWord": "PASTA",
@@ -765,81 +939,214 @@
           },
           "themeId": "theme-cucina",
           "themeLink": "Caccia alle Paròle collega MESTOLO a Cucina di casa",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "MESTOLO",
           "payload": {
             "category": "Cucina di casa",
             "difficulty": "easy",
             "grid": [
               [
+                "F",
+                "N",
+                "N",
+                "R",
+                "F",
+                "O",
+                "A",
+                "B",
+                "A",
+                "E"
+              ],
+              [
+                "I",
+                "A",
+                "U",
+                "I",
+                "L",
+                "E",
                 "M",
+                "T",
+                "R",
+                "N"
+              ],
+              [
+                "D",
+                "A",
+                "D",
+                "C",
+                "I",
+                "E",
+                "O",
+                "E",
+                "B",
+                "G"
+              ],
+              [
+                "A",
+                "N",
+                "A",
                 "E",
                 "S",
+                "Q",
+                "I",
+                "N",
+                "O",
+                "R"
+              ],
+              [
+                "N",
+                "N",
+                "M",
                 "T",
                 "O",
                 "L",
-                "O",
-                "A"
-              ],
-              [
-                "R",
+                "H",
+                "S",
                 "I",
-                "C",
-                "E",
-                "T",
-                "T",
-                "A",
-                "A"
+                "C"
               ],
               [
+                "Z",
+                "O",
+                "O",
                 "T",
-                "A",
                 "G",
-                "L",
-                "I",
+                "V",
+                "B",
+                "V",
+                "A",
+                "O"
+              ],
+              [
                 "E",
+                "L",
+                "E",
+                "A",
+                "I",
+                "O",
+                "D",
+                "A",
+                "U",
+                "O"
+              ],
+              [
+                "O",
+                "B",
+                "T",
+                "O",
+                "V",
+                "Q",
                 "R",
-                "E"
+                "Q",
+                "F",
+                "N"
+              ],
+              [
+                "E",
+                "H",
+                "O",
+                "N",
+                "L",
+                "M",
+                "I",
+                "G",
+                "T",
+                "V"
+              ],
+              [
+                "I",
+                "G",
+                "E",
+                "E",
+                "E",
+                "N",
+                "C",
+                "R",
+                "E",
+                "L"
               ]
             ],
             "words": [
               {
-                "word": "MESTOLO",
+                "word": "TAGLIERE",
                 "translation": "Cucina di casa",
                 "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
-                "row": 0,
-                "col": 0,
-                "direction": "horizontal",
-                "points": 70,
+                "row": 7,
+                "col": 2,
+                "direction": "diagonal-up",
+                "points": 80,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 0
-                  },
-                  {
-                    "row": 0,
-                    "col": 1
-                  },
-                  {
-                    "row": 0,
+                    "row": 7,
                     "col": 2
                   },
                   {
-                    "row": 0,
+                    "row": 6,
                     "col": 3
                   },
                   {
-                    "row": 0,
+                    "row": 5,
                     "col": 4
                   },
                   {
-                    "row": 0,
+                    "row": 4,
                     "col": 5
                   },
                   {
-                    "row": 0,
+                    "row": 3,
                     "col": 6
+                  },
+                  {
+                    "row": 2,
+                    "col": 7
+                  },
+                  {
+                    "row": 1,
+                    "col": 8
+                  },
+                  {
+                    "row": 0,
+                    "col": 9
+                  }
+                ]
+              },
+              {
+                "word": "MESTOLO",
+                "translation": "Cucina di casa",
+                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+                "row": 1,
+                "col": 6,
+                "direction": "diagonal-down-reverse",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 1,
+                    "col": 6
+                  },
+                  {
+                    "row": 2,
+                    "col": 5
+                  },
+                  {
+                    "row": 3,
+                    "col": 4
+                  },
+                  {
+                    "row": 4,
+                    "col": 3
+                  },
+                  {
+                    "row": 5,
+                    "col": 2
+                  },
+                  {
+                    "row": 6,
+                    "col": 1
+                  },
+                  {
+                    "row": 7,
+                    "col": 0
                   }
                 ]
               },
@@ -847,81 +1154,38 @@
                 "word": "RICETTA",
                 "translation": "Cucina di casa",
                 "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
-                "row": 1,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 0,
+                "col": 3,
+                "direction": "vertical",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 1,
-                    "col": 0
-                  },
-                  {
-                    "row": 1,
-                    "col": 1
-                  },
-                  {
-                    "row": 1,
-                    "col": 2
+                    "row": 0,
+                    "col": 3
                   },
                   {
                     "row": 1,
                     "col": 3
                   },
                   {
-                    "row": 1,
-                    "col": 4
-                  },
-                  {
-                    "row": 1,
-                    "col": 5
-                  },
-                  {
-                    "row": 1,
-                    "col": 6
-                  }
-                ]
-              },
-              {
-                "word": "TAGLIERE",
-                "translation": "Cucina di casa",
-                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
-                "row": 2,
-                "col": 0,
-                "direction": "horizontal",
-                "points": 80,
-                "cells": [
-                  {
-                    "row": 2,
-                    "col": 0
-                  },
-                  {
-                    "row": 2,
-                    "col": 1
-                  },
-                  {
-                    "row": 2,
-                    "col": 2
-                  },
-                  {
                     "row": 2,
                     "col": 3
                   },
                   {
-                    "row": 2,
-                    "col": 4
+                    "row": 3,
+                    "col": 3
                   },
                   {
-                    "row": 2,
-                    "col": 5
+                    "row": 4,
+                    "col": 3
                   },
                   {
-                    "row": 2,
-                    "col": 6
+                    "row": 5,
+                    "col": 3
                   },
                   {
-                    "row": 2,
-                    "col": 7
+                    "row": 6,
+                    "col": 3
                   }
                 ]
               }
@@ -943,34 +1207,34 @@
           },
           "themeId": "theme-cucina",
           "themeLink": "Paroliere+ collega PENTOLA a Cucina di casa",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "PENTOLA",
           "payload": {
             "grid": [
               [
-                "B",
+                "I",
+                "L",
                 "A",
-                "S",
                 "I"
               ],
               [
-                "L",
-                "I",
-                "C",
-                "O"
+                "O",
+                "O",
+                "T",
+                "L"
               ],
               [
                 "P",
-                "E",
                 "N",
-                "T"
+                "T",
+                "O"
               ],
               [
-                "O",
-                "L",
-                "A",
-                "F"
+                "E",
+                "T",
+                "P",
+                "C"
               ]
             ],
             "durationSeconds": 180
@@ -991,8 +1255,8 @@
           },
           "themeId": "theme-cucina",
           "themeLink": "Il Palloncino collega COLTELLO a Cucina di casa",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "COLTELLO",
           "payload": {
             "targetWord": "COLTELLO",
@@ -1017,8 +1281,8 @@
           },
           "themeId": "theme-cucina",
           "themeLink": "Anagrammi+ collega TEGAME a Cucina di casa",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "TEGAME",
           "payload": {
             "targetWord": "TEGAME",
@@ -1081,8 +1345,8 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Paròle collega POSTO a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "POSTO",
           "payload": {
             "targetWord": "POSTO",
@@ -1104,34 +1368,123 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Caccia alle Paròle collega LAVAGNA a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "LAVAGNA",
           "payload": {
             "category": "Giornata di scuola",
             "difficulty": "easy",
             "grid": [
               [
-                "Q",
-                "U",
+                "I",
                 "A",
-                "D",
-                "E",
                 "R",
-                "N",
-                "O"
-              ],
-              [
-                "L",
-                "A",
                 "V",
                 "A",
-                "G",
+                "E",
+                "F",
+                "M",
+                "R",
+                "P"
+              ],
+              [
+                "T",
+                "V",
                 "N",
+                "N",
+                "E",
+                "U",
+                "O",
+                "F",
+                "Q",
+                "E"
+              ],
+              [
+                "B",
+                "L",
+                "I",
                 "A",
+                "O",
+                "G",
+                "G",
+                "D",
+                "U",
                 "A"
               ],
               [
+                "S",
+                "V",
+                "D",
+                "P",
+                "R",
+                "R",
+                "B",
+                "O",
+                "A",
+                "E"
+              ],
+              [
+                "A",
+                "G",
+                "S",
+                "T",
+                "S",
+                "E",
+                "Z",
+                "A",
+                "D",
+                "P"
+              ],
+              [
+                "C",
+                "A",
+                "N",
+                "G",
+                "A",
+                "V",
+                "A",
+                "L",
+                "E",
+                "R"
+              ],
+              [
+                "N",
+                "U",
+                "D",
+                "I",
+                "H",
+                "T",
+                "A",
+                "E",
+                "R",
+                "L"
+              ],
+              [
+                "T",
+                "U",
+                "Q",
+                "O",
+                "L",
+                "L",
+                "M",
+                "O",
+                "N",
+                "D"
+              ],
+              [
+                "P",
+                "L",
+                "C",
+                "A",
+                "I",
+                "I",
+                "L",
+                "O",
+                "O",
+                "B"
+              ],
+              [
+                "N",
                 "C",
                 "O",
                 "M",
@@ -1139,6 +1492,7 @@
                 "I",
                 "T",
                 "O",
+                "I",
                 "A"
               ]
             ],
@@ -1147,42 +1501,42 @@
                 "word": "QUADERNO",
                 "translation": "Giornata di scuola",
                 "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 0,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 1,
+                "col": 8,
+                "direction": "vertical",
                 "points": 80,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 0
+                    "row": 1,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 1
+                    "row": 2,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 2
+                    "row": 3,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 3
+                    "row": 4,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 4
+                    "row": 5,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 5
+                    "row": 6,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 6
+                    "row": 7,
+                    "col": 8
                   },
                   {
-                    "row": 0,
-                    "col": 7
+                    "row": 8,
+                    "col": 8
                   }
                 ]
               },
@@ -1190,38 +1544,38 @@
                 "word": "LAVAGNA",
                 "translation": "Giornata di scuola",
                 "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 1,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 5,
+                "col": 7,
+                "direction": "horizontal-reverse",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 1,
-                    "col": 0
+                    "row": 5,
+                    "col": 7
                   },
                   {
-                    "row": 1,
-                    "col": 1
+                    "row": 5,
+                    "col": 6
                   },
                   {
-                    "row": 1,
-                    "col": 2
-                  },
-                  {
-                    "row": 1,
-                    "col": 3
-                  },
-                  {
-                    "row": 1,
-                    "col": 4
-                  },
-                  {
-                    "row": 1,
+                    "row": 5,
                     "col": 5
                   },
                   {
-                    "row": 1,
-                    "col": 6
+                    "row": 5,
+                    "col": 4
+                  },
+                  {
+                    "row": 5,
+                    "col": 3
+                  },
+                  {
+                    "row": 5,
+                    "col": 2
+                  },
+                  {
+                    "row": 5,
+                    "col": 1
                   }
                 ]
               },
@@ -1229,38 +1583,38 @@
                 "word": "COMPITO",
                 "translation": "Giornata di scuola",
                 "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 2,
-                "col": 0,
+                "row": 9,
+                "col": 1,
                 "direction": "horizontal",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 2,
-                    "col": 0
-                  },
-                  {
-                    "row": 2,
+                    "row": 9,
                     "col": 1
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 2
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 3
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 4
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 5
                   },
                   {
-                    "row": 2,
+                    "row": 9,
                     "col": 6
+                  },
+                  {
+                    "row": 9,
+                    "col": 7
                   }
                 ]
               }
@@ -1282,34 +1636,34 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Paroliere+ collega LEZIONE a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "LEZIONE",
           "payload": {
             "grid": [
               [
-                "M",
-                "A",
-                "T",
-                "I"
-              ],
-              [
-                "T",
-                "A",
-                "L",
-                "E"
-              ],
-              [
+                "C",
                 "Z",
-                "I",
-                "O",
-                "N"
+                "D",
+                "C"
+              ],
+              [
+                "N",
+                "N",
+                "A",
+                "O"
               ],
               [
                 "E",
-                "C",
+                "O",
                 "A",
-                "R"
+                "L"
+              ],
+              [
+                "I",
+                "Z",
+                "E",
+                "N"
               ]
             ],
             "durationSeconds": 180
@@ -1330,8 +1684,8 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Il Palloncino collega MAESTRA a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "MAESTRA",
           "payload": {
             "targetWord": "MAESTRA",
@@ -1356,8 +1710,8 @@
           },
           "themeId": "theme-scuola",
           "themeLink": "Anagrammi+ collega SCUOLA a Giornata di scuola",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "SCUOLA",
           "payload": {
             "targetWord": "SCUOLA",
@@ -1418,8 +1772,8 @@
           },
           "themeId": "theme-viaggio",
           "themeLink": "Paròle collega POSTO a Viaggio in treno",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "POSTO",
           "payload": {
             "targetWord": "POSTO",
@@ -1441,84 +1795,179 @@
           },
           "themeId": "theme-viaggio",
           "themeLink": "Caccia alle Paròle collega STAZIONE a Viaggio in treno",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "STAZIONE",
           "payload": {
             "category": "Viaggio in treno",
             "difficulty": "easy",
             "grid": [
               [
+                "B",
+                "E",
+                "R",
+                "I",
+                "E",
+                "A",
+                "E",
+                "L",
+                "E",
+                "N"
+              ],
+              [
+                "E",
+                "I",
+                "E",
+                "I",
+                "S",
+                "E",
+                "A",
+                "E",
+                "N",
+                "L"
+              ],
+              [
+                "O",
+                "C",
+                "G",
+                "A",
+                "Q",
+                "Z",
+                "U",
+                "O",
+                "O",
+                "D"
+              ],
+              [
+                "L",
+                "N",
+                "I",
+                "L",
+                "L",
+                "O",
+                "I",
+                "L",
+                "I",
+                "I"
+              ],
+              [
+                "I",
+                "I",
+                "N",
+                "I",
+                "I",
+                "D",
+                "C",
+                "S",
+                "Z",
+                "C"
+              ],
+              [
+                "E",
+                "G",
+                "E",
+                "E",
+                "E",
+                "E",
+                "S",
+                "S",
+                "A",
+                "F"
+              ],
+              [
+                "I",
+                "N",
+                "P",
+                "U",
+                "C",
+                "A",
+                "T",
+                "A",
+                "T",
+                "Z"
+              ],
+              [
+                "E",
+                "L",
+                "I",
+                "D",
+                "G",
+                "P",
+                "P",
+                "T",
+                "S",
+                "T"
+              ],
+              [
+                "E",
+                "C",
+                "O",
+                "H",
+                "G",
+                "I",
+                "E",
+                "R",
+                "O",
+                "R"
+              ],
+              [
+                "R",
+                "L",
+                "U",
                 "V",
                 "A",
                 "L",
                 "I",
                 "G",
                 "I",
-                "A",
-                "A",
                 "A"
-              ],
-              [
-                "S",
-                "T",
-                "A",
-                "Z",
-                "I",
-                "O",
-                "N",
-                "E",
-                "A"
-              ],
-              [
-                "B",
-                "I",
-                "G",
-                "L",
-                "I",
-                "E",
-                "T",
-                "T",
-                "O"
               ]
             ],
             "words": [
               {
-                "word": "VALIGIA",
+                "word": "BIGLIETTO",
                 "translation": "Viaggio in treno",
                 "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
                 "row": 0,
                 "col": 0,
-                "direction": "horizontal",
-                "points": 70,
+                "direction": "diagonal-down",
+                "points": 90,
                 "cells": [
                   {
                     "row": 0,
                     "col": 0
                   },
                   {
-                    "row": 0,
+                    "row": 1,
                     "col": 1
                   },
                   {
-                    "row": 0,
+                    "row": 2,
                     "col": 2
                   },
                   {
-                    "row": 0,
+                    "row": 3,
                     "col": 3
                   },
                   {
-                    "row": 0,
+                    "row": 4,
                     "col": 4
                   },
                   {
-                    "row": 0,
+                    "row": 5,
                     "col": 5
                   },
                   {
-                    "row": 0,
+                    "row": 6,
                     "col": 6
+                  },
+                  {
+                    "row": 7,
+                    "col": 7
+                  },
+                  {
+                    "row": 8,
+                    "col": 8
                   }
                 ]
               },
@@ -1526,89 +1975,81 @@
                 "word": "STAZIONE",
                 "translation": "Viaggio in treno",
                 "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
-                "row": 1,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 7,
+                "col": 8,
+                "direction": "vertical-reverse",
                 "points": 80,
                 "cells": [
                   {
-                    "row": 1,
-                    "col": 0
+                    "row": 7,
+                    "col": 8
                   },
                   {
-                    "row": 1,
-                    "col": 1
+                    "row": 6,
+                    "col": 8
                   },
                   {
-                    "row": 1,
-                    "col": 2
+                    "row": 5,
+                    "col": 8
                   },
                   {
-                    "row": 1,
-                    "col": 3
+                    "row": 4,
+                    "col": 8
                   },
                   {
-                    "row": 1,
-                    "col": 4
-                  },
-                  {
-                    "row": 1,
-                    "col": 5
-                  },
-                  {
-                    "row": 1,
-                    "col": 6
-                  },
-                  {
-                    "row": 1,
-                    "col": 7
-                  }
-                ]
-              },
-              {
-                "word": "BIGLIETTO",
-                "translation": "Viaggio in treno",
-                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
-                "row": 2,
-                "col": 0,
-                "direction": "horizontal",
-                "points": 90,
-                "cells": [
-                  {
-                    "row": 2,
-                    "col": 0
-                  },
-                  {
-                    "row": 2,
-                    "col": 1
-                  },
-                  {
-                    "row": 2,
-                    "col": 2
-                  },
-                  {
-                    "row": 2,
-                    "col": 3
-                  },
-                  {
-                    "row": 2,
-                    "col": 4
-                  },
-                  {
-                    "row": 2,
-                    "col": 5
-                  },
-                  {
-                    "row": 2,
-                    "col": 6
-                  },
-                  {
-                    "row": 2,
-                    "col": 7
+                    "row": 3,
+                    "col": 8
                   },
                   {
                     "row": 2,
                     "col": 8
+                  },
+                  {
+                    "row": 1,
+                    "col": 8
+                  },
+                  {
+                    "row": 0,
+                    "col": 8
+                  }
+                ]
+              },
+              {
+                "word": "VALIGIA",
+                "translation": "Viaggio in treno",
+                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
+                "row": 9,
+                "col": 3,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 9,
+                    "col": 3
+                  },
+                  {
+                    "row": 9,
+                    "col": 4
+                  },
+                  {
+                    "row": 9,
+                    "col": 5
+                  },
+                  {
+                    "row": 9,
+                    "col": 6
+                  },
+                  {
+                    "row": 9,
+                    "col": 7
+                  },
+                  {
+                    "row": 9,
+                    "col": 8
+                  },
+                  {
+                    "row": 9,
+                    "col": 9
                   }
                 ]
               }
@@ -1630,34 +2071,34 @@
           },
           "themeId": "theme-viaggio",
           "themeLink": "Paroliere+ collega PARTENZA a Viaggio in treno",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "PARTENZA",
           "payload": {
             "grid": [
               [
-                "P",
                 "A",
-                "R",
-                "T"
-              ],
-              [
-                "E",
-                "N",
+                "L",
                 "Z",
                 "A"
               ],
               [
+                "A",
+                "D",
                 "R",
-                "I",
-                "T",
-                "A"
+                "P"
               ],
               [
-                "R",
-                "D",
-                "O",
-                "C"
+                "Z",
+                "S",
+                "T",
+                "Q"
+              ],
+              [
+                "L",
+                "N",
+                "E",
+                "U"
               ]
             ],
             "durationSeconds": 180
@@ -1678,8 +2119,8 @@
           },
           "themeId": "theme-viaggio",
           "themeLink": "Il Palloncino collega CAPOTRENO a Viaggio in treno",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "CAPOTRENO",
           "payload": {
             "targetWord": "CAPOTRENO",
@@ -1704,8 +2145,8 @@
           },
           "themeId": "theme-viaggio",
           "themeLink": "Anagrammi+ collega RITORNO a Viaggio in treno",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "RITORNO",
           "payload": {
             "targetWord": "RITORNO",
@@ -1767,8 +2208,8 @@
           },
           "themeId": "theme-mercato",
           "themeLink": "Paròle collega SPESA a Mercato italiano",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "SPESA",
           "payload": {
             "targetWord": "SPESA",
@@ -1790,83 +2231,218 @@
           },
           "themeId": "theme-mercato",
           "themeLink": "Caccia alle Paròle collega PANE a Mercato italiano",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "PANE",
           "payload": {
             "category": "Mercato italiano",
             "difficulty": "easy",
             "grid": [
               [
+                "A",
                 "F",
+                "P",
+                "D",
                 "R",
-                "U",
-                "T",
-                "T",
-                "A",
-                "A",
-                "A",
-                "A",
-                "A"
+                "I",
+                "R",
+                "D",
+                "M",
+                "D"
               ],
               [
-                "P",
+                "O",
+                "T",
+                "U",
                 "A",
+                "R",
+                "E",
+                "P",
+                "N",
+                "I",
+                "E"
+              ],
+              [
+                "O",
+                "G",
+                "T",
+                "I",
                 "N",
                 "E",
+                "O",
+                "O",
+                "R",
+                "L"
+              ],
+              [
+                "R",
+                "N",
+                "O",
+                "U",
+                "I",
+                "E",
+                "O",
+                "P",
+                "O",
+                "R"
+              ],
+              [
+                "L",
+                "L",
+                "M",
+                "C",
+                "R",
+                "L",
+                "I",
+                "E",
+                "R",
+                "C"
+              ],
+              [
+                "M",
+                "U",
                 "A",
-                "A",
-                "A",
-                "A",
-                "A",
+                "S",
+                "P",
+                "F",
+                "E",
+                "I",
+                "T",
+                "L"
+              ],
+              [
+                "M",
+                "P",
+                "I",
+                "R",
+                "T",
+                "E",
+                "B",
+                "O",
+                "R",
                 "A"
               ],
               [
-                "B",
+                "A",
+                "L",
+                "L",
+                "E",
+                "R",
+                "A",
+                "C",
+                "N",
+                "A",
+                "B"
+              ],
+              [
                 "A",
                 "N",
                 "C",
+                "O",
+                "G",
+                "T",
                 "A",
-                "R",
+                "T",
                 "E",
-                "L",
-                "L",
+                "I"
+              ],
+              [
+                "G",
+                "E",
+                "I",
+                "U",
+                "I",
+                "O",
+                "O",
+                "V",
+                "A",
                 "A"
               ]
             ],
             "words": [
               {
+                "word": "BANCARELLA",
+                "translation": "Mercato italiano",
+                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+                "row": 7,
+                "col": 9,
+                "direction": "horizontal-reverse",
+                "points": 100,
+                "cells": [
+                  {
+                    "row": 7,
+                    "col": 9
+                  },
+                  {
+                    "row": 7,
+                    "col": 8
+                  },
+                  {
+                    "row": 7,
+                    "col": 7
+                  },
+                  {
+                    "row": 7,
+                    "col": 6
+                  },
+                  {
+                    "row": 7,
+                    "col": 5
+                  },
+                  {
+                    "row": 7,
+                    "col": 4
+                  },
+                  {
+                    "row": 7,
+                    "col": 3
+                  },
+                  {
+                    "row": 7,
+                    "col": 2
+                  },
+                  {
+                    "row": 7,
+                    "col": 1
+                  },
+                  {
+                    "row": 7,
+                    "col": 0
+                  }
+                ]
+              },
+              {
                 "word": "FRUTTA",
                 "translation": "Mercato italiano",
                 "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-                "row": 0,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 5,
+                "col": 5,
+                "direction": "diagonal-up-reverse",
                 "points": 60,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 0
+                    "row": 5,
+                    "col": 5
                   },
                   {
-                    "row": 0,
+                    "row": 4,
+                    "col": 4
+                  },
+                  {
+                    "row": 3,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
                     "col": 1
                   },
                   {
                     "row": 0,
-                    "col": 2
-                  },
-                  {
-                    "row": 0,
-                    "col": 3
-                  },
-                  {
-                    "row": 0,
-                    "col": 4
-                  },
-                  {
-                    "row": 0,
-                    "col": 5
+                    "col": 0
                   }
                 ]
               },
@@ -1874,52 +2450,17 @@
                 "word": "PANE",
                 "translation": "Mercato italiano",
                 "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-                "row": 1,
-                "col": 0,
-                "direction": "horizontal",
+                "row": 0,
+                "col": 2,
+                "direction": "diagonal-down",
                 "points": 40,
                 "cells": [
                   {
-                    "row": 1,
-                    "col": 0
-                  },
-                  {
-                    "row": 1,
-                    "col": 1
-                  },
-                  {
-                    "row": 1,
+                    "row": 0,
                     "col": 2
                   },
                   {
                     "row": 1,
-                    "col": 3
-                  }
-                ]
-              },
-              {
-                "word": "BANCARELLA",
-                "translation": "Mercato italiano",
-                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-                "row": 2,
-                "col": 0,
-                "direction": "horizontal",
-                "points": 100,
-                "cells": [
-                  {
-                    "row": 2,
-                    "col": 0
-                  },
-                  {
-                    "row": 2,
-                    "col": 1
-                  },
-                  {
-                    "row": 2,
-                    "col": 2
-                  },
-                  {
-                    "row": 2,
                     "col": 3
                   },
                   {
@@ -1927,24 +2468,8 @@
                     "col": 4
                   },
                   {
-                    "row": 2,
+                    "row": 3,
                     "col": 5
-                  },
-                  {
-                    "row": 2,
-                    "col": 6
-                  },
-                  {
-                    "row": 2,
-                    "col": 7
-                  },
-                  {
-                    "row": 2,
-                    "col": 8
-                  },
-                  {
-                    "row": 2,
-                    "col": 9
                   }
                 ]
               }
@@ -1966,33 +2491,33 @@
           },
           "themeId": "theme-mercato",
           "themeLink": "Paroliere+ collega VENDERE a Mercato italiano",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "VENDERE",
           "payload": {
             "grid": [
               [
-                "M",
-                "E",
-                "R",
-                "C"
-              ],
-              [
-                "A",
-                "T",
                 "O",
-                "V"
+                "L",
+                "O",
+                "N"
               ],
               [
                 "E",
+                "V",
+                "T",
+                "R"
+              ],
+              [
                 "N",
-                "D",
+                "I",
+                "E",
                 "E"
               ],
               [
-                "R",
-                "E",
-                "C",
+                "N",
+                "D",
+                "A",
                 "E"
               ]
             ],
@@ -2014,8 +2539,8 @@
           },
           "themeId": "theme-mercato",
           "themeLink": "Il Palloncino collega FORMAGGIO a Mercato italiano",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "FORMAGGIO",
           "payload": {
             "targetWord": "FORMAGGIO",
@@ -2040,8 +2565,8 @@
           },
           "themeId": "theme-mercato",
           "themeLink": "Anagrammi+ collega CLIENTE a Mercato italiano",
-          "generatorVersion": "daily-catalog-generator-v1",
-          "dictionaryVersion": "it-bundled-v1",
+          "generatorVersion": "daily-catalog-generator-v2",
+          "dictionaryVersion": "it-bundled-v2",
           "target": "CLIENTE",
           "payload": {
             "targetWord": "CLIENTE",

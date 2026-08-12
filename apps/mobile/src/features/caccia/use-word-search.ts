@@ -170,7 +170,7 @@ export function useWordSearchGame(routeSession: DailyGameRouteSession) {
 
 	const { showModal, closeModal, burst } = useWinSequence(isWon);
 	const { flash, triggerFlash } = useFlash();
-	useDailyTerminalRecorder(routeSession.challenge, isWon ? 'win' : terminalReason);
+	const dailyTerminal = useDailyTerminalRecorder(routeSession.challenge, isWon ? 'win' : terminalReason);
 
 	useOutcomeEvent(isWon, 'caccia.completed', () => ({
 		category: game.category ?? '',
@@ -233,6 +233,7 @@ export function useWordSearchGame(routeSession: DailyGameRouteSession) {
 		closeModal,
 		burst,
 		flash,
+		dailyTerminal,
 		start,
 		replay,
 		reset,

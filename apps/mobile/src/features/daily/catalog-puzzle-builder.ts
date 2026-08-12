@@ -3,8 +3,24 @@ import type { Difficulty, Direction } from '@/lib/types';
 import { THEMES, type ThemeSeed } from './catalog-content';
 import { CANONICAL_PUZZLE_LABELS, type ChallengeId, type DailyPuzzleKey, type DailyPuzzleSpec, type ThemeQuizData } from './types';
 
-const GENERATOR_VERSION = 'daily-catalog-generator-v1';
-const DICTIONARY_VERSION = 'it-bundled-v1';
+const GENERATOR_VERSION = 'daily-catalog-generator-v2';
+const DICTIONARY_VERSION = 'it-bundled-v2';
+const WORD_SEARCH_SIZE = 10;
+const PAROLIERE_SIZE = 4;
+const ITALIAN_LETTERS = 'AAAAAAAAEEEEEEEEEEIIIIIIIIOOOOOOONNNNNNRRRRRLLLLTTTSSSCCCDDDUUUMMPPGGFFVVBHZQ';
+
+type SeededRandom = () => number;
+
+const WORD_SEARCH_DIRECTIONS = [
+	{ direction: 'horizontal', rowStep: 0, colStep: 1 },
+	{ direction: 'vertical', rowStep: 1, colStep: 0 },
+	{ direction: 'diagonal-down', rowStep: 1, colStep: 1 },
+	{ direction: 'diagonal-up', rowStep: -1, colStep: 1 },
+	{ direction: 'horizontal-reverse', rowStep: 0, colStep: -1 },
+	{ direction: 'vertical-reverse', rowStep: -1, colStep: 0 },
+	{ direction: 'diagonal-down-reverse', rowStep: 1, colStep: -1 },
+	{ direction: 'diagonal-up-reverse', rowStep: -1, colStep: -1 },
+] as const satisfies readonly { readonly direction: Direction; readonly rowStep: number; readonly colStep: number }[];
 
 export type DailyCatalogTheme = {
 	readonly themeId: string;
@@ -69,18 +85,18 @@ export function buildCatalogPuzzle(
 		generatorVersion: GENERATOR_VERSION,
 		dictionaryVersion: DICTIONARY_VERSION,
 		target,
-		payload: buildPuzzlePayload(key, themeSeed, target, theme),
+		payload: buildPuzzlePayload(challengeId, key, themeSeed, target, theme),
 	};
 }
 
-function buildPuzzlePayload(key: DailyPuzzleKey, seed: ThemeSeed, target: string, theme: DailyCatalogTheme): DailyCatalogPuzzlePayload {
+function buildPuzzlePayload(challengeId: ChallengeId, key: DailyPuzzleKey, seed: ThemeSeed, target: string, theme: DailyCatalogTheme): DailyCatalogPuzzlePayload {
 	switch (key) {
 		case 'parola':
 			return { targetWord: target, maxAttempts: 6 };
 		case 'caccia':
-			return buildCacciaPayload(seed.puzzleWords.caccia, theme);
+			return buildCacciaPayload(challengeId, seed.puzzleWords.caccia, theme);
 		case 'paroliere':
-			return { grid: squareGrid(seed.puzzleWords.paroliere.join(''), 4), durationSeconds: 180 };
+			return { grid: buildParoliereGrid(challengeId, target), durationSeconds: 180 };
 		case 'impiccato':
 			return { targetWord: target, targetCategory: theme.label, targetTranslation: theme.label, targetDefinition: theme.explanation, lives: 6 };
 		case 'anagrammi':
@@ -88,29 +104,103 @@ function buildPuzzlePayload(key: DailyPuzzleKey, seed: ThemeSeed, target: string
 	}
 }
 
-function buildCacciaPayload(words: readonly [string, string, string], theme: DailyCatalogTheme): Extract<DailyCatalogPuzzlePayload, { readonly category: string }> {
-	const width = Math.max(...words.map((word) => word.length));
-	const grid = words.map((word) => [...word.padEnd(width, 'A')]);
+function buildCacciaPayload(challengeId: ChallengeId, words: readonly [string, string, string], theme: DailyCatalogTheme): Extract<DailyCatalogPuzzlePayload, { readonly category: string }> {
+	const random = createSeededRandom(`${challengeId}:caccia-grid`);
+	const grid = Array.from({ length: WORD_SEARCH_SIZE }, () => Array.from({ length: WORD_SEARCH_SIZE }, () => ''));
+	const placedWords: DailyCatalogPlacedWord[] = [];
+	const orderedWords = [...words].sort((left, right) => normalizeLetters(right).length - normalizeLetters(left).length);
+	const directionOffset = randomIndex(random, WORD_SEARCH_DIRECTIONS.length);
+	for (const [wordIndex, word] of orderedWords.entries()) {
+		const normalized = normalizeLetters(word);
+		const placement = placeCatalogWord(grid, normalized, wordIndex, directionOffset, random);
+		if (placement === null) throw new Error(`Unable to place daily Caccia word ${word}`);
+		placedWords.push({
+			word,
+			translation: theme.label,
+			definition: theme.explanation,
+			row: placement.cells[0]?.row ?? 0,
+			col: placement.cells[0]?.col ?? 0,
+			direction: placement.direction,
+			points: normalized.length * 10,
+			cells: placement.cells,
+		});
+	}
+	for (const row of grid) {
+		for (let col = 0; col < row.length; col += 1) {
+			if (row[col] === '') row[col] = randomLetter(random);
+		}
+	}
 	return {
 		category: theme.label,
 		difficulty: 'easy',
 		grid,
-		words: words.map((word, row) => ({
-			word,
-			translation: theme.label,
-			definition: theme.explanation,
-			row,
-			col: 0,
-			direction: 'horizontal',
-			points: word.length * 10,
-			cells: [...word].map((_, col) => ({ row, col })),
-		})),
+		words: placedWords,
 	};
 }
 
-function squareGrid(value: string, size: number): readonly (readonly string[])[] {
-	const letters = value.padEnd(size * size, 'A').slice(0, size * size);
-	return Array.from({ length: size }, (_, row) => [...letters.slice(row * size, row * size + size)]);
+function placeCatalogWord(
+	grid: string[][],
+	word: string,
+	wordIndex: number,
+	directionOffset: number,
+	random: SeededRandom,
+): { readonly direction: Direction; readonly cells: readonly { readonly row: number; readonly col: number }[] } | null {
+	for (let directionIndex = 0; directionIndex < WORD_SEARCH_DIRECTIONS.length; directionIndex += 1) {
+		const definition = WORD_SEARCH_DIRECTIONS[(directionOffset + wordIndex * 3 + directionIndex) % WORD_SEARCH_DIRECTIONS.length];
+		const candidates = [];
+		for (let row = 0; row < WORD_SEARCH_SIZE; row += 1) {
+			for (let col = 0; col < WORD_SEARCH_SIZE; col += 1) {
+				const cells = Array.from({ length: word.length }, (_, index) => ({ row: row + definition.rowStep * index, col: col + definition.colStep * index }));
+				if (cells.some((cell) => cell.row < 0 || cell.row >= WORD_SEARCH_SIZE || cell.col < 0 || cell.col >= WORD_SEARCH_SIZE)) continue;
+				if (cells.some((cell, index) => grid[cell.row]?.[cell.col] !== '' && grid[cell.row]?.[cell.col] !== word[index])) continue;
+				candidates.push(cells);
+			}
+		}
+		const cells = shuffle(candidates, random)[0];
+		if (cells === undefined) continue;
+		for (const [index, cell] of cells.entries()) grid[cell.row][cell.col] = word[index];
+		return { direction: definition.direction, cells };
+	}
+	return null;
+}
+
+function buildParoliereGrid(challengeId: ChallengeId, target: string): readonly (readonly string[])[] {
+	const random = createSeededRandom(`${challengeId}:paroliere-grid`);
+	const grid = Array.from({ length: PAROLIERE_SIZE }, () => Array.from({ length: PAROLIERE_SIZE }, () => randomLetter(random)));
+	const normalizedTarget = normalizeLetters(target);
+	const path = findParolierePath(normalizedTarget.length, random);
+	if (path === null) throw new Error(`Unable to place daily Paroliere word ${target}`);
+	for (const [index, cell] of path.entries()) grid[cell.row][cell.col] = normalizedTarget[index];
+	return grid;
+}
+
+function findParolierePath(length: number, random: SeededRandom): readonly { readonly row: number; readonly col: number }[] | null {
+	const cells = shuffle(
+		Array.from({ length: PAROLIERE_SIZE * PAROLIERE_SIZE }, (_, index) => ({ row: Math.floor(index / PAROLIERE_SIZE), col: index % PAROLIERE_SIZE })),
+		random,
+	);
+	const visit = (path: { row: number; col: number }[], used: Set<string>): readonly { readonly row: number; readonly col: number }[] | null => {
+		if (path.length === length) return path;
+		const last = path[path.length - 1];
+		if (last === undefined) return null;
+		const neighbors = shuffle(
+			cells.filter((cell) => Math.max(Math.abs(cell.row - last.row), Math.abs(cell.col - last.col)) === 1 && !used.has(cellKey(cell))),
+			random,
+		);
+		for (const neighbor of neighbors) {
+			const key = cellKey(neighbor);
+			used.add(key);
+			const result = visit([...path, neighbor], used);
+			if (result !== null) return result;
+			used.delete(key);
+		}
+		return null;
+	};
+	for (const start of cells) {
+		const result = visit([start], new Set([cellKey(start)]));
+		if (result !== null) return result;
+	}
+	return null;
 }
 
 function rotateLetters(value: string): readonly string[] {
@@ -143,8 +233,48 @@ function insertAnswer(answer: string, distractors: readonly [string, string, str
 
 function hashIndex(value: string, size: number): number {
 	let hash = 2166136261;
-	for (let index = 0; index < value.length; index += 1) {
-		hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
-	}
+	for (let index = 0; index < value.length; index += 1) hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
 	return Math.abs(hash) % size;
+}
+
+function hashValue(value: string): number {
+	let hash = 2166136261;
+	for (let index = 0; index < value.length; index += 1) hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
+	return hash >>> 0;
+}
+
+function createSeededRandom(seed: string): SeededRandom {
+	let state = hashValue(seed) || 0x9e3779b9;
+	return () => {
+		state += 0x6d2b79f5;
+		let value = state;
+		value = Math.imul(value ^ (value >>> 15), value | 1);
+		value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+		return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+	};
+}
+
+function randomIndex(random: SeededRandom, size: number): number {
+	return Math.floor(random() * size);
+}
+
+function randomLetter(random: SeededRandom): string {
+	return ITALIAN_LETTERS[randomIndex(random, ITALIAN_LETTERS.length)] ?? 'A';
+}
+
+function normalizeLetters(value: string): string {
+	return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toUpperCase();
+}
+
+function shuffle<T>(values: readonly T[], random: SeededRandom): T[] {
+	const result = [...values];
+	for (let index = result.length - 1; index > 0; index -= 1) {
+		const swapIndex = randomIndex(random, index + 1);
+		[result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+	}
+	return result;
+}
+
+function cellKey(cell: { readonly row: number; readonly col: number }): string {
+	return `${cell.row}:${cell.col}`;
 }

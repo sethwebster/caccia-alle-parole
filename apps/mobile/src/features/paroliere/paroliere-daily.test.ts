@@ -130,6 +130,21 @@ describe('paroliere daily challenge mode', () => {
 		expect(service.getState().currentWord).toBe('MA');
 	});
 
+	it('fills a skipped intermediate tile when a fast diagonal drag misses an update frame', () => {
+		const service = createChallengeService(90);
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+
+		service.extendSelection({ row: 2, col: 2 });
+
+		expect(service.getState().currentPath).toEqual([
+			{ row: 0, col: 0 },
+			{ row: 1, col: 1 },
+			{ row: 2, col: 2 },
+		]);
+		expect(service.getState().currentWord).toBe('MON');
+	});
+
 	it('hit-tests points near a tile centre as inside that tile', () => {
 		expect(
 			findParoliereCellAtPoint({
@@ -148,6 +163,16 @@ describe('paroliere daily challenge mode', () => {
 				y: boardTileSize - 0.25,
 			}),
 		).toBeNull();
+	});
+
+	it('keeps the diagonal side of a tile selectable close to its corner', () => {
+		expect(
+			findParoliereCellAtPoint({
+				...boardHitTestGeometry,
+				x: 75,
+				y: 75,
+			}),
+		).toEqual({ row: 0, col: 0 });
 	});
 
 	it('hit-tests points in the gap between tiles as empty board space', () => {

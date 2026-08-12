@@ -150,7 +150,7 @@ export function useAnagrammi(routeSession: DailyGameRouteSession) {
 	const timeLeft = useCountdown(state.deadline, hydrated && state.status === 'playing', expire);
 
 	const { modalVisible, confettiBurst, dismissModal } = useResultReveal(state.status);
-	useDailyTerminalRecorder(routeSession.challenge, state.status === 'correct' ? 'win' : state.status === 'skipped' ? 'skip' : undefined);
+	const dailyTerminal = useDailyTerminalRecorder(routeSession.challenge, state.status === 'correct' ? 'win' : state.status === 'skipped' ? 'skip' : undefined);
 
 	useOutcomeEvent(state.status !== 'playing', 'anagrammi.round_ended', () => ({
 		won: state.status === 'correct',
@@ -184,6 +184,7 @@ export function useAnagrammi(routeSession: DailyGameRouteSession) {
 		guess: guessFromPicked(state.round, state.picked),
 		modalVisible,
 		confettiBurst,
+		dailyTerminal,
 		dismissModal,
 		tapTile,
 		backspace,

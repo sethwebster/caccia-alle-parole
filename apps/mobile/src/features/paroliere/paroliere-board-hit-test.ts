@@ -9,11 +9,11 @@ export type ParoliereBoardHitTestInput = {
 };
 
 /**
- * Pointer accepts a tile only inside a circle around its centre. The dead
- * zones between circles are what make diagonal drags reliable: a finger
- * sweeping corner-to-corner never clips an orthogonal neighbour's box.
+ * Pointer accepts a tile inside a rounded superellipse around its centre.
+ * It reaches farther toward diagonal corners while preserving horizontal
+ * and vertical dead zones between tiles, avoiding accidental side-neighbours.
  */
-const ACCEPT_RADIUS_RATIO = 0.42;
+const ACCEPT_RADIUS_RATIO = 0.56;
 
 export function findParoliereCellAtPoint({
 	boardSize,
@@ -31,6 +31,8 @@ export function findParoliereCellAtPoint({
 	const centerX = col * step + tile / 2;
 	const centerY = row * step + tile / 2;
 	const radius = tile * ACCEPT_RADIUS_RATIO;
-	if ((x - centerX) ** 2 + (y - centerY) ** 2 > radius * radius) return null;
+	const normalizedX = Math.abs(x - centerX) / radius;
+	const normalizedY = Math.abs(y - centerY) / radius;
+	if (normalizedX ** 4 + normalizedY ** 4 > 1) return null;
 	return { row, col };
 }

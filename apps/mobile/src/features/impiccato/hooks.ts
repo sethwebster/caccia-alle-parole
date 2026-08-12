@@ -105,7 +105,7 @@ export function useImpiccatoGame(routeSession: DailyGameRouteSession) {
 	useHydratedRound(routeSession, setRound);
 	usePersistedRound(routeSession.playMode.kind === 'challenge' ? null : round);
 	const { modalVisible, dismissModal, confettiBurst } = useRoundResult(round?.gameState ?? 'playing');
-	useDailyTerminalRecorder(routeSession.challenge, round?.gameState === 'won' ? 'win' : round?.gameState === 'lost' ? 'loss' : undefined);
+	const dailyTerminal = useDailyTerminalRecorder(routeSession.challenge, round?.gameState === 'won' ? 'win' : round?.gameState === 'lost' ? 'loss' : undefined);
 
 	useOutcomeEvent(round != null && round.gameState !== 'playing', 'impiccato.finished', () => ({
 		won: round?.gameState === 'won',
@@ -127,5 +127,5 @@ export function useImpiccatoGame(routeSession: DailyGameRouteSession) {
 		});
 	}, [routeSession.challenge, routeSession.playMode.kind]);
 
-	return { round, guess, startRound, modalVisible, dismissModal, confettiBurst };
+	return { round, guess, startRound, modalVisible, dismissModal, confettiBurst, dailyTerminal };
 }

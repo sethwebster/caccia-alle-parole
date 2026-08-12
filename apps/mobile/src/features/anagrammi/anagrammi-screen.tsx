@@ -151,10 +151,10 @@ export function AnagrammiScreen({ routeSession }: { readonly routeSession: Daily
 				visible={game.modalVisible}
 				icon={state.status === 'correct' ? '🌟' : '⏰'}
 				title={state.status === 'correct' ? 'Ottimo Anagramma!' : 'Tempo Scaduto'}
-				primaryLabel="Prossima Parola"
-				onPrimary={game.next}
-				secondaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Ricomincia Sfida'}
-				onSecondary={isChallenge ? () => router.back() : game.reset}
+				primaryLabel={isChallenge ? DAILY_COPY.challenge.returnToHub : 'Prossima Parola'}
+				onPrimary={isChallenge ? () => void game.dailyTerminal.complete(() => router.back()) : game.next}
+				secondaryLabel={isChallenge ? undefined : 'Ricomincia Sfida'}
+				onSecondary={isChallenge ? undefined : game.reset}
 				onDismiss={game.dismissModal}
 			>
 				<View style={[styles.answerCard, { backgroundColor: surface.tile, borderColor: surface.border }]}>

@@ -22,6 +22,7 @@ type LoadOfficialInput = {
 type LoadReplayInput = {
 	readonly challengeId: ChallengeId;
 	readonly now?: Date;
+	readonly activeReplayAttemptId?: string;
 };
 
 type RecordTerminalInput = {
@@ -100,8 +101,8 @@ export class DailyChallengeOrchestrator {
 		if (!progress.ok) return this.setSnapshot({ kind: 'progressError', error: progress.error });
 		const bundle = archivedSnapshotFor(progress.value, input.challengeId) ?? (resolution.kind === 'ready' ? resolution.bundle : undefined);
 		if (bundle === undefined) return this.setSnapshot({ kind: 'updateRequired', challengeId: input.challengeId, reason: 'outsideSupportedRange', metadata: resolution.metadata });
-		this.activeReplayAttemptId = undefined;
-		return this.setSnapshot(deriveDailyChallengeSnapshot({ bundle, progress: progress.value, mode: 'replay' }));
+		this.activeReplayAttemptId = input.activeReplayAttemptId;
+		return this.setSnapshot(deriveDailyChallengeSnapshot({ bundle, progress: progress.value, mode: 'replay', activeReplayAttemptId: input.activeReplayAttemptId }));
 	}
 
 	async startPuzzle(input: StartAttemptInput): Promise<ActiveDailyAttempt> {

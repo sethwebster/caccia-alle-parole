@@ -11,6 +11,7 @@ import {
 } from './catalog';
 import { validateBundledDailyCatalog } from './catalog-validation';
 import { challengeIdForDate, makeChallengeId } from './date';
+import { pickCatalogTheme } from './catalog-puzzle-builder';
 import { CANONICAL_PUZZLE_KEYS } from './types';
 
 describe('daily-catalog deterministic challenge resolution', () => {
@@ -30,6 +31,35 @@ describe('daily-catalog deterministic challenge resolution', () => {
 
 		expect(first).toEqual(second);
 		expect(first.kind).toBe('ready');
+	});
+
+	it('builds Caccia as a full square word-search grid instead of three word rows', () => {
+		const result = resolveDailyChallengeBundle({ challengeId: makeChallengeId('2026-07-09') });
+
+		expect(result.kind).toBe('ready');
+		if (result.kind !== 'ready') return;
+		const puzzle = result.bundle.puzzles.find((candidate) => candidate.key === 'caccia');
+		expect(puzzle?.payload).toMatchObject({ difficulty: 'easy' });
+		if (puzzle?.key !== 'caccia' || !('words' in puzzle.payload)) return;
+		expect(puzzle.payload.grid).toHaveLength(10);
+		expect(puzzle.payload.grid.every((row) => row.length === 10)).toBe(true);
+		expect(new Set(puzzle.payload.words.map((word) => word.direction)).size).toBeGreaterThan(1);
+	});
+
+	it('distributes Paroliere letters while preserving an adjacent path for its daily target', () => {
+		const challengeId = makeChallengeId('2026-07-09');
+		const result = resolveDailyChallengeBundle({ challengeId });
+
+		expect(result.kind).toBe('ready');
+		if (result.kind !== 'ready') return;
+		const puzzle = result.bundle.puzzles.find((candidate) => candidate.key === 'paroliere');
+		if (puzzle?.key !== 'paroliere' || !('grid' in puzzle.payload)) return;
+		const flatGrid = puzzle.payload.grid.flat().join('');
+		const oldThemeStream = pickCatalogTheme(challengeId).puzzleWords.paroliere.join('').padEnd(16, 'A').slice(0, 16);
+
+		expect(flatGrid).not.toBe(oldThemeStream);
+		expect(puzzle.themeLink).toContain(puzzle.target);
+		expect(hasAdjacentPath(puzzle.payload.grid, puzzle.target)).toBe(true);
 	});
 
 	it('uses timezone only to choose the active local date, not content for a supplied ID', () => {
@@ -157,3 +187,28 @@ describe('daily-catalog deterministic challenge resolution', () => {
 		});
 	});
 });
+
+function hasAdjacentPath(grid: readonly (readonly string[])[], word: string): boolean {
+	const visit = (row: number, col: number, index: number, used: Set<string>): boolean => {
+		if (grid[row]?.[col] !== word[index]) return false;
+		if (index === word.length - 1) return true;
+		const key = `${row}:${col}`;
+		used.add(key);
+		for (let rowStep = -1; rowStep <= 1; rowStep += 1) {
+			for (let colStep = -1; colStep <= 1; colStep += 1) {
+				if (rowStep === 0 && colStep === 0) continue;
+				const nextRow = row + rowStep;
+				const nextCol = col + colStep;
+				if (!used.has(`${nextRow}:${nextCol}`) && visit(nextRow, nextCol, index + 1, used)) return true;
+			}
+		}
+		used.delete(key);
+		return false;
+	};
+	for (let row = 0; row < grid.length; row += 1) {
+		for (let col = 0; col < (grid[row]?.length ?? 0); col += 1) {
+			if (visit(row, col, 0, new Set())) return true;
+		}
+	}
+	return false;
+}

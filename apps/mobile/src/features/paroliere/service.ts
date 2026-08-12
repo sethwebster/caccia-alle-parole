@@ -183,8 +183,9 @@ export class ParoliereService {
 			return;
 		}
 		const last = s.currentPath[s.currentPath.length - 1];
-		if (Math.abs(last.row - cell.row) > 1 || Math.abs(last.col - cell.col) > 1) return;
-		const currentPath = [...s.currentPath, cell];
+		const extension = pathBetween(last, cell);
+		if (extension.length === 0 || extension.some((candidate) => s.currentPath.some((selected) => selected.row === candidate.row && selected.col === candidate.col))) return;
+		const currentPath = [...s.currentPath, ...extension];
 		this.set({ ...s, currentPath, currentWord: currentPath.map((c) => s.grid[c.row][c.col]).join('') });
 	};
 
@@ -293,4 +294,21 @@ export class ParoliereService {
 			wordsFound: this.state.foundWords.length,
 		};
 	}
+}
+
+/** Restores straight cells skipped by sparse pointer updates, especially on fast diagonals. */
+function pathBetween(start: PathCell, end: PathCell): PathCell[] {
+	const rowDelta = end.row - start.row;
+	const colDelta = end.col - start.col;
+	const rowDistance = Math.abs(rowDelta);
+	const colDistance = Math.abs(colDelta);
+	const steps = Math.max(rowDistance, colDistance);
+	if (steps === 0) return [];
+	if (rowDistance !== 0 && colDistance !== 0 && rowDistance !== colDistance) return [];
+	const rowStep = Math.sign(rowDelta);
+	const colStep = Math.sign(colDelta);
+	return Array.from({ length: steps }, (_, index) => ({
+		row: start.row + rowStep * (index + 1),
+		col: start.col + colStep * (index + 1),
+	}));
 }

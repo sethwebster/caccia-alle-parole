@@ -87,7 +87,9 @@ async function expectOk<T>(result: Promise<{ readonly ok: true; readonly value: 
 
 describe('daily-progress canonical Caccia recovery', () => {
 	it('migrates canonical v2 Caccia snapshots with exact old default placement metadata', () => {
-		const bundle = corruptFirstNonDefaultCacciaWord(readyBundle(makeChallengeId('2026-01-26')));
+		const originalBundle = readyBundle(makeChallengeId('2026-01-26'));
+		const expectedPlacement = cacciaPayload(originalBundle).words[1];
+		const bundle = corruptFirstNonDefaultCacciaWord(originalBundle);
 
 		const result = migrateStoredDailyProgress(JSON.stringify(canonicalProgressWithBundle(bundle)), 'canonical');
 
@@ -97,9 +99,9 @@ describe('daily-progress canonical Caccia recovery', () => {
 		expect(migratedBundle).toBeDefined();
 		if (migratedBundle === undefined) throw new Error('expected migrated bundle');
 		const payload = cacciaPayload(migratedBundle);
-		expect(payload.words[1]?.row).toBe(payload.words[1]?.cells[0]?.row);
-		expect(payload.words[1]?.col).toBe(payload.words[1]?.cells[0]?.col);
-		expect(payload.words[1]?.direction).toBe('horizontal');
+		expect(payload.words[1]?.row).toBe(expectedPlacement?.row);
+		expect(payload.words[1]?.col).toBe(expectedPlacement?.col);
+		expect(payload.words[1]?.direction).toBe(expectedPlacement?.direction);
 		expect(() => createDailyChallengeGame(payload)).not.toThrow();
 	});
 
