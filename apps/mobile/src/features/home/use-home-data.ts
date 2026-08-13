@@ -1,8 +1,8 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
-import { challengeIdForDate } from '@/features/daily/date';
 import { loadDailyChallengeStatusSummary, loadDailyStatsSummary } from '@/features/daily/progress';
+import { useTodayChallengeId } from '@/features/daily/today-store';
 
 export type DailyChallenge = {
 	hydrated: boolean;
@@ -22,18 +22,19 @@ const INITIAL: DailyChallenge = {
 
 export function useHomeData(): DailyChallenge {
 	const [data, setData] = useState<DailyChallenge>(INITIAL);
+	const challengeId = useTodayChallengeId();
 
 	useFocusEffect(
 		useCallback(() => {
 			let alive = true;
-			Promise.all([loadDailyChallengeStatusSummary(challengeIdForDate()), loadDailyStatsSummary()]).then(([daily, stats]) => {
+			Promise.all([loadDailyChallengeStatusSummary(challengeId), loadDailyStatsSummary()]).then(([daily, stats]) => {
 				if (!alive) return;
 				setData({ hydrated: true, streak: stats.currentStreak, attempts: daily.terminalEvents, maxAttempts: daily.totalPuzzles, status: daily.status });
 			});
 			return () => {
 				alive = false;
 			};
-		}, []),
+		}, [challengeId]),
 	);
 
 	return data;

@@ -4,6 +4,7 @@ import type { ChallengeId } from './types';
 import { createDailyLoadStateTracker, type DailyLoadError } from './daily-load-state';
 import { maybeDailyEntitlementReader } from './entitlement-reader';
 import { getDailyChallengeOrchestrator } from './orchestrator-service';
+import { useTodayChallengeId } from './today-store';
 
 export function useDailyChallenge(input: { readonly challengeId?: ChallengeId; readonly mode?: 'official' | 'replay'; readonly now?: Date; readonly enabled?: boolean } = {}) {
 	const [orchestrator] = useState(getDailyChallengeOrchestrator);
@@ -13,11 +14,14 @@ export function useDailyChallenge(input: { readonly challengeId?: ChallengeId; r
 	const [entitlementEpoch, setEntitlementEpoch] = useState(0);
 	useEffect(() => maybeDailyEntitlementReader()?.subscribeEntitlementChanged?.(() => setEntitlementEpoch((epoch) => epoch + 1)), []);
 	const { challengeId, mode, now, enabled = true } = input;
-	const loadKey = `${enabled ? 'enabled' : 'disabled'}:${mode ?? 'official'}:${challengeId ?? 'today'}:${now?.getTime() ?? 'current'}:${entitlementEpoch}`;
+	const today = useTodayChallengeId();
+	// Only the live "today" case follows the clock; a supplied ID or fixed `now` stays pinned.
+	const activeChallengeId = challengeId ?? (now === undefined ? today : undefined);
+	const loadKey = `${enabled ? 'enabled' : 'disabled'}:${mode ?? 'official'}:${activeChallengeId ?? 'today'}:${now?.getTime() ?? 'current'}:${entitlementEpoch}`;
 	useEffect(() => {
 		const sequence = loadState.begin();
 		if (!enabled) return;
-		const load = mode === 'replay' && challengeId !== undefined ? orchestrator.loadReplay({ challengeId, now }) : orchestrator.loadOfficial({ challengeId, now });
+		const load = mode === 'replay' && challengeId !== undefined ? orchestrator.loadReplay({ challengeId, now }) : orchestrator.loadOfficial({ challengeId: activeChallengeId, now });
 		void load.then(
 			() => {
 				const outcome = loadState.resolve(sequence);
@@ -32,7 +36,7 @@ export function useDailyChallenge(input: { readonly challengeId?: ChallengeId; r
 				setLoadErrorState({ loadKey, error: outcome.loadError });
 			},
 		);
-	}, [orchestrator, challengeId, enabled, loadKey, loadState, mode, now]);
+	}, [orchestrator, activeChallengeId, challengeId, enabled, loadKey, loadState, mode, now]);
 	const snapshot = useSyncExternalStore(orchestrator.subscribe, orchestrator.getSnapshot, orchestrator.getSnapshot);
 	const loaded = loadedKey === loadKey;
 	const loadError = loadErrorState?.loadKey === loadKey ? loadErrorState.error : undefined;
