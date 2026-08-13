@@ -1,7 +1,8 @@
 import type { Difficulty, Direction } from '@/lib/types';
 
-import { THEMES, type ThemeSeed } from './catalog-content';
-import { CANONICAL_PUZZLE_LABELS, type ChallengeId, type DailyPuzzleKey, type DailyPuzzleSpec, type ThemeQuizData } from './types';
+import { CATALOG_ROTATION_BASE, THEMES, type ThemeSeed } from './catalog-content';
+import { civilDayIndex, makeLocalCivilDate } from './date';
+import { CANONICAL_PUZZLE_KEYS, CANONICAL_PUZZLE_LABELS, type ChallengeId, type DailyPuzzleKey, type DailyPuzzleSpec, type ThemeQuizData } from './types';
 
 const GENERATOR_VERSION = 'daily-catalog-generator-v2';
 const DICTIONARY_VERSION = 'it-bundled-v2';
@@ -57,8 +58,46 @@ export type DailyCatalogPuzzleSpec = DailyPuzzleSpec & {
 	readonly payload: DailyCatalogPuzzlePayload;
 };
 
+const ROTATION_BASE_DAY = civilDayIndex(makeLocalCivilDate(CATALOG_ROTATION_BASE));
+
 export function pickCatalogTheme(challengeId: ChallengeId): ThemeSeed {
-	return THEMES[hashIndex(`${challengeId}:theme`, THEMES.length)] ?? THEMES[0];
+	return THEMES[rotationForChallenge(challengeId).themeIndex] ?? THEMES[0];
+}
+
+/**
+ * Days are grouped into cycles of one day per theme. Each cycle draws a fresh
+ * permutation of the whole theme list, so a theme returns only once the others
+ * have been used, and the word each puzzle draws from that theme advances every
+ * cycle. Hashing each day independently — the previous behaviour — repeated
+ * themes and targets on back-to-back days.
+ */
+function rotationForChallenge(challengeId: ChallengeId): { readonly themeIndex: number; readonly cycle: number } {
+	const dayIndex = civilDayIndex(challengeId) - ROTATION_BASE_DAY;
+	const cycle = Math.floor(dayIndex / THEMES.length);
+	const position = dayIndex - cycle * THEMES.length;
+	return { themeIndex: themeOrderForCycle(cycle)[position] ?? 0, cycle };
+}
+
+/** Swaps the first two entries when a cycle would otherwise reopen with the theme that just closed the previous one. */
+function themeOrderForCycle(cycle: number): readonly number[] {
+	const [first, second, ...rest] = shuffledThemeOrder(cycle);
+	const previousLast = shuffledThemeOrder(cycle - 1)[THEMES.length - 1];
+	if (first === undefined || second === undefined || first !== previousLast) return [first, second, ...rest].filter(isIndex);
+	return [second, first, ...rest].filter(isIndex);
+}
+
+function shuffledThemeOrder(cycle: number): readonly number[] {
+	return shuffle(THEMES.map((_, index) => index), createSeededRandom(`theme-order:${cycle}`));
+}
+
+function isIndex(value: number | undefined): value is number {
+	return value !== undefined;
+}
+
+/** Each puzzle starts on its own word so the five games never advance in lockstep. */
+function targetForCycle(words: readonly [string, string, string], key: DailyPuzzleKey, cycle: number): string {
+	const offset = cycle + CANONICAL_PUZZLE_KEYS.indexOf(key);
+	return words[((offset % words.length) + words.length) % words.length] ?? words[0];
 }
 
 export function buildCatalogTheme(challengeId: ChallengeId, seed: ThemeSeed): DailyCatalogTheme {
@@ -75,7 +114,7 @@ export function buildCatalogPuzzle(
 	theme: DailyCatalogTheme,
 ): DailyCatalogPuzzleSpec {
 	const words = themeSeed.puzzleWords[key];
-	const target = words[hashIndex(`${challengeId}:${key}`, words.length)] ?? words[0];
+	const target = targetForCycle(words, key, rotationForChallenge(challengeId).cycle);
 	return {
 		key,
 		label: CANONICAL_PUZZLE_LABELS[key],

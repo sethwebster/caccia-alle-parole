@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "metadata": {
     "catalogEpoch": "daily-v1",
-    "catalogVersion": "2026.01.26",
+    "catalogVersion": "2026.08.12",
     "releaseBaseChallengeId": "2026-01-26",
     "supportedFromChallengeId": "2026-01-26",
     "supportedThroughChallengeId": "2027-01-26"
@@ -14,22 +14,22 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.01.26"
+        "version": "2026.08.12"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.01.26",
+      "catalogVersion": "2026.08.12",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
-        "themeId": "theme-scuola",
-        "label": "Giornata di scuola",
-        "explanation": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+        "themeId": "theme-animali",
+        "label": "Animali selvatici",
+        "explanation": "Zanne, tane e savane lontane formano il filo comune.",
         "choices": [
-          "Giornata di scuola",
-          "Partita allo stadio",
-          "Mercato notturno",
-          "Foresta tropicale"
+          "Animali selvatici",
+          "Panificio all'alba",
+          "Sala d'incisione",
+          "Sartoria di lusso"
         ],
         "answerIndex": 0
       },
@@ -40,20 +40,20 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Paròle collega POSTO a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Paròle collega TIGRE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "POSTO",
+          "target": "TIGRE",
           "payload": {
-            "targetWord": "POSTO",
+            "targetWord": "TIGRE",
             "maxAttempts": 6
           }
         },
@@ -63,32 +63,92 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Caccia alle Paròle collega LAVAGNA a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Caccia alle Paròle collega ELEFANTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "LAVAGNA",
+          "target": "ELEFANTE",
           "payload": {
-            "category": "Giornata di scuola",
+            "category": "Animali selvatici",
             "difficulty": "easy",
             "grid": [
               [
-                "I",
                 "A",
+                "O",
+                "N",
+                "A",
+                "O",
+                "L",
+                "R",
+                "I",
+                "F",
+                "F"
+              ],
+              [
+                "U",
+                "F",
+                "N",
+                "E",
+                "O",
+                "R",
+                "M",
+                "L",
+                "G",
+                "A"
+              ],
+              [
+                "L",
+                "E",
+                "F",
+                "I",
+                "N",
+                "R",
+                "P",
+                "T",
+                "H",
+                "P"
+              ],
+              [
+                "E",
+                "T",
+                "N",
+                "A",
+                "F",
+                "E",
+                "L",
+                "E",
+                "E",
+                "E"
+              ],
+              [
+                "E",
+                "S",
+                "L",
+                "C",
+                "R",
+                "R",
+                "U",
+                "I",
+                "P",
+                "A"
+              ],
+              [
                 "R",
                 "V",
                 "A",
                 "E",
                 "F",
+                "I",
                 "M",
                 "R",
+                "A",
                 "P"
               ],
               [
@@ -98,12 +158,13 @@
                 "N",
                 "E",
                 "U",
+                "G",
                 "O",
-                "F",
-                "Q",
-                "E"
+                "R",
+                "F"
               ],
               [
+                "E",
                 "B",
                 "L",
                 "I",
@@ -112,10 +173,10 @@
                 "G",
                 "G",
                 "D",
-                "U",
-                "A"
+                "D"
               ],
               [
+                "A",
                 "S",
                 "V",
                 "D",
@@ -124,10 +185,10 @@
                 "R",
                 "B",
                 "O",
-                "A",
-                "E"
+                "O"
               ],
               [
+                "E",
                 "A",
                 "G",
                 "S",
@@ -136,75 +197,14 @@
                 "E",
                 "Z",
                 "A",
-                "D",
                 "P"
-              ],
-              [
-                "C",
-                "A",
-                "N",
-                "G",
-                "A",
-                "V",
-                "A",
-                "L",
-                "E",
-                "R"
-              ],
-              [
-                "N",
-                "U",
-                "D",
-                "I",
-                "H",
-                "T",
-                "A",
-                "E",
-                "R",
-                "L"
-              ],
-              [
-                "T",
-                "U",
-                "Q",
-                "O",
-                "L",
-                "L",
-                "M",
-                "O",
-                "N",
-                "D"
-              ],
-              [
-                "P",
-                "L",
-                "C",
-                "A",
-                "I",
-                "I",
-                "L",
-                "O",
-                "O",
-                "B"
-              ],
-              [
-                "N",
-                "C",
-                "O",
-                "M",
-                "P",
-                "I",
-                "T",
-                "O",
-                "I",
-                "A"
               ]
             ],
             "words": [
               {
-                "word": "QUADERNO",
-                "translation": "Giornata di scuola",
-                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "word": "GHEPARDO",
+                "translation": "Animali selvatici",
+                "definition": "Zanne, tane e savane lontane formano il filo comune.",
                 "row": 1,
                 "col": 8,
                 "direction": "vertical",
@@ -245,80 +245,84 @@
                 ]
               },
               {
-                "word": "LAVAGNA",
-                "translation": "Giornata di scuola",
-                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 5,
+                "word": "ELEFANTE",
+                "translation": "Animali selvatici",
+                "definition": "Zanne, tane e savane lontane formano il filo comune.",
+                "row": 3,
                 "col": 7,
                 "direction": "horizontal-reverse",
-                "points": 70,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 7
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 6
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 5
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 4
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 3
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 2
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 1
+                  },
+                  {
+                    "row": 3,
+                    "col": 0
                   }
                 ]
               },
               {
-                "word": "COMPITO",
-                "translation": "Giornata di scuola",
-                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 9,
-                "col": 1,
-                "direction": "horizontal",
+                "word": "GIRAFFA",
+                "translation": "Animali selvatici",
+                "definition": "Zanne, tane e savane lontane formano il filo comune.",
+                "row": 6,
+                "col": 6,
+                "direction": "diagonal-up-reverse",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 9,
-                    "col": 1
-                  },
-                  {
-                    "row": 9,
-                    "col": 2
-                  },
-                  {
-                    "row": 9,
-                    "col": 3
-                  },
-                  {
-                    "row": 9,
-                    "col": 4
-                  },
-                  {
-                    "row": 9,
-                    "col": 5
-                  },
-                  {
-                    "row": 9,
+                    "row": 6,
                     "col": 6
                   },
                   {
-                    "row": 9,
-                    "col": 7
+                    "row": 5,
+                    "col": 5
+                  },
+                  {
+                    "row": 4,
+                    "col": 4
+                  },
+                  {
+                    "row": 3,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 0
                   }
                 ]
               }
@@ -331,18 +335,18 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Paroliere+ collega LEZIONE a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Paroliere+ collega ZANNA a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "LEZIONE",
+          "target": "ZANNA",
           "payload": {
             "grid": [
               [
@@ -352,21 +356,21 @@
                 "C"
               ],
               [
-                "N",
+                "O",
                 "N",
                 "A",
                 "O"
               ],
               [
-                "E",
-                "O",
+                "D",
                 "A",
-                "L"
+                "A",
+                "Z"
               ],
               [
-                "I",
-                "Z",
-                "E",
+                "N",
+                "N",
+                "A",
                 "N"
               ]
             ],
@@ -379,23 +383,23 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Il Palloncino collega MAESTRA a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Il Palloncino collega RINOCERONTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "MAESTRA",
+          "target": "RINOCERONTE",
           "payload": {
-            "targetWord": "MAESTRA",
-            "targetCategory": "Giornata di scuola",
-            "targetTranslation": "Giornata di scuola",
-            "targetDefinition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+            "targetWord": "RINOCERONTE",
+            "targetCategory": "Animali selvatici",
+            "targetTranslation": "Animali selvatici",
+            "targetDefinition": "Zanne, tane e savane lontane formano il filo comune.",
             "lives": 6
           }
         },
@@ -405,31 +409,34 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Anagrammi+ collega SCUOLA a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Anagrammi+ collega PREDATORE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "SCUOLA",
+          "target": "PREDATORE",
           "payload": {
-            "targetWord": "SCUOLA",
+            "targetWord": "PREDATORE",
             "tiles": [
-              "C",
-              "U",
-              "O",
-              "L",
+              "R",
+              "E",
+              "D",
               "A",
-              "S"
+              "T",
+              "O",
+              "R",
+              "E",
+              "P"
             ],
-            "translation": "Giornata di scuola",
-            "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-            "category": "Giornata di scuola",
+            "translation": "Animali selvatici",
+            "definition": "Zanne, tane e savane lontane formano il filo comune.",
+            "category": "Animali selvatici",
             "durationSeconds": 60
           }
         }
@@ -441,22 +448,22 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.01.26"
+        "version": "2026.08.12"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.01.26",
+      "catalogVersion": "2026.08.12",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
-        "themeId": "theme-mare",
-        "label": "Estate al mare",
-        "explanation": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+        "themeId": "theme-biblioteca",
+        "label": "Biblioteca silenziosa",
+        "explanation": "Scaffali, pagine e silenzio guidano le parole nascoste.",
         "choices": [
-          "Officina meccanica",
-          "Teatro lirico",
-          "Estate al mare",
-          "Biblioteca antica"
+          "Porto commerciale",
+          "Serra tropicale",
+          "Biblioteca silenziosa",
+          "Sala giochi"
         ],
         "answerIndex": 2
       },
@@ -467,20 +474,20 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Officina meccanica",
-              "Teatro lirico",
-              "Estate al mare",
-              "Biblioteca antica"
+              "Porto commerciale",
+              "Serra tropicale",
+              "Biblioteca silenziosa",
+              "Sala giochi"
             ],
             "answerIndex": 2
           },
-          "themeId": "theme-mare",
-          "themeLink": "Paròle collega SUONO a Estate al mare",
+          "themeId": "theme-biblioteca",
+          "themeLink": "Paròle collega LEGGE a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "SUONO",
+          "target": "LEGGE",
           "payload": {
-            "targetWord": "SUONO",
+            "targetWord": "LEGGE",
             "maxAttempts": 6
           }
         },
@@ -490,55 +497,43 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Officina meccanica",
-              "Teatro lirico",
-              "Estate al mare",
-              "Biblioteca antica"
+              "Porto commerciale",
+              "Serra tropicale",
+              "Biblioteca silenziosa",
+              "Sala giochi"
             ],
             "answerIndex": 2
           },
-          "themeId": "theme-mare",
-          "themeLink": "Caccia alle Paròle collega OMBRELLONE a Estate al mare",
+          "themeId": "theme-biblioteca",
+          "themeLink": "Caccia alle Paròle collega ROMANZO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "OMBRELLONE",
+          "target": "ROMANZO",
           "payload": {
-            "category": "Estate al mare",
+            "category": "Biblioteca silenziosa",
             "difficulty": "easy",
             "grid": [
               [
-                "C",
-                "D",
-                "I",
-                "A",
-                "O",
-                "N",
-                "G",
-                "A",
-                "B",
-                "O"
-              ],
-              [
-                "U",
-                "O",
-                "D",
-                "C",
-                "T",
                 "F",
                 "I",
                 "E",
-                "M",
-                "R"
+                "A",
+                "R",
+                "U",
+                "T",
+                "T",
+                "E",
+                "L"
               ],
               [
+                "R",
                 "I",
                 "R",
-                "N",
                 "S",
+                "O",
                 "E",
                 "N",
                 "I",
-                "B",
                 "O",
                 "N"
               ],
@@ -546,24 +541,24 @@
                 "Q",
                 "E",
                 "N",
-                "C",
                 "O",
+                "M",
                 "E",
-                "R",
                 "I",
                 "Z",
-                "I"
+                "I",
+                "S"
               ],
               [
                 "A",
                 "U",
                 "A",
                 "E",
-                "H",
-                "E",
+                "A",
                 "I",
                 "O",
                 "E",
+                "C",
                 "N"
               ],
               [
@@ -571,10 +566,10 @@
                 "U",
                 "F",
                 "U",
-                "L",
-                "I",
+                "N",
                 "Q",
                 "F",
+                "A",
                 "V",
                 "B"
               ],
@@ -582,10 +577,10 @@
                 "L",
                 "F",
                 "T",
-                "L",
                 "H",
+                "Z",
                 "C",
-                "G",
+                "F",
                 "G",
                 "P",
                 "R"
@@ -593,116 +588,120 @@
               [
                 "E",
                 "E",
-                "O",
                 "V",
                 "D",
+                "O",
+                "F",
                 "F",
                 "T",
-                "L",
                 "R",
                 "T"
               ],
               [
                 "P",
-                "N",
                 "M",
                 "R",
                 "I",
+                "A",
                 "E",
                 "S",
                 "A",
-                "I",
-                "M"
+                "M",
+                "L"
               ],
               [
-                "E",
-                "L",
                 "O",
                 "T",
                 "E",
+                "L",
                 "O",
                 "M",
                 "E",
                 "N",
-                "A"
+                "A",
+                "C"
+              ],
+              [
+                "L",
+                "N",
+                "E",
+                "I",
+                "F",
+                "A",
+                "O",
+                "S",
+                "R",
+                "O"
               ]
             ],
             "words": [
               {
-                "word": "OMBRELLONE",
-                "translation": "Estate al mare",
-                "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
-                "row": 0,
+                "word": "SCAFFALE",
+                "translation": "Biblioteca silenziosa",
+                "definition": "Scaffali, pagine e silenzio guidano le parole nascoste.",
+                "row": 2,
                 "col": 9,
                 "direction": "diagonal-down-reverse",
-                "points": 100,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 0,
+                    "row": 2,
                     "col": 9
                   },
                   {
-                    "row": 1,
+                    "row": 3,
                     "col": 8
                   },
                   {
-                    "row": 2,
+                    "row": 4,
                     "col": 7
                   },
                   {
-                    "row": 3,
+                    "row": 5,
                     "col": 6
                   },
                   {
-                    "row": 4,
+                    "row": 6,
                     "col": 5
                   },
                   {
-                    "row": 5,
+                    "row": 7,
                     "col": 4
                   },
                   {
-                    "row": 6,
+                    "row": 8,
                     "col": 3
                   },
                   {
-                    "row": 7,
-                    "col": 2
-                  },
-                  {
-                    "row": 8,
-                    "col": 1
-                  },
-                  {
                     "row": 9,
-                    "col": 0
+                    "col": 2
                   }
                 ]
               },
               {
-                "word": "CONCHIGLIA",
-                "translation": "Estate al mare",
-                "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+                "word": "ROMANZO",
+                "translation": "Biblioteca silenziosa",
+                "definition": "Scaffali, pagine e silenzio guidano le parole nascoste.",
                 "row": 0,
-                "col": 0,
-                "direction": "diagonal-down",
-                "points": 100,
+                "col": 4,
+                "direction": "vertical",
+                "points": 70,
                 "cells": [
                   {
                     "row": 0,
-                    "col": 0
+                    "col": 4
                   },
                   {
                     "row": 1,
-                    "col": 1
+                    "col": 4
                   },
                   {
                     "row": 2,
-                    "col": 2
+                    "col": 4
                   },
                   {
                     "row": 3,
-                    "col": 3
+                    "col": 4
                   },
                   {
                     "row": 4,
@@ -710,35 +709,27 @@
                   },
                   {
                     "row": 5,
-                    "col": 5
+                    "col": 4
                   },
                   {
                     "row": 6,
-                    "col": 6
-                  },
-                  {
-                    "row": 7,
-                    "col": 7
-                  },
-                  {
-                    "row": 8,
-                    "col": 8
-                  },
-                  {
-                    "row": 9,
-                    "col": 9
+                    "col": 4
                   }
                 ]
               },
               {
-                "word": "BAGNO",
-                "translation": "Estate al mare",
-                "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+                "word": "LETTURA",
+                "translation": "Biblioteca silenziosa",
+                "definition": "Scaffali, pagine e silenzio guidano le parole nascoste.",
                 "row": 0,
-                "col": 8,
+                "col": 9,
                 "direction": "horizontal-reverse",
-                "points": 50,
+                "points": 70,
                 "cells": [
+                  {
+                    "row": 0,
+                    "col": 9
+                  },
                   {
                     "row": 0,
                     "col": 8
@@ -758,6 +749,10 @@
                   {
                     "row": 0,
                     "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
                   }
                 ]
               }
@@ -770,24 +765,24 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Officina meccanica",
-              "Teatro lirico",
-              "Estate al mare",
-              "Biblioteca antica"
+              "Porto commerciale",
+              "Serra tropicale",
+              "Biblioteca silenziosa",
+              "Sala giochi"
             ],
             "answerIndex": 2
           },
-          "themeId": "theme-mare",
-          "themeLink": "Paroliere+ collega VELIERO a Estate al mare",
+          "themeId": "theme-biblioteca",
+          "themeLink": "Paroliere+ collega SILENZIO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "VELIERO",
+          "target": "SILENZIO",
           "payload": {
             "grid": [
               [
                 "E",
-                "V",
-                "E",
+                "S",
+                "I",
                 "O"
               ],
               [
@@ -798,14 +793,14 @@
               ],
               [
                 "E",
+                "N",
                 "E",
-                "I",
                 "D"
               ],
               [
-                "R",
+                "Z",
+                "I",
                 "O",
-                "C",
                 "I"
               ]
             ],
@@ -818,23 +813,23 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Officina meccanica",
-              "Teatro lirico",
-              "Estate al mare",
-              "Biblioteca antica"
+              "Porto commerciale",
+              "Serra tropicale",
+              "Biblioteca silenziosa",
+              "Sala giochi"
             ],
             "answerIndex": 2
           },
-          "themeId": "theme-mare",
-          "themeLink": "Il Palloncino collega COSTUME a Estate al mare",
+          "themeId": "theme-biblioteca",
+          "themeLink": "Il Palloncino collega SEGNALIBRO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "COSTUME",
+          "target": "SEGNALIBRO",
           "payload": {
-            "targetWord": "COSTUME",
-            "targetCategory": "Estate al mare",
-            "targetTranslation": "Estate al mare",
-            "targetDefinition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
+            "targetWord": "SEGNALIBRO",
+            "targetCategory": "Biblioteca silenziosa",
+            "targetTranslation": "Biblioteca silenziosa",
+            "targetDefinition": "Scaffali, pagine e silenzio guidano le parole nascoste.",
             "lives": 6
           }
         },
@@ -844,32 +839,33 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Officina meccanica",
-              "Teatro lirico",
-              "Estate al mare",
-              "Biblioteca antica"
+              "Porto commerciale",
+              "Serra tropicale",
+              "Biblioteca silenziosa",
+              "Sala giochi"
             ],
             "answerIndex": 2
           },
-          "themeId": "theme-mare",
-          "themeLink": "Anagrammi+ collega VACANZA a Estate al mare",
+          "themeId": "theme-biblioteca",
+          "themeLink": "Anagrammi+ collega PRESTITO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "VACANZA",
+          "target": "PRESTITO",
           "payload": {
-            "targetWord": "VACANZA",
+            "targetWord": "PRESTITO",
             "tiles": [
-              "A",
-              "C",
-              "A",
-              "N",
-              "Z",
-              "A",
-              "V"
+              "R",
+              "E",
+              "S",
+              "T",
+              "I",
+              "T",
+              "O",
+              "P"
             ],
-            "translation": "Estate al mare",
-            "definition": "La sfida raccoglie parole da spiaggia, onde, sole e vacanze.",
-            "category": "Estate al mare",
+            "translation": "Biblioteca silenziosa",
+            "definition": "Scaffali, pagine e silenzio guidano le parole nascoste.",
+            "category": "Biblioteca silenziosa",
             "durationSeconds": 60
           }
         }
@@ -881,22 +877,22 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.01.26"
+        "version": "2026.08.12"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.01.26",
+      "catalogVersion": "2026.08.12",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
-        "themeId": "theme-cucina",
-        "label": "Cucina di casa",
-        "explanation": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+        "themeId": "theme-panetteria",
+        "label": "Forno e panetteria",
+        "explanation": "Impasti, lievito e pane caldo reggono il tema di oggi.",
         "choices": [
-          "Giardino segreto",
-          "Laboratorio chimico",
-          "Stazione ferroviaria",
-          "Cucina di casa"
+          "Sala d'aspetto",
+          "Campo da golf",
+          "Officina elettrica",
+          "Forno e panetteria"
         ],
         "answerIndex": 3
       },
@@ -907,20 +903,20 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giardino segreto",
-              "Laboratorio chimico",
-              "Stazione ferroviaria",
-              "Cucina di casa"
+              "Sala d'aspetto",
+              "Campo da golf",
+              "Officina elettrica",
+              "Forno e panetteria"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-cucina",
-          "themeLink": "Paròle collega PASTA a Cucina di casa",
+          "themeId": "theme-panetteria",
+          "themeLink": "Paròle collega FARRO a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "PASTA",
+          "target": "FARRO",
           "payload": {
-            "targetWord": "PASTA",
+            "targetWord": "FARRO",
             "maxAttempts": 6
           }
         },
@@ -930,148 +926,148 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giardino segreto",
-              "Laboratorio chimico",
-              "Stazione ferroviaria",
-              "Cucina di casa"
+              "Sala d'aspetto",
+              "Campo da golf",
+              "Officina elettrica",
+              "Forno e panetteria"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-cucina",
-          "themeLink": "Caccia alle Paròle collega MESTOLO a Cucina di casa",
+          "themeId": "theme-panetteria",
+          "themeLink": "Caccia alle Paròle collega FOCACCIA a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "MESTOLO",
+          "target": "FOCACCIA",
           "payload": {
-            "category": "Cucina di casa",
+            "category": "Forno e panetteria",
             "difficulty": "easy",
             "grid": [
               [
+                "S",
+                "O",
+                "I",
+                "N",
+                "S",
+                "Q",
+                "S",
+                "A",
+                "G",
+                "A"
+              ],
+              [
+                "C",
+                "O",
                 "F",
                 "N",
                 "N",
-                "R",
                 "F",
                 "O",
                 "A",
-                "B",
-                "A",
-                "E"
+                "I",
+                "B"
               ],
               [
+                "I",
+                "A",
                 "I",
                 "A",
                 "U",
-                "I",
                 "L",
                 "E",
-                "M",
-                "T",
-                "R",
-                "N"
-              ],
-              [
-                "D",
-                "A",
-                "D",
                 "C",
-                "I",
-                "E",
-                "O",
-                "E",
-                "B",
+                "T",
                 "G"
               ],
               [
                 "A",
                 "N",
-                "A",
-                "E",
-                "S",
-                "Q",
-                "I",
-                "N",
-                "O",
-                "R"
-              ],
-              [
-                "N",
-                "N",
-                "M",
-                "T",
-                "O",
-                "L",
-                "H",
-                "S",
-                "I",
-                "C"
-              ],
-              [
-                "Z",
-                "O",
-                "O",
-                "T",
-                "G",
-                "V",
-                "B",
-                "V",
-                "A",
-                "O"
-              ],
-              [
-                "E",
-                "L",
-                "E",
-                "A",
-                "I",
-                "O",
                 "D",
                 "A",
-                "U",
+                "D",
+                "I",
+                "C",
+                "O",
+                "R",
+                "B"
+              ],
+              [
+                "B",
+                "G",
+                "A",
+                "N",
+                "A",
+                "A",
+                "Q",
+                "I",
+                "N",
                 "O"
               ],
               [
-                "O",
-                "B",
-                "T",
-                "O",
-                "V",
-                "Q",
+                "A",
                 "R",
-                "Q",
-                "F",
-                "N"
+                "N",
+                "N",
+                "C",
+                "M",
+                "S",
+                "O",
+                "H",
+                "S"
               ],
               [
-                "E",
-                "H",
-                "O",
-                "N",
-                "L",
-                "M",
-                "I",
-                "G",
                 "T",
+                "I",
+                "C",
+                "O",
+                "Z",
+                "S",
+                "O",
+                "V",
+                "B",
                 "V"
               ],
               [
+                "T",
+                "A",
+                "F",
+                "O",
                 "I",
-                "G",
                 "E",
                 "E",
-                "E",
+                "I",
+                "O",
+                "D"
+              ],
+              [
+                "A",
+                "A",
+                "U",
                 "N",
-                "C",
-                "R",
+                "O",
+                "B",
+                "O",
+                "V",
+                "Q",
+                "R"
+              ],
+              [
+                "Q",
+                "F",
+                "O",
+                "N",
                 "E",
-                "L"
+                "H",
+                "O",
+                "N",
+                "L",
+                "M"
               ]
             ],
             "words": [
               {
-                "word": "TAGLIERE",
-                "translation": "Cucina di casa",
-                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+                "word": "FOCACCIA",
+                "translation": "Forno e panetteria",
+                "definition": "Impasti, lievito e pane caldo reggono il tema di oggi.",
                 "row": 7,
                 "col": 2,
                 "direction": "diagonal-up",
@@ -1112,80 +1108,88 @@
                 ]
               },
               {
-                "word": "MESTOLO",
-                "translation": "Cucina di casa",
-                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
-                "row": 1,
-                "col": 6,
+                "word": "GRISSINO",
+                "translation": "Forno e panetteria",
+                "definition": "Impasti, lievito e pane caldo reggono il tema di oggi.",
+                "row": 2,
+                "col": 9,
                 "direction": "diagonal-down-reverse",
-                "points": 70,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 1,
-                    "col": 6
-                  },
-                  {
                     "row": 2,
-                    "col": 5
+                    "col": 9
                   },
                   {
                     "row": 3,
-                    "col": 4
+                    "col": 8
                   },
                   {
                     "row": 4,
-                    "col": 3
+                    "col": 7
                   },
                   {
                     "row": 5,
-                    "col": 2
+                    "col": 6
                   },
                   {
                     "row": 6,
-                    "col": 1
+                    "col": 5
                   },
                   {
                     "row": 7,
-                    "col": 0
+                    "col": 4
+                  },
+                  {
+                    "row": 8,
+                    "col": 3
+                  },
+                  {
+                    "row": 9,
+                    "col": 2
                   }
                 ]
               },
               {
-                "word": "RICETTA",
-                "translation": "Cucina di casa",
-                "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
-                "row": 0,
-                "col": 3,
+                "word": "CIABATTA",
+                "translation": "Forno e panetteria",
+                "definition": "Impasti, lievito e pane caldo reggono il tema di oggi.",
+                "row": 1,
+                "col": 0,
                 "direction": "vertical",
-                "points": 70,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 3
-                  },
-                  {
                     "row": 1,
-                    "col": 3
+                    "col": 0
                   },
                   {
                     "row": 2,
-                    "col": 3
+                    "col": 0
                   },
                   {
                     "row": 3,
-                    "col": 3
+                    "col": 0
                   },
                   {
                     "row": 4,
-                    "col": 3
+                    "col": 0
                   },
                   {
                     "row": 5,
-                    "col": 3
+                    "col": 0
                   },
                   {
                     "row": 6,
-                    "col": 3
+                    "col": 0
+                  },
+                  {
+                    "row": 7,
+                    "col": 0
+                  },
+                  {
+                    "row": 8,
+                    "col": 0
                   }
                 ]
               }
@@ -1198,18 +1202,18 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giardino segreto",
-              "Laboratorio chimico",
-              "Stazione ferroviaria",
-              "Cucina di casa"
+              "Sala d'aspetto",
+              "Campo da golf",
+              "Officina elettrica",
+              "Forno e panetteria"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-cucina",
-          "themeLink": "Paroliere+ collega PENTOLA a Cucina di casa",
+          "themeId": "theme-panetteria",
+          "themeLink": "Paroliere+ collega CROSTA a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "PENTOLA",
+          "target": "CROSTA",
           "payload": {
             "grid": [
               [
@@ -1222,16 +1226,16 @@
                 "O",
                 "O",
                 "T",
-                "L"
+                "A"
               ],
               [
-                "P",
-                "N",
-                "T",
-                "O"
+                "C",
+                "O",
+                "S",
+                "T"
               ],
               [
-                "E",
+                "R",
                 "T",
                 "P",
                 "C"
@@ -1246,23 +1250,23 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giardino segreto",
-              "Laboratorio chimico",
-              "Stazione ferroviaria",
-              "Cucina di casa"
+              "Sala d'aspetto",
+              "Campo da golf",
+              "Officina elettrica",
+              "Forno e panetteria"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-cucina",
-          "themeLink": "Il Palloncino collega COLTELLO a Cucina di casa",
+          "themeId": "theme-panetteria",
+          "themeLink": "Il Palloncino collega MOLLICA a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "COLTELLO",
+          "target": "MOLLICA",
           "payload": {
-            "targetWord": "COLTELLO",
-            "targetCategory": "Cucina di casa",
-            "targetTranslation": "Cucina di casa",
-            "targetDefinition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
+            "targetWord": "MOLLICA",
+            "targetCategory": "Forno e panetteria",
+            "targetTranslation": "Forno e panetteria",
+            "targetDefinition": "Impasti, lievito e pane caldo reggono il tema di oggi.",
             "lives": 6
           }
         },
@@ -1272,31 +1276,32 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giardino segreto",
-              "Laboratorio chimico",
-              "Stazione ferroviaria",
-              "Cucina di casa"
+              "Sala d'aspetto",
+              "Campo da golf",
+              "Officina elettrica",
+              "Forno e panetteria"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-cucina",
-          "themeLink": "Anagrammi+ collega TEGAME a Cucina di casa",
+          "themeId": "theme-panetteria",
+          "themeLink": "Anagrammi+ collega FORNAIO a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "TEGAME",
+          "target": "FORNAIO",
           "payload": {
-            "targetWord": "TEGAME",
+            "targetWord": "FORNAIO",
             "tiles": [
-              "E",
-              "G",
+              "O",
+              "R",
+              "N",
               "A",
-              "M",
-              "E",
-              "T"
+              "I",
+              "O",
+              "F"
             ],
-            "translation": "Cucina di casa",
-            "definition": "Ingredienti, utensili e profumi domestici legano ogni puzzle.",
-            "category": "Cucina di casa",
+            "translation": "Forno e panetteria",
+            "definition": "Impasti, lievito e pane caldo reggono il tema di oggi.",
+            "category": "Forno e panetteria",
             "durationSeconds": 60
           }
         }
@@ -1310,22 +1315,22 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.01.26"
+        "version": "2026.08.12"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.01.26",
+      "catalogVersion": "2026.08.12",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
-        "themeId": "theme-scuola",
-        "label": "Giornata di scuola",
-        "explanation": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+        "themeId": "theme-animali",
+        "label": "Animali selvatici",
+        "explanation": "Zanne, tane e savane lontane formano il filo comune.",
         "choices": [
-          "Giornata di scuola",
-          "Partita allo stadio",
-          "Mercato notturno",
-          "Foresta tropicale"
+          "Animali selvatici",
+          "Panificio all'alba",
+          "Sala d'incisione",
+          "Sartoria di lusso"
         ],
         "answerIndex": 0
       },
@@ -1336,20 +1341,20 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Paròle collega POSTO a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Paròle collega TIGRE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "POSTO",
+          "target": "TIGRE",
           "payload": {
-            "targetWord": "POSTO",
+            "targetWord": "TIGRE",
             "maxAttempts": 6
           }
         },
@@ -1359,32 +1364,92 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Caccia alle Paròle collega LAVAGNA a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Caccia alle Paròle collega ELEFANTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "LAVAGNA",
+          "target": "ELEFANTE",
           "payload": {
-            "category": "Giornata di scuola",
+            "category": "Animali selvatici",
             "difficulty": "easy",
             "grid": [
               [
-                "I",
                 "A",
+                "O",
+                "N",
+                "A",
+                "O",
+                "L",
+                "R",
+                "I",
+                "F",
+                "F"
+              ],
+              [
+                "U",
+                "F",
+                "N",
+                "E",
+                "O",
+                "R",
+                "M",
+                "L",
+                "G",
+                "A"
+              ],
+              [
+                "L",
+                "E",
+                "F",
+                "I",
+                "N",
+                "R",
+                "P",
+                "T",
+                "H",
+                "P"
+              ],
+              [
+                "E",
+                "T",
+                "N",
+                "A",
+                "F",
+                "E",
+                "L",
+                "E",
+                "E",
+                "E"
+              ],
+              [
+                "E",
+                "S",
+                "L",
+                "C",
+                "R",
+                "R",
+                "U",
+                "I",
+                "P",
+                "A"
+              ],
+              [
                 "R",
                 "V",
                 "A",
                 "E",
                 "F",
+                "I",
                 "M",
                 "R",
+                "A",
                 "P"
               ],
               [
@@ -1394,12 +1459,13 @@
                 "N",
                 "E",
                 "U",
+                "G",
                 "O",
-                "F",
-                "Q",
-                "E"
+                "R",
+                "F"
               ],
               [
+                "E",
                 "B",
                 "L",
                 "I",
@@ -1408,10 +1474,10 @@
                 "G",
                 "G",
                 "D",
-                "U",
-                "A"
+                "D"
               ],
               [
+                "A",
                 "S",
                 "V",
                 "D",
@@ -1420,10 +1486,10 @@
                 "R",
                 "B",
                 "O",
-                "A",
-                "E"
+                "O"
               ],
               [
+                "E",
                 "A",
                 "G",
                 "S",
@@ -1432,75 +1498,14 @@
                 "E",
                 "Z",
                 "A",
-                "D",
                 "P"
-              ],
-              [
-                "C",
-                "A",
-                "N",
-                "G",
-                "A",
-                "V",
-                "A",
-                "L",
-                "E",
-                "R"
-              ],
-              [
-                "N",
-                "U",
-                "D",
-                "I",
-                "H",
-                "T",
-                "A",
-                "E",
-                "R",
-                "L"
-              ],
-              [
-                "T",
-                "U",
-                "Q",
-                "O",
-                "L",
-                "L",
-                "M",
-                "O",
-                "N",
-                "D"
-              ],
-              [
-                "P",
-                "L",
-                "C",
-                "A",
-                "I",
-                "I",
-                "L",
-                "O",
-                "O",
-                "B"
-              ],
-              [
-                "N",
-                "C",
-                "O",
-                "M",
-                "P",
-                "I",
-                "T",
-                "O",
-                "I",
-                "A"
               ]
             ],
             "words": [
               {
-                "word": "QUADERNO",
-                "translation": "Giornata di scuola",
-                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+                "word": "GHEPARDO",
+                "translation": "Animali selvatici",
+                "definition": "Zanne, tane e savane lontane formano il filo comune.",
                 "row": 1,
                 "col": 8,
                 "direction": "vertical",
@@ -1541,80 +1546,84 @@
                 ]
               },
               {
-                "word": "LAVAGNA",
-                "translation": "Giornata di scuola",
-                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 5,
+                "word": "ELEFANTE",
+                "translation": "Animali selvatici",
+                "definition": "Zanne, tane e savane lontane formano il filo comune.",
+                "row": 3,
                 "col": 7,
                 "direction": "horizontal-reverse",
-                "points": 70,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 7
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 6
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 5
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 4
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 3
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 2
                   },
                   {
-                    "row": 5,
+                    "row": 3,
                     "col": 1
+                  },
+                  {
+                    "row": 3,
+                    "col": 0
                   }
                 ]
               },
               {
-                "word": "COMPITO",
-                "translation": "Giornata di scuola",
-                "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-                "row": 9,
-                "col": 1,
-                "direction": "horizontal",
+                "word": "GIRAFFA",
+                "translation": "Animali selvatici",
+                "definition": "Zanne, tane e savane lontane formano il filo comune.",
+                "row": 6,
+                "col": 6,
+                "direction": "diagonal-up-reverse",
                 "points": 70,
                 "cells": [
                   {
-                    "row": 9,
-                    "col": 1
-                  },
-                  {
-                    "row": 9,
-                    "col": 2
-                  },
-                  {
-                    "row": 9,
-                    "col": 3
-                  },
-                  {
-                    "row": 9,
-                    "col": 4
-                  },
-                  {
-                    "row": 9,
-                    "col": 5
-                  },
-                  {
-                    "row": 9,
+                    "row": 6,
                     "col": 6
                   },
                   {
-                    "row": 9,
-                    "col": 7
+                    "row": 5,
+                    "col": 5
+                  },
+                  {
+                    "row": 4,
+                    "col": 4
+                  },
+                  {
+                    "row": 3,
+                    "col": 3
+                  },
+                  {
+                    "row": 2,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 0
                   }
                 ]
               }
@@ -1627,18 +1636,18 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Paroliere+ collega LEZIONE a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Paroliere+ collega ZANNA a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "LEZIONE",
+          "target": "ZANNA",
           "payload": {
             "grid": [
               [
@@ -1648,21 +1657,21 @@
                 "C"
               ],
               [
-                "N",
+                "O",
                 "N",
                 "A",
                 "O"
               ],
               [
-                "E",
-                "O",
+                "D",
                 "A",
-                "L"
+                "A",
+                "Z"
               ],
               [
-                "I",
-                "Z",
-                "E",
+                "N",
+                "N",
+                "A",
                 "N"
               ]
             ],
@@ -1675,23 +1684,23 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Il Palloncino collega MAESTRA a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Il Palloncino collega RINOCERONTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "MAESTRA",
+          "target": "RINOCERONTE",
           "payload": {
-            "targetWord": "MAESTRA",
-            "targetCategory": "Giornata di scuola",
-            "targetTranslation": "Giornata di scuola",
-            "targetDefinition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
+            "targetWord": "RINOCERONTE",
+            "targetCategory": "Animali selvatici",
+            "targetTranslation": "Animali selvatici",
+            "targetDefinition": "Zanne, tane e savane lontane formano il filo comune.",
             "lives": 6
           }
         },
@@ -1701,31 +1710,34 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Giornata di scuola",
-              "Partita allo stadio",
-              "Mercato notturno",
-              "Foresta tropicale"
+              "Animali selvatici",
+              "Panificio all'alba",
+              "Sala d'incisione",
+              "Sartoria di lusso"
             ],
             "answerIndex": 0
           },
-          "themeId": "theme-scuola",
-          "themeLink": "Anagrammi+ collega SCUOLA a Giornata di scuola",
+          "themeId": "theme-animali",
+          "themeLink": "Anagrammi+ collega PREDATORE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "SCUOLA",
+          "target": "PREDATORE",
           "payload": {
-            "targetWord": "SCUOLA",
+            "targetWord": "PREDATORE",
             "tiles": [
-              "C",
-              "U",
-              "O",
-              "L",
+              "R",
+              "E",
+              "D",
               "A",
-              "S"
+              "T",
+              "O",
+              "R",
+              "E",
+              "P"
             ],
-            "translation": "Giornata di scuola",
-            "definition": "Ogni parola rimanda a lezioni, quaderni e vita in classe.",
-            "category": "Giornata di scuola",
+            "translation": "Animali selvatici",
+            "definition": "Zanne, tane e savane lontane formano il filo comune.",
+            "category": "Animali selvatici",
             "durationSeconds": 60
           }
         }
@@ -1737,22 +1749,22 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.01.26"
+        "version": "2026.08.12"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.01.26",
+      "catalogVersion": "2026.08.12",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
-        "themeId": "theme-viaggio",
-        "label": "Viaggio in treno",
-        "explanation": "Binari, partenze e biglietti costruiscono il filo comune.",
+        "themeId": "theme-stadio",
+        "label": "Partita allo stadio",
+        "explanation": "Tifo, gol e spalti affollati guidano le parole di oggi.",
         "choices": [
-          "Museo egizio",
-          "Viaggio in treno",
-          "Campo di grano",
-          "Cena in famiglia"
+          "Miniera abbandonata",
+          "Partita allo stadio",
+          "Osservatorio astronomico",
+          "Sala da tavola"
         ],
         "answerIndex": 1
       },
@@ -1763,20 +1775,20 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Museo egizio",
-              "Viaggio in treno",
-              "Campo di grano",
-              "Cena in famiglia"
+              "Miniera abbandonata",
+              "Partita allo stadio",
+              "Osservatorio astronomico",
+              "Sala da tavola"
             ],
             "answerIndex": 1
           },
-          "themeId": "theme-viaggio",
-          "themeLink": "Paròle collega POSTO a Viaggio in treno",
+          "themeId": "theme-stadio",
+          "themeLink": "Paròle collega CAMPO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "POSTO",
+          "target": "CAMPO",
           "payload": {
-            "targetWord": "POSTO",
+            "targetWord": "CAMPO",
             "maxAttempts": 6
           }
         },
@@ -1786,270 +1798,262 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Museo egizio",
-              "Viaggio in treno",
-              "Campo di grano",
-              "Cena in famiglia"
+              "Miniera abbandonata",
+              "Partita allo stadio",
+              "Osservatorio astronomico",
+              "Sala da tavola"
             ],
             "answerIndex": 1
           },
-          "themeId": "theme-viaggio",
-          "themeLink": "Caccia alle Paròle collega STAZIONE a Viaggio in treno",
+          "themeId": "theme-stadio",
+          "themeLink": "Caccia alle Paròle collega ARBITRO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "STAZIONE",
+          "target": "ARBITRO",
           "payload": {
-            "category": "Viaggio in treno",
+            "category": "Partita allo stadio",
             "difficulty": "easy",
             "grid": [
               [
-                "B",
-                "E",
-                "R",
-                "I",
-                "E",
-                "A",
-                "E",
-                "L",
-                "E",
-                "N"
-              ],
-              [
-                "E",
-                "I",
-                "E",
-                "I",
-                "S",
-                "E",
-                "A",
-                "E",
-                "N",
-                "L"
-              ],
-              [
-                "O",
                 "C",
-                "G",
                 "A",
                 "Q",
                 "Z",
                 "U",
                 "O",
-                "O",
-                "D"
-              ],
-              [
+                "D",
                 "L",
                 "N",
-                "I",
-                "L",
-                "L",
-                "O",
-                "I",
-                "L",
-                "I",
                 "I"
               ],
               [
+                "L",
+                "A",
+                "P",
+                "O",
                 "I",
+                "L",
+                "I",
+                "I",
+                "I",
+                "N"
+              ],
+              [
                 "I",
                 "N",
-                "I",
-                "I",
                 "D",
+                "O",
                 "C",
                 "S",
+                "C",
+                "E",
+                "G",
+                "E"
+              ],
+              [
+                "E",
+                "U",
+                "E",
+                "S",
+                "R",
+                "S",
+                "F",
+                "I",
+                "N",
+                "P"
+              ],
+              [
+                "U",
+                "B",
+                "C",
+                "A",
+                "A",
+                "T",
                 "Z",
-                "C"
+                "E",
+                "L",
+                "I"
               ],
               [
-                "E",
+                "D",
+                "I",
                 "G",
+                "P",
+                "P",
+                "T",
+                "I",
+                "E",
+                "C",
+                "O"
+              ],
+              [
+                "H",
+                "R",
+                "G",
+                "I",
+                "E",
+                "R",
+                "R",
+                "E",
+                "R",
+                "L"
+              ],
+              [
+                "U",
+                "T",
                 "E",
                 "E",
                 "E",
-                "E",
-                "S",
-                "S",
+                "L",
+                "D",
+                "R",
+                "R",
+                "E"
+              ],
+              [
+                "N",
+                "R",
                 "A",
-                "F"
+                "R",
+                "B",
+                "I",
+                "T",
+                "R",
+                "O",
+                "E"
               ],
               [
                 "I",
-                "N",
                 "P",
-                "U",
-                "C",
-                "A",
-                "T",
-                "A",
-                "T",
-                "Z"
-              ],
-              [
                 "E",
-                "L",
+                "O",
+                "R",
+                "R",
                 "I",
                 "D",
-                "G",
-                "P",
-                "P",
-                "T",
-                "S",
-                "T"
-              ],
-              [
-                "E",
-                "C",
                 "O",
-                "H",
-                "G",
-                "I",
-                "E",
-                "R",
-                "O",
-                "R"
-              ],
-              [
-                "R",
-                "L",
-                "U",
-                "V",
-                "A",
-                "L",
-                "I",
-                "G",
-                "I",
-                "A"
+                "N"
               ]
             ],
             "words": [
               {
-                "word": "BIGLIETTO",
-                "translation": "Viaggio in treno",
-                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
-                "row": 0,
-                "col": 0,
+                "word": "PORTIERE",
+                "translation": "Partita allo stadio",
+                "definition": "Tifo, gol e spalti affollati guidano le parole di oggi.",
+                "row": 1,
+                "col": 2,
                 "direction": "diagonal-down",
-                "points": 90,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 0
+                    "row": 1,
+                    "col": 2
                   },
                   {
-                    "row": 1,
+                    "row": 2,
+                    "col": 3
+                  },
+                  {
+                    "row": 3,
+                    "col": 4
+                  },
+                  {
+                    "row": 4,
+                    "col": 5
+                  },
+                  {
+                    "row": 5,
+                    "col": 6
+                  },
+                  {
+                    "row": 6,
+                    "col": 7
+                  },
+                  {
+                    "row": 7,
+                    "col": 8
+                  },
+                  {
+                    "row": 8,
+                    "col": 9
+                  }
+                ]
+              },
+              {
+                "word": "TRIBUNA",
+                "translation": "Partita allo stadio",
+                "definition": "Tifo, gol e spalti affollati guidano le parole di oggi.",
+                "row": 7,
+                "col": 1,
+                "direction": "vertical-reverse",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 7,
+                    "col": 1
+                  },
+                  {
+                    "row": 6,
+                    "col": 1
+                  },
+                  {
+                    "row": 5,
+                    "col": 1
+                  },
+                  {
+                    "row": 4,
+                    "col": 1
+                  },
+                  {
+                    "row": 3,
                     "col": 1
                   },
                   {
                     "row": 2,
+                    "col": 1
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  }
+                ]
+              },
+              {
+                "word": "ARBITRO",
+                "translation": "Partita allo stadio",
+                "definition": "Tifo, gol e spalti affollati guidano le parole di oggi.",
+                "row": 8,
+                "col": 2,
+                "direction": "horizontal",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 8,
                     "col": 2
                   },
                   {
-                    "row": 3,
+                    "row": 8,
                     "col": 3
                   },
                   {
-                    "row": 4,
+                    "row": 8,
                     "col": 4
                   },
                   {
-                    "row": 5,
+                    "row": 8,
                     "col": 5
                   },
                   {
-                    "row": 6,
+                    "row": 8,
                     "col": 6
                   },
                   {
-                    "row": 7,
+                    "row": 8,
                     "col": 7
                   },
                   {
                     "row": 8,
                     "col": 8
-                  }
-                ]
-              },
-              {
-                "word": "STAZIONE",
-                "translation": "Viaggio in treno",
-                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
-                "row": 7,
-                "col": 8,
-                "direction": "vertical-reverse",
-                "points": 80,
-                "cells": [
-                  {
-                    "row": 7,
-                    "col": 8
-                  },
-                  {
-                    "row": 6,
-                    "col": 8
-                  },
-                  {
-                    "row": 5,
-                    "col": 8
-                  },
-                  {
-                    "row": 4,
-                    "col": 8
-                  },
-                  {
-                    "row": 3,
-                    "col": 8
-                  },
-                  {
-                    "row": 2,
-                    "col": 8
-                  },
-                  {
-                    "row": 1,
-                    "col": 8
-                  },
-                  {
-                    "row": 0,
-                    "col": 8
-                  }
-                ]
-              },
-              {
-                "word": "VALIGIA",
-                "translation": "Viaggio in treno",
-                "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
-                "row": 9,
-                "col": 3,
-                "direction": "horizontal",
-                "points": 70,
-                "cells": [
-                  {
-                    "row": 9,
-                    "col": 3
-                  },
-                  {
-                    "row": 9,
-                    "col": 4
-                  },
-                  {
-                    "row": 9,
-                    "col": 5
-                  },
-                  {
-                    "row": 9,
-                    "col": 6
-                  },
-                  {
-                    "row": 9,
-                    "col": 7
-                  },
-                  {
-                    "row": 9,
-                    "col": 8
-                  },
-                  {
-                    "row": 9,
-                    "col": 9
                   }
                 ]
               }
@@ -2062,42 +2066,42 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Museo egizio",
-              "Viaggio in treno",
-              "Campo di grano",
-              "Cena in famiglia"
+              "Miniera abbandonata",
+              "Partita allo stadio",
+              "Osservatorio astronomico",
+              "Sala da tavola"
             ],
             "answerIndex": 1
           },
-          "themeId": "theme-viaggio",
-          "themeLink": "Paroliere+ collega PARTENZA a Viaggio in treno",
+          "themeId": "theme-stadio",
+          "themeLink": "Paroliere+ collega FISCHIO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "PARTENZA",
+          "target": "FISCHIO",
           "payload": {
             "grid": [
               [
                 "A",
                 "L",
                 "Z",
-                "A"
+                "I"
               ],
               [
-                "A",
+                "F",
                 "D",
-                "R",
-                "P"
+                "S",
+                "F"
               ],
               [
-                "Z",
+                "O",
                 "S",
-                "T",
+                "C",
                 "Q"
               ],
               [
                 "L",
-                "N",
-                "E",
+                "I",
+                "H",
                 "U"
               ]
             ],
@@ -2110,23 +2114,23 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Museo egizio",
-              "Viaggio in treno",
-              "Campo di grano",
-              "Cena in famiglia"
+              "Miniera abbandonata",
+              "Partita allo stadio",
+              "Osservatorio astronomico",
+              "Sala da tavola"
             ],
             "answerIndex": 1
           },
-          "themeId": "theme-viaggio",
-          "themeLink": "Il Palloncino collega CAPOTRENO a Viaggio in treno",
+          "themeId": "theme-stadio",
+          "themeLink": "Il Palloncino collega CAMPIONATO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "CAPOTRENO",
+          "target": "CAMPIONATO",
           "payload": {
-            "targetWord": "CAPOTRENO",
-            "targetCategory": "Viaggio in treno",
-            "targetTranslation": "Viaggio in treno",
-            "targetDefinition": "Binari, partenze e biglietti costruiscono il filo comune.",
+            "targetWord": "CAMPIONATO",
+            "targetCategory": "Partita allo stadio",
+            "targetTranslation": "Partita allo stadio",
+            "targetDefinition": "Tifo, gol e spalti affollati guidano le parole di oggi.",
             "lives": 6
           }
         },
@@ -2136,32 +2140,32 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Museo egizio",
-              "Viaggio in treno",
-              "Campo di grano",
-              "Cena in famiglia"
+              "Miniera abbandonata",
+              "Partita allo stadio",
+              "Osservatorio astronomico",
+              "Sala da tavola"
             ],
             "answerIndex": 1
           },
-          "themeId": "theme-viaggio",
-          "themeLink": "Anagrammi+ collega RITORNO a Viaggio in treno",
+          "themeId": "theme-stadio",
+          "themeLink": "Anagrammi+ collega PALLONE a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "RITORNO",
+          "target": "PALLONE",
           "payload": {
-            "targetWord": "RITORNO",
+            "targetWord": "PALLONE",
             "tiles": [
-              "I",
-              "T",
+              "A",
+              "L",
+              "L",
               "O",
-              "R",
               "N",
-              "O",
-              "R"
+              "E",
+              "P"
             ],
-            "translation": "Viaggio in treno",
-            "definition": "Binari, partenze e biglietti costruiscono il filo comune.",
-            "category": "Viaggio in treno",
+            "translation": "Partita allo stadio",
+            "definition": "Tifo, gol e spalti affollati guidano le parole di oggi.",
+            "category": "Partita allo stadio",
             "durationSeconds": 60
           }
         }
@@ -2173,22 +2177,22 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.01.26"
+        "version": "2026.08.12"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.01.26",
+      "catalogVersion": "2026.08.12",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
-        "themeId": "theme-mercato",
-        "label": "Mercato italiano",
-        "explanation": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+        "themeId": "theme-moda",
+        "label": "Vetrine di moda",
+        "explanation": "Tessuti, sfilate e specchi lucidi legano ogni parola.",
         "choices": [
-          "Viaggio spaziale",
-          "Cinema classico",
-          "Montagna innevata",
-          "Mercato italiano"
+          "Sala macchinisti",
+          "Rifugio di montagna",
+          "Cava di pietra",
+          "Vetrine di moda"
         ],
         "answerIndex": 3
       },
@@ -2199,20 +2203,20 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Viaggio spaziale",
-              "Cinema classico",
-              "Montagna innevata",
-              "Mercato italiano"
+              "Sala macchinisti",
+              "Rifugio di montagna",
+              "Cava di pietra",
+              "Vetrine di moda"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-mercato",
-          "themeLink": "Paròle collega SPESA a Mercato italiano",
+          "themeId": "theme-moda",
+          "themeLink": "Paròle collega GONNA a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "SPESA",
+          "target": "GONNA",
           "payload": {
-            "targetWord": "SPESA",
+            "targetWord": "GONNA",
             "maxAttempts": 6
           }
         },
@@ -2222,117 +2226,129 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Viaggio spaziale",
-              "Cinema classico",
-              "Montagna innevata",
-              "Mercato italiano"
+              "Sala macchinisti",
+              "Rifugio di montagna",
+              "Cava di pietra",
+              "Vetrine di moda"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-mercato",
-          "themeLink": "Caccia alle Paròle collega PANE a Mercato italiano",
+          "themeId": "theme-moda",
+          "themeLink": "Caccia alle Paròle collega TESSUTO a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "PANE",
+          "target": "TESSUTO",
           "payload": {
-            "category": "Mercato italiano",
+            "category": "Vetrine di moda",
             "difficulty": "easy",
             "grid": [
               [
+                "R",
+                "G",
+                "E",
+                "H",
+                "Z",
+                "M",
                 "A",
                 "F",
-                "P",
                 "D",
-                "R",
-                "I",
-                "R",
-                "D",
-                "M",
-                "D"
+                "R"
               ],
               [
                 "O",
-                "T",
-                "U",
                 "A",
+                "I",
                 "R",
-                "E",
-                "P",
+                "O",
+                "T",
+                "R",
+                "A",
+                "S",
+                "I"
+              ],
+              [
+                "T",
                 "N",
+                "R",
+                "D",
+                "M",
+                "D",
+                "O",
+                "U",
+                "R",
+                "E"
+              ],
+              [
+                "P",
+                "E",
+                "I",
+                "N",
+                "I",
+                "E",
+                "O",
+                "G",
                 "I",
                 "E"
               ],
               [
                 "O",
-                "G",
-                "T",
-                "I",
-                "N",
-                "E",
                 "O",
-                "O",
+                "S",
                 "R",
-                "L"
+                "R",
+                "L",
+                "R",
+                "N",
+                "O",
+                "I"
               ],
               [
-                "R",
-                "N",
-                "O",
-                "U",
-                "I",
-                "E",
                 "O",
                 "P",
                 "O",
-                "R"
-              ],
-              [
+                "S",
+                "E",
+                "R",
                 "L",
                 "L",
                 "M",
-                "C",
-                "R",
-                "L",
-                "I",
-                "E",
-                "R",
                 "C"
               ],
               [
+                "L",
+                "I",
+                "E",
+                "R",
+                "U",
+                "M",
+                "C",
                 "M",
                 "U",
-                "A",
+                "A"
+              ],
+              [
                 "S",
                 "P",
-                "F",
                 "E",
                 "I",
                 "T",
-                "L"
+                "T",
+                "A",
+                "L",
+                "M",
+                "P"
               ],
               [
-                "M",
-                "P",
                 "I",
                 "R",
                 "T",
                 "E",
                 "B",
                 "O",
+                "O",
+                "C",
                 "R",
                 "A"
-              ],
-              [
-                "A",
-                "L",
-                "L",
-                "E",
-                "R",
-                "A",
-                "C",
-                "N",
-                "A",
-                "B"
               ],
               [
                 "A",
@@ -2345,40 +2361,63 @@
                 "T",
                 "E",
                 "I"
-              ],
-              [
-                "G",
-                "E",
-                "I",
-                "U",
-                "I",
-                "O",
-                "O",
-                "V",
-                "A",
-                "A"
               ]
             ],
             "words": [
               {
-                "word": "BANCARELLA",
-                "translation": "Mercato italiano",
-                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-                "row": 7,
-                "col": 9,
+                "word": "SARTORIA",
+                "translation": "Vetrine di moda",
+                "definition": "Tessuti, sfilate e specchi lucidi legano ogni parola.",
+                "row": 1,
+                "col": 8,
                 "direction": "horizontal-reverse",
-                "points": 100,
+                "points": 80,
                 "cells": [
                   {
-                    "row": 7,
-                    "col": 9
-                  },
-                  {
-                    "row": 7,
+                    "row": 1,
                     "col": 8
                   },
                   {
-                    "row": 7,
+                    "row": 1,
+                    "col": 7
+                  },
+                  {
+                    "row": 1,
+                    "col": 6
+                  },
+                  {
+                    "row": 1,
+                    "col": 5
+                  },
+                  {
+                    "row": 1,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  },
+                  {
+                    "row": 1,
+                    "col": 2
+                  },
+                  {
+                    "row": 1,
+                    "col": 1
+                  }
+                ]
+              },
+              {
+                "word": "CAMERINO",
+                "translation": "Vetrine di moda",
+                "definition": "Tessuti, sfilate e specchi lucidi legano ogni parola.",
+                "row": 8,
+                "col": 7,
+                "direction": "diagonal-up-reverse",
+                "points": 80,
+                "cells": [
+                  {
+                    "row": 8,
                     "col": 7
                   },
                   {
@@ -2386,90 +2425,67 @@
                     "col": 6
                   },
                   {
-                    "row": 7,
+                    "row": 6,
                     "col": 5
                   },
-                  {
-                    "row": 7,
-                    "col": 4
-                  },
-                  {
-                    "row": 7,
-                    "col": 3
-                  },
-                  {
-                    "row": 7,
-                    "col": 2
-                  },
-                  {
-                    "row": 7,
-                    "col": 1
-                  },
-                  {
-                    "row": 7,
-                    "col": 0
-                  }
-                ]
-              },
-              {
-                "word": "FRUTTA",
-                "translation": "Mercato italiano",
-                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-                "row": 5,
-                "col": 5,
-                "direction": "diagonal-up-reverse",
-                "points": 60,
-                "cells": [
                   {
                     "row": 5,
-                    "col": 5
+                    "col": 4
                   },
                   {
                     "row": 4,
-                    "col": 4
-                  },
-                  {
-                    "row": 3,
                     "col": 3
                   },
                   {
-                    "row": 2,
+                    "row": 3,
                     "col": 2
                   },
                   {
-                    "row": 1,
+                    "row": 2,
                     "col": 1
                   },
                   {
-                    "row": 0,
+                    "row": 1,
                     "col": 0
                   }
                 ]
               },
               {
-                "word": "PANE",
-                "translation": "Mercato italiano",
-                "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-                "row": 0,
-                "col": 2,
+                "word": "TESSUTO",
+                "translation": "Vetrine di moda",
+                "definition": "Tessuti, sfilate e specchi lucidi legano ogni parola.",
+                "row": 2,
+                "col": 0,
                 "direction": "diagonal-down",
-                "points": 40,
+                "points": 70,
                 "cells": [
                   {
-                    "row": 0,
-                    "col": 2
-                  },
-                  {
-                    "row": 1,
-                    "col": 3
-                  },
-                  {
                     "row": 2,
-                    "col": 4
+                    "col": 0
                   },
                   {
                     "row": 3,
+                    "col": 1
+                  },
+                  {
+                    "row": 4,
+                    "col": 2
+                  },
+                  {
+                    "row": 5,
+                    "col": 3
+                  },
+                  {
+                    "row": 6,
+                    "col": 4
+                  },
+                  {
+                    "row": 7,
                     "col": 5
+                  },
+                  {
+                    "row": 8,
+                    "col": 6
                   }
                 ]
               }
@@ -2482,18 +2498,18 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Viaggio spaziale",
-              "Cinema classico",
-              "Montagna innevata",
-              "Mercato italiano"
+              "Sala macchinisti",
+              "Rifugio di montagna",
+              "Cava di pietra",
+              "Vetrine di moda"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-mercato",
-          "themeLink": "Paroliere+ collega VENDERE a Mercato italiano",
+          "themeId": "theme-moda",
+          "themeLink": "Paroliere+ collega BOTTONE a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "VENDERE",
+          "target": "BOTTONE",
           "payload": {
             "grid": [
               [
@@ -2503,20 +2519,20 @@
                 "N"
               ],
               [
-                "E",
-                "V",
+                "O",
+                "B",
                 "T",
-                "R"
+                "N"
               ],
               [
-                "N",
+                "T",
                 "I",
-                "E",
+                "O",
                 "E"
               ],
               [
                 "N",
-                "D",
+                "T",
                 "A",
                 "E"
               ]
@@ -2530,23 +2546,23 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Viaggio spaziale",
-              "Cinema classico",
-              "Montagna innevata",
-              "Mercato italiano"
+              "Sala macchinisti",
+              "Rifugio di montagna",
+              "Cava di pietra",
+              "Vetrine di moda"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-mercato",
-          "themeLink": "Il Palloncino collega FORMAGGIO a Mercato italiano",
+          "themeId": "theme-moda",
+          "themeLink": "Il Palloncino collega PASSERELLA a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "FORMAGGIO",
+          "target": "PASSERELLA",
           "payload": {
-            "targetWord": "FORMAGGIO",
-            "targetCategory": "Mercato italiano",
-            "targetTranslation": "Mercato italiano",
-            "targetDefinition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
+            "targetWord": "PASSERELLA",
+            "targetCategory": "Vetrine di moda",
+            "targetTranslation": "Vetrine di moda",
+            "targetDefinition": "Tessuti, sfilate e specchi lucidi legano ogni parola.",
             "lives": 6
           }
         },
@@ -2556,32 +2572,33 @@
           "themeQuiz": {
             "prompt": "Quale tema nascosto collega i cinque giochi di oggi?",
             "choices": [
-              "Viaggio spaziale",
-              "Cinema classico",
-              "Montagna innevata",
-              "Mercato italiano"
+              "Sala macchinisti",
+              "Rifugio di montagna",
+              "Cava di pietra",
+              "Vetrine di moda"
             ],
             "answerIndex": 3
           },
-          "themeId": "theme-mercato",
-          "themeLink": "Anagrammi+ collega CLIENTE a Mercato italiano",
+          "themeId": "theme-moda",
+          "themeLink": "Anagrammi+ collega CUCITURA a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
           "dictionaryVersion": "it-bundled-v2",
-          "target": "CLIENTE",
+          "target": "CUCITURA",
           "payload": {
-            "targetWord": "CLIENTE",
+            "targetWord": "CUCITURA",
             "tiles": [
-              "L",
+              "U",
+              "C",
               "I",
-              "E",
-              "N",
               "T",
-              "E",
+              "U",
+              "R",
+              "A",
               "C"
             ],
-            "translation": "Mercato italiano",
-            "definition": "Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.",
-            "category": "Mercato italiano",
+            "translation": "Vetrine di moda",
+            "definition": "Tessuti, sfilate e specchi lucidi legano ogni parola.",
+            "category": "Vetrine di moda",
             "durationSeconds": 60
           }
         }

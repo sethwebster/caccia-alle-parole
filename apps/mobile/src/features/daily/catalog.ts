@@ -14,6 +14,7 @@ import {
 	type ChallengeId,
 	type DailyChallengeBundle,
 } from './types';
+import { CATALOG_ROTATION_BASE } from './catalog-content';
 import {
 	buildCatalogPuzzle,
 	buildCatalogTheme,
@@ -25,9 +26,9 @@ import {
 export type { DailyCatalogPuzzlePayload, DailyCatalogPuzzleSpec } from './catalog-puzzle-builder';
 
 const CATALOG_EPOCH = makeCatalogEpoch('daily-v1');
-const CATALOG_VERSION = makeCatalogVersion('2026.01.26');
-const RELEASE_BASE_CHALLENGE_ID = makeReleaseBaseChallengeId('2026-01-26');
-const SUPPORTED_FROM_CHALLENGE_ID = makeChallengeId('2026-01-26');
+const CATALOG_VERSION = makeCatalogVersion('2026.08.12');
+const RELEASE_BASE_CHALLENGE_ID = makeReleaseBaseChallengeId(CATALOG_ROTATION_BASE);
+const SUPPORTED_FROM_CHALLENGE_ID = makeChallengeId(CATALOG_ROTATION_BASE);
 export const SUPPORTED_FORWARD_WINDOW_DAYS = 365;
 const SUPPORTED_THROUGH_CHALLENGE_ID = challengeIdAfterDays(RELEASE_BASE_CHALLENGE_ID, SUPPORTED_FORWARD_WINDOW_DAYS);
 export const DAILY_CATALOG_SCHEMA_VERSION = 1;

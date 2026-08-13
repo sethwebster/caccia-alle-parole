@@ -9,6 +9,7 @@ import type {
 } from './types';
 
 const LOCAL_CIVIL_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export class InvalidLocalCivilDateError extends Error {
 	readonly name = 'InvalidLocalCivilDateError';
@@ -37,6 +38,15 @@ export function streakDateForDate(date = new Date()): StreakDate {
 export function nextStreakDate(streakDate: StreakDate): StreakDate {
 	const { year, month, day } = localCivilParts(streakDate);
 	return streakDateForDate(new Date(year, month - 1, day + 1));
+}
+
+/**
+ * Whole days between a civil date and the civil epoch, counted in UTC so a DST
+ * shift can never add or drop a day from a rotation offset.
+ */
+export function civilDayIndex(date: LocalCivilDate): number {
+	const { year, month, day } = localCivilParts(date);
+	return Math.round(Date.UTC(year, month - 1, day) / DAY_MS);
 }
 
 export function challengeIdAfterDays(challengeId: ChallengeId, days: number): ChallengeId {

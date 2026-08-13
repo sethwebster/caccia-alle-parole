@@ -29,6 +29,15 @@ class MemoryStorage {
 
 const challengeId = makeChallengeId('2026-07-09');
 
+/** The frozen catalog snapshot is the content canary; these tests assert wiring and determinism. */
+function catalogTarget(id: ChallengeId = challengeId): string {
+	const resolution = resolveDailyChallengeBundle({ challengeId: id });
+	if (resolution.kind !== 'ready') throw new Error('expected ready daily catalog');
+	const puzzle = resolution.bundle.puzzles.find((candidate) => candidate.key === 'parola');
+	if (puzzle === undefined) throw new Error('expected Paròle puzzle');
+	return puzzle.target;
+}
+
 function queueFor(storage: MemoryStorage): DailyProgressMutationQueue {
 	return new DailyProgressMutationQueue(createDailyProgressStore(storage));
 }
@@ -55,8 +64,8 @@ describe('Paròle Daily Challenge source', () => {
 		const first = createParolaChallengeState({ challengeId });
 		const second = createParolaChallengeState({ challengeId, today: new Date('2026-07-08T23:30:00.000Z') });
 
-		expect(first.state.targetWord).toBe('PASTA');
-		expect(first.state.targetWordData).toMatchObject({ word: 'PASTA' });
+		expect(first.state.targetWord).toBe(catalogTarget());
+		expect(first.state.targetWordData).toMatchObject({ word: catalogTarget() });
 		expect(first.state.date).toBe('2026-07-09');
 		expect(second).toEqual(first);
 	});
@@ -65,8 +74,8 @@ describe('Paròle Daily Challenge source', () => {
 		const beforeUtcMidnight = createParolaChallengeState({ challengeId, today: new Date('2026-07-09T23:59:00.000Z') });
 		const afterUtcMidnight = createParolaChallengeState({ challengeId, today: new Date('2026-07-10T00:01:00.000Z') });
 
-		expect(beforeUtcMidnight.state.targetWord).toBe('PASTA');
-		expect(afterUtcMidnight.state.targetWord).toBe('PASTA');
+		expect(beforeUtcMidnight.state.targetWord).toBe(catalogTarget());
+		expect(afterUtcMidnight.state.targetWord).toBe(catalogTarget());
 	});
 
 	it('rejects non-five-letter Paròle catalog targets during hydration', () => {
@@ -144,9 +153,10 @@ describe('Paròle Daily Challenge terminal persistence', () => {
 describe('Paròle legacy progress migration', () => {
 	it('migrates legacy wordleGameState only when date and target match the bundled challenge', async () => {
 		const storage = new MemoryStorage();
+		const target = catalogTarget();
 		storage.values.set(
 			'wordleGameState',
-			JSON.stringify({ targetWord: 'PASTA', targetWordData: { word: 'PASTA' }, guesses: [{ word: 'PASTA' }], currentGuess: '', gameState: 'won', date: '2026-07-09' }),
+			JSON.stringify({ targetWord: target, targetWordData: { word: target }, guesses: [{ word: target }], currentGuess: '', gameState: 'won', date: '2026-07-09' }),
 		);
 
 		const result = await migrateLegacyParolaState({
@@ -162,7 +172,7 @@ describe('Paròle legacy progress migration', () => {
 		const progress = await expectReadyProgress(storage);
 		expect(progress.challenges[0]).toMatchObject({ migrationStatus: 'migrated' });
 		expect(progress.challenges[0]?.officialAttempt?.terminalEvents[0]).toMatchObject({ attemptId: 'legacy-official', reason: 'win' });
-		expect(storage.values.get('wordleGameState')).toContain('PASTA');
+		expect(storage.values.get('wordleGameState')).toContain(target);
 	});
 
 	it('ignores stale or mismatched legacy saves without overwriting challenge records', async () => {
