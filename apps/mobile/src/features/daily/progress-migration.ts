@@ -1,6 +1,6 @@
 import { normalizeWordSearchDailyChallengePayload } from '@/features/caccia/word-search-daily';
 
-import { CATALOG_METADATA, validateDailyChallengeBundle, type DailyCatalogBundle, type DailyCatalogPuzzlePayload } from './catalog';
+import { CATALOG_METADATA, validateArchivedChallengeBundleShape, type DailyCatalogBundle, type DailyCatalogPuzzlePayload } from './catalog';
 import { makeReleaseBaseChallengeId } from './date';
 import { parseDailyProgress } from './progress-parse';
 import { DAILY_PROGRESS_SCHEMA_VERSION, type DailyProgress, type DailyProgressQuarantineReason } from './progress-model';
@@ -85,7 +85,7 @@ function normalizeCanonicalBundleSnapshot(bundleSnapshot: DailyCatalogBundle):
 		changed = changed || normalized.changed;
 	}
 	const normalizedBundle = changed ? { ...bundleSnapshot, puzzles } : bundleSnapshot;
-	return validateDailyChallengeBundle(normalizedBundle).kind === 'valid'
+	return validateArchivedChallengeBundleShape(normalizedBundle).kind === 'valid'
 		? { kind: 'valid', bundleSnapshot: normalizedBundle, changed }
 		: { kind: 'invalid' };
 }
@@ -140,6 +140,10 @@ function isValidReleaseBase(value: unknown): boolean {
 
 function canDeriveBundledReleaseBase(value: Record<string, unknown>): boolean {
 	if (!isRecord(value.source) || value.source.kind !== 'bundledCatalog') return false;
+	// Repairing a missing release base stays deliberately strict: if the snapshot
+	// does not match the current catalog exactly we cannot safely invent one, so
+	// it is quarantined instead. Legitimate older snapshots already carry a valid
+	// release base and never reach here.
 	return value.source.epoch === CATALOG_METADATA.catalogEpoch
 		&& value.source.version === CATALOG_METADATA.catalogVersion
 		&& value.catalogEpoch === CATALOG_METADATA.catalogEpoch
@@ -150,7 +154,7 @@ function canDeriveBundledReleaseBase(value: Record<string, unknown>): boolean {
 }
 
 function hasValidBundleSnapshots(progress: DailyProgress): boolean {
-	return progress.challenges.every((record) => record.bundleSnapshot === undefined || validateDailyChallengeBundle(record.bundleSnapshot).kind === 'valid');
+	return progress.challenges.every((record) => record.bundleSnapshot === undefined || validateArchivedChallengeBundleShape(record.bundleSnapshot).kind === 'valid');
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

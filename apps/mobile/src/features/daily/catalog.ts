@@ -108,7 +108,19 @@ export function generateChallengeSnapshots() {
 }
 
 export function validateDailyChallengeBundle(bundle: DailyCatalogBundle): DailyCatalogValidation {
-	if (bundle.catalogEpoch !== CATALOG_METADATA.catalogEpoch || bundle.catalogVersion !== CATALOG_METADATA.catalogVersion) {
+	if (bundle.catalogVersion !== CATALOG_METADATA.catalogVersion) return { kind: 'invalid', reason: 'catalog metadata mismatch' };
+	return validateArchivedChallengeBundleShape(bundle);
+}
+
+/**
+ * Stored snapshots outlive the catalog that wrote them — a content release bumps
+ * catalogVersion, and every archived day still has the old one. Version equality
+ * is therefore only meaningful for freshly generated bundles; applying it to
+ * stored progress quarantines the player's entire history. Epoch and structure
+ * still have to hold.
+ */
+export function validateArchivedChallengeBundleShape(bundle: DailyCatalogBundle): DailyCatalogValidation {
+	if (bundle.catalogEpoch !== CATALOG_METADATA.catalogEpoch) {
 		return { kind: 'invalid', reason: 'catalog metadata mismatch' };
 	}
 	if (bundle.theme.choices.length !== 4 || new Set(bundle.theme.choices).size !== 4) {

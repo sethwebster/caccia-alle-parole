@@ -1,4 +1,4 @@
-import { resolveDailyChallengeBundle } from './catalog';
+import { CATALOG_METADATA, resolveDailyChallengeBundle } from './catalog';
 import { challengeIdForDate } from './date';
 import { requireDailyEntitlementReader, type DailyEntitlementReader } from './entitlement-reader';
 import { activeAttemptMatches, buildActiveAttemptState, deriveDailyChallengeSnapshot, makeAttemptContext, sameAttemptContext } from './orchestrator-machine';
@@ -88,7 +88,7 @@ export class DailyChallengeOrchestrator {
 			const archived = archivedSnapshotFor(progress.value, resolution.challengeId);
 			return archived === undefined ? this.setSnapshot(resolution) : this.setSnapshot(deriveDailyChallengeSnapshot({ bundle: archived, progress: progress.value, mode: 'official' }));
 		}
-		const bundle = archivedSnapshotFor(progress.value, resolution.bundle.challengeId) ?? resolution.bundle;
+		const bundle = liveArchivedSnapshotFor(progress.value, resolution.bundle.challengeId) ?? resolution.bundle;
 		return this.setSnapshot(deriveDailyChallengeSnapshot({ bundle, progress: progress.value, mode: 'official' }));
 	}
 
@@ -261,6 +261,26 @@ function officialWinCount(snapshot: DailyChallengeReadySnapshot): number {
 function archivedSnapshotFor(progress: DailyProgress, challengeId: ChallengeId) {
 	const record = progress.challenges.find((candidate) => candidate.challengeId === challengeId);
 	return record?.bundleSnapshot;
+}
+
+/**
+ * A day's puzzles are frozen the moment one is started, so a finished result can
+ * never be re-scored against different content. Nothing is worth protecting
+ * before the first terminal result though — challenge mode persists no in-game
+ * state — so a snapshot left behind by a superseded catalog gives way to the
+ * current one. Without this, a content fix never reaches a day the player had
+ * already opened, and that day stays stale forever.
+ */
+function liveArchivedSnapshotFor(progress: DailyProgress, challengeId: ChallengeId) {
+	const snapshot = archivedSnapshotFor(progress, challengeId);
+	if (snapshot === undefined || snapshot.catalogVersion === CATALOG_METADATA.catalogVersion) return snapshot;
+	return hasRecordedTerminal(progress, challengeId) ? snapshot : undefined;
+}
+
+function hasRecordedTerminal(progress: DailyProgress, challengeId: ChallengeId): boolean {
+	const record = progress.challenges.find((candidate) => candidate.challengeId === challengeId);
+	if (record === undefined) return false;
+	return (record.officialAttempt?.terminalEvents.length ?? 0) > 0 || record.replayAttempts.some((attempt) => attempt.terminalEvents.length > 0);
 }
 
 function makeReplayAttemptContext(input: { readonly challengeId: ChallengeId; readonly puzzleKey: TerminalAttemptContext['puzzleKey']; readonly attemptId: string }): TerminalAttemptContext {
