@@ -14,6 +14,7 @@ import { MAX_USERNAME_LENGTH, useUsername } from '@/features/profile/use-usernam
 import { usePlayerStats } from '@/features/stats/use-player-stats';
 import { LEGAL_URLS, SUBSCRIPTION_COPY } from '@/features/subscription/subscription-copy';
 import { useSubscriptionSnapshot } from '@/features/subscription/use-entitlement';
+import { UpdateCheckCard } from '@/features/updates/update-check-card';
 import { useGameSurface } from '@/hooks/use-game-surface';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
@@ -90,6 +91,7 @@ export default function ProfiloScreen() {
         </View>
         <ArchiveAccessCard compact />
         <SubscriptionCard />
+        <UpdateCheckCard />
       </ScrollView>
     </View>
   );

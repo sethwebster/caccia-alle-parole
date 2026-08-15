@@ -2,19 +2,15 @@ import * as Updates from 'expo-updates';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 
+import { getUpdateOfferStore, useDismissedOffer } from './update-offer-store';
 import { selectUpdatePrompt, updateOfferKey, type UpdatePromptModel } from './update-prompt-model';
+import { UPDATES_ENABLED } from './updates-runtime';
 
 export type UpdatePromptController = {
 	readonly model: UpdatePromptModel;
 	readonly onPrimary: () => void;
 	readonly onDismiss: () => void;
 };
-
-/**
- * checkForUpdateAsync/fetchUpdateAsync reject outright in dev builds and Expo Go,
- * so the prompt stays off there rather than surfacing an error the player cannot act on.
- */
-const UPDATES_ENABLED = Updates.isEnabled && !__DEV__;
 
 /** Re-checks on foreground, as the Expo docs advise, instead of polling on a timer. */
 function useForegroundUpdateCheck(enabled: boolean): void {
@@ -33,7 +29,7 @@ function useForegroundUpdateCheck(enabled: boolean): void {
 
 export function useUpdatePrompt(): UpdatePromptController {
 	const { isUpdateAvailable, isUpdatePending, isDownloading, isRestarting, availableUpdate, downloadedUpdate } = Updates.useUpdates();
-	const [dismissedOffer, setDismissedOffer] = useState<string>();
+	const dismissedOffer = useDismissedOffer();
 	// Only a failure the player actually triggered is worth a card; a failed
 	// startup download would otherwise greet them with an error they never asked for.
 	const [failed, setFailed] = useState(false);
@@ -71,7 +67,7 @@ export function useUpdatePrompt(): UpdatePromptController {
 	const onDismiss = useCallback(() => {
 		if (!model.dismissible) return;
 		setFailed(false);
-		setDismissedOffer(offerKey);
+		getUpdateOfferStore().dismiss(offerKey);
 	}, [model.dismissible, offerKey]);
 
 	return { model, onPrimary, onDismiss };

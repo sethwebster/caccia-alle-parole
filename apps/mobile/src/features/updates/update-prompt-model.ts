@@ -29,6 +29,55 @@ export const UPDATE_PROMPT_COPY = {
 	},
 } as const;
 
+export const UPDATE_CHECK_COPY = {
+	overline: 'APP',
+	title: 'Aggiornamenti',
+	action: 'Controlla aggiornamenti',
+	checking: 'Controllo in corso…',
+	upToDate: 'Sei già aggiornato.',
+	found: 'Aggiornamento trovato.',
+	failed: 'Controllo non riuscito. Riprova più tardi.',
+} as const;
+
+export type UpdateCheckStatus = 'idle' | 'checking' | 'upToDate' | 'found' | 'failed';
+
+export type UpdateCheckPhase = 'idle' | 'checking' | 'checked' | 'failed';
+
+/**
+ * Reads the outcome from live state rather than the check's own return value.
+ * checkForUpdateAsync reports nothing new once a bundle has already been
+ * downloaded, so trusting it alone would answer "sei già aggiornato" while an
+ * update sits waiting to be applied.
+ */
+export function updateCheckStatus(input: { readonly phase: UpdateCheckPhase; readonly isUpdateAvailable: boolean; readonly isUpdatePending: boolean }): UpdateCheckStatus {
+	if (input.phase === 'checking') return 'checking';
+	if (input.phase === 'failed') return 'failed';
+	if (input.isUpdatePending || input.isUpdateAvailable) return 'found';
+	return input.phase === 'checked' ? 'upToDate' : 'idle';
+}
+
+export type UpdateCheckModel = {
+	readonly label: string;
+	readonly caption?: string;
+	readonly busy: boolean;
+};
+
+/** Drives the Profile row: one button plus a line saying how the last check went. */
+export function selectUpdateCheck(status: UpdateCheckStatus): UpdateCheckModel {
+	switch (status) {
+		case 'checking':
+			return { label: UPDATE_CHECK_COPY.checking, busy: true };
+		case 'upToDate':
+			return { label: UPDATE_CHECK_COPY.action, caption: UPDATE_CHECK_COPY.upToDate, busy: false };
+		case 'found':
+			return { label: UPDATE_CHECK_COPY.action, caption: UPDATE_CHECK_COPY.found, busy: false };
+		case 'failed':
+			return { label: UPDATE_CHECK_COPY.action, caption: UPDATE_CHECK_COPY.failed, busy: false };
+		case 'idle':
+			return { label: UPDATE_CHECK_COPY.action, busy: false };
+	}
+}
+
 export type UpdatePromptAction = 'restart' | 'download' | 'none';
 
 export type UpdatePromptModel = {
