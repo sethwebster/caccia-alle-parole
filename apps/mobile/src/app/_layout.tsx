@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerDailyEntitlementReader } from '@/features/daily/entitlement-reader';
 import { usePushNotifications } from '@/features/notifications/use-push-notifications';
 import { dailyEntitlementReaderForService, getSubscriptionService } from '@/features/subscription/subscription-runtime';
+import { UpdatePrompt } from '@/features/updates/update-prompt';
 import { useAppFonts } from '@/hooks/use-app-fonts';
 import { useScreenInteractive } from '@/hooks/use-screen-interactive';
 
@@ -26,6 +27,7 @@ function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
         </Stack>
+        <UpdatePrompt />
         <StatusBar style="auto" />
       </ThemeProvider>
     </GestureHandlerRootView>
