@@ -1,5 +1,5 @@
 import { wordleWords } from '@/data/wordle-data';
-import { validWords } from '@/data/wordle-valid-words';
+import { isValidWord } from '@/lib/dictionary';
 import { loadJSON, saveJSON } from '@/lib/storage';
 import type { KeyboardState, LetterResult, Word, WordleState } from '@/lib/types';
 
@@ -162,7 +162,7 @@ export function submitCurrentGuess(state: WordleState): SubmitOutcome {
 		return { kind: 'rejected', message: 'Lettere insufficienti' };
 	}
 	const guess = normalizeWord(state.currentGuess.toUpperCase());
-	if (!validWords.has(guess)) {
+	if (!isValidWord(guess)) {
 		return { kind: 'rejected', message: 'Parola non valida' };
 	}
 	return { kind: 'played', state: applyGuess(state, guess) };
@@ -201,7 +201,10 @@ export async function loadSavedState(): Promise<WordleState | null> {
 		const word = typeof entry === 'object' && entry !== null ? (entry as { word?: unknown }).word : undefined;
 		if (typeof word !== 'string') return null;
 		const guess = normalizeWord(word.toUpperCase());
-		if (guess.length !== WORD_LENGTH || !validWords.has(guess)) return null;
+		// Shape only: the guess was validated when it was played, and re-checking it
+		// against a lexicon that moves with each Wiktionary refresh would silently
+		// discard a finished game whenever a word left the dictionary.
+		if (guess.length !== WORD_LENGTH) return null;
 		state = applyGuess(state, guess);
 	}
 

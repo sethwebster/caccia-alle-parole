@@ -8,7 +8,7 @@ import {
 	type ParoliereActivityState,
 } from '@/lib/live-activity';
 
-import { isValidWord } from './dictionary';
+import { isValidWord } from '@/lib/dictionary';
 
 export type PathCell = { row: number; col: number };
 export type ParoliereGameState = 'setup' | 'playing' | 'finished';

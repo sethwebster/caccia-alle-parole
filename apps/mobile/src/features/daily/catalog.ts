@@ -26,7 +26,7 @@ import {
 export type { DailyCatalogPuzzlePayload, DailyCatalogPuzzleSpec } from './catalog-puzzle-builder';
 
 const CATALOG_EPOCH = makeCatalogEpoch('daily-v1');
-const CATALOG_VERSION = makeCatalogVersion('2026.08.17');
+const CATALOG_VERSION = makeCatalogVersion('2026.08.18');
 const RELEASE_BASE_CHALLENGE_ID = makeReleaseBaseChallengeId(CATALOG_ROTATION_BASE);
 const SUPPORTED_FROM_CHALLENGE_ID = makeChallengeId(CATALOG_ROTATION_BASE);
 export const SUPPORTED_FORWARD_WINDOW_DAYS = 365;

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "metadata": {
     "catalogEpoch": "daily-v1",
-    "catalogVersion": "2026.08.17",
+    "catalogVersion": "2026.08.18",
     "releaseBaseChallengeId": "2026-01-26",
     "supportedFromChallengeId": "2026-01-26",
     "supportedThroughChallengeId": "2027-01-26"
@@ -14,11 +14,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.17"
+        "version": "2026.08.18"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.17",
+      "catalogVersion": "2026.08.18",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -50,7 +50,7 @@
           "themeId": "theme-animali",
           "themeLink": "Paròle collega TIGRE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "TIGRE",
           "payload": {
             "targetWord": "TIGRE",
@@ -73,7 +73,7 @@
           "themeId": "theme-animali",
           "themeLink": "Caccia alle Paròle collega ELEFANTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "ELEFANTE",
           "payload": {
             "category": "Animali selvatici",
@@ -458,7 +458,7 @@
           "themeId": "theme-animali",
           "themeLink": "Paroliere+ collega ZANNA a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "ZANNA",
           "payload": {
             "grid": [
@@ -506,7 +506,7 @@
           "themeId": "theme-animali",
           "themeLink": "Il Palloncino collega RINOCERONTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "RINOCERONTE",
           "payload": {
             "targetWord": "RINOCERONTE",
@@ -532,7 +532,7 @@
           "themeId": "theme-animali",
           "themeLink": "Anagrammi+ collega PREDATORE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "PREDATORE",
           "payload": {
             "targetWord": "PREDATORE",
@@ -561,11 +561,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.17"
+        "version": "2026.08.18"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.17",
+      "catalogVersion": "2026.08.18",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -597,7 +597,7 @@
           "themeId": "theme-biblioteca",
           "themeLink": "Paròle collega LEGGE a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "LEGGE",
           "payload": {
             "targetWord": "LEGGE",
@@ -620,7 +620,7 @@
           "themeId": "theme-biblioteca",
           "themeLink": "Caccia alle Paròle collega ROMANZO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "ROMANZO",
           "payload": {
             "category": "Biblioteca silenziosa",
@@ -997,7 +997,7 @@
           "themeId": "theme-biblioteca",
           "themeLink": "Paroliere+ collega SILENZIO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "SILENZIO",
           "payload": {
             "grid": [
@@ -1045,7 +1045,7 @@
           "themeId": "theme-biblioteca",
           "themeLink": "Il Palloncino collega SEGNALIBRO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "SEGNALIBRO",
           "payload": {
             "targetWord": "SEGNALIBRO",
@@ -1071,7 +1071,7 @@
           "themeId": "theme-biblioteca",
           "themeLink": "Anagrammi+ collega PRESTITO a Biblioteca silenziosa",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "PRESTITO",
           "payload": {
             "targetWord": "PRESTITO",
@@ -1099,11 +1099,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.17"
+        "version": "2026.08.18"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.17",
+      "catalogVersion": "2026.08.18",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -1135,7 +1135,7 @@
           "themeId": "theme-panetteria",
           "themeLink": "Paròle collega FARRO a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "FARRO",
           "payload": {
             "targetWord": "FARRO",
@@ -1158,7 +1158,7 @@
           "themeId": "theme-panetteria",
           "themeLink": "Caccia alle Paròle collega FOCACCIA a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "FOCACCIA",
           "payload": {
             "category": "Forno e panetteria",
@@ -1531,7 +1531,7 @@
           "themeId": "theme-panetteria",
           "themeLink": "Paroliere+ collega CROSTA a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "CROSTA",
           "payload": {
             "grid": [
@@ -1579,7 +1579,7 @@
           "themeId": "theme-panetteria",
           "themeLink": "Il Palloncino collega MOLLICA a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "MOLLICA",
           "payload": {
             "targetWord": "MOLLICA",
@@ -1605,7 +1605,7 @@
           "themeId": "theme-panetteria",
           "themeLink": "Anagrammi+ collega FORNAIO a Forno e panetteria",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "FORNAIO",
           "payload": {
             "targetWord": "FORNAIO",
@@ -1634,11 +1634,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.17"
+        "version": "2026.08.18"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.17",
+      "catalogVersion": "2026.08.18",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -1670,7 +1670,7 @@
           "themeId": "theme-animali",
           "themeLink": "Paròle collega TIGRE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "TIGRE",
           "payload": {
             "targetWord": "TIGRE",
@@ -1693,7 +1693,7 @@
           "themeId": "theme-animali",
           "themeLink": "Caccia alle Paròle collega ELEFANTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "ELEFANTE",
           "payload": {
             "category": "Animali selvatici",
@@ -2078,7 +2078,7 @@
           "themeId": "theme-animali",
           "themeLink": "Paroliere+ collega ZANNA a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "ZANNA",
           "payload": {
             "grid": [
@@ -2126,7 +2126,7 @@
           "themeId": "theme-animali",
           "themeLink": "Il Palloncino collega RINOCERONTE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "RINOCERONTE",
           "payload": {
             "targetWord": "RINOCERONTE",
@@ -2152,7 +2152,7 @@
           "themeId": "theme-animali",
           "themeLink": "Anagrammi+ collega PREDATORE a Animali selvatici",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "PREDATORE",
           "payload": {
             "targetWord": "PREDATORE",
@@ -2181,11 +2181,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.17"
+        "version": "2026.08.18"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.17",
+      "catalogVersion": "2026.08.18",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -2217,7 +2217,7 @@
           "themeId": "theme-stadio",
           "themeLink": "Paròle collega CAMPO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "CAMPO",
           "payload": {
             "targetWord": "CAMPO",
@@ -2240,7 +2240,7 @@
           "themeId": "theme-stadio",
           "themeLink": "Caccia alle Paròle collega ARBITRO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "ARBITRO",
           "payload": {
             "category": "Partita allo stadio",
@@ -2613,7 +2613,7 @@
           "themeId": "theme-stadio",
           "themeLink": "Paroliere+ collega FISCHIO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "FISCHIO",
           "payload": {
             "grid": [
@@ -2661,7 +2661,7 @@
           "themeId": "theme-stadio",
           "themeLink": "Il Palloncino collega CAMPIONATO a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "CAMPIONATO",
           "payload": {
             "targetWord": "CAMPIONATO",
@@ -2687,7 +2687,7 @@
           "themeId": "theme-stadio",
           "themeLink": "Anagrammi+ collega PALLONE a Partita allo stadio",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "PALLONE",
           "payload": {
             "targetWord": "PALLONE",
@@ -2714,11 +2714,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.17"
+        "version": "2026.08.18"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.17",
+      "catalogVersion": "2026.08.18",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -2750,7 +2750,7 @@
           "themeId": "theme-moda",
           "themeLink": "Paròle collega GONNA a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "GONNA",
           "payload": {
             "targetWord": "GONNA",
@@ -2773,7 +2773,7 @@
           "themeId": "theme-moda",
           "themeLink": "Caccia alle Paròle collega TESSUTO a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "TESSUTO",
           "payload": {
             "category": "Vetrine di moda",
@@ -3162,7 +3162,7 @@
           "themeId": "theme-moda",
           "themeLink": "Paroliere+ collega BOTTONE a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "BOTTONE",
           "payload": {
             "grid": [
@@ -3210,7 +3210,7 @@
           "themeId": "theme-moda",
           "themeLink": "Il Palloncino collega PASSERELLA a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "PASSERELLA",
           "payload": {
             "targetWord": "PASSERELLA",
@@ -3236,7 +3236,7 @@
           "themeId": "theme-moda",
           "themeLink": "Anagrammi+ collega CUCITURA a Vetrine di moda",
           "generatorVersion": "daily-catalog-generator-v2",
-          "dictionaryVersion": "it-bundled-v2",
+          "dictionaryVersion": "it-wiktionary-v1",
           "target": "CUCITURA",
           "payload": {
             "targetWord": "CUCITURA",

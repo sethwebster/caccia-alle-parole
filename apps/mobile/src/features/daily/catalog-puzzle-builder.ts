@@ -6,7 +6,7 @@ import { civilDayIndex, makeLocalCivilDate } from './date';
 import { CANONICAL_PUZZLE_KEYS, CANONICAL_PUZZLE_LABELS, type ChallengeId, type DailyPuzzleKey, type DailyPuzzleSpec, type ThemeQuizData } from './types';
 
 const GENERATOR_VERSION = 'daily-catalog-generator-v2';
-const DICTIONARY_VERSION = 'it-bundled-v2';
+const DICTIONARY_VERSION = 'it-wiktionary-v1';
 const WORD_SEARCH_SIZE = 10;
 /** Three curated theme words alone left the daily grid far emptier than free play (10 words on the same 10x10 board). */
 const WORD_SEARCH_WORD_COUNT = 6;

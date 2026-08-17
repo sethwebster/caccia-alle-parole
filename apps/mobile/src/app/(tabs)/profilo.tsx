@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SymbolView } from 'expo-symbols';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
@@ -92,7 +92,28 @@ export default function ProfiloScreen() {
         <ArchiveAccessCard compact />
         <SubscriptionCard />
         <UpdateCheckCard />
+        <DictionaryCredit />
       </ScrollView>
+    </View>
+  );
+}
+
+/** CC BY-SA 4.0 requires crediting Wiktionary wherever its definitions are shown. */
+function DictionaryCredit() {
+  const surface = useGameSurface();
+  return (
+    <View style={styles.creditCard}>
+      <Text style={[styles.creditText, { color: surface.textTertiary }]}>
+        Definizioni e vocabolario da{' '}
+        <Text style={styles.creditLink} onPress={() => Linking.openURL('https://www.wiktionary.org/')}>
+          Wiktionary
+        </Text>
+        , disponibili con licenza{' '}
+        <Text style={styles.creditLink} onPress={() => Linking.openURL('https://creativecommons.org/licenses/by-sa/4.0/')}>
+          CC BY-SA 4.0
+        </Text>
+        .
+      </Text>
     </View>
   );
 }
@@ -319,6 +340,9 @@ const styles = StyleSheet.create({
   },
   statValue: { fontFamily: GameFonts.display800, fontSize: 26, color: GamePalette.primary },
   statLabel: { fontFamily: GameFonts.body600, fontSize: 13 },
+  creditCard: { marginTop: 18, paddingHorizontal: 4 },
+  creditText: { fontFamily: GameFonts.body500, fontSize: 12, lineHeight: 17, textAlign: 'center' },
+  creditLink: { fontFamily: GameFonts.body700, color: GamePalette.primary },
   subscriptionCard: { borderWidth: 1, borderRadius: GameRadius.lg, padding: 18, gap: 12, ...GameShadow.card },
   subscriptionOverline: { fontFamily: GameFonts.body700, fontSize: 11.5, letterSpacing: 1.6, color: GamePalette.primary },
   subscriptionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },

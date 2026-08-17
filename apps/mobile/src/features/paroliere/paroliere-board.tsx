@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
 import { StatPill } from '@/components/game/stat-pill';
+import { WordMeaningSheet } from '@/components/game/word-meaning-sheet';
 import { GamePalette } from '@/constants/game-theme';
 import { useGameSurface } from '@/hooks/use-game-surface';
+import { useWordMeaning } from '@/hooks/use-word-meaning';
 
 import { useSubmitPulse } from './hooks';
 import { findParoliereCellAtPoint } from './paroliere-board-hit-test';
@@ -192,17 +194,26 @@ function LetterGrid({
 
 function FoundWords({ words }: { words: string[] }) {
 	const surface = useGameSurface();
+	const { selected, select, dismiss } = useWordMeaning();
 	const sorted = [...words].sort();
 	return (
 		<View style={[styles.foundPanel, { backgroundColor: surface.card, borderColor: surface.border }]}>
 			<Text style={[styles.foundTitle, { color: surface.textTertiary }]}>Parole Trovate</Text>
 			<ScrollView contentContainerStyle={styles.chipWrap}>
 				{sorted.map((word) => (
-					<Animated.View key={word} entering={ZoomIn.duration(200)} style={styles.chip}>
-						<Text style={styles.chipText}>{word}</Text>
+					<Animated.View key={word} entering={ZoomIn.duration(200)}>
+						<Pressable
+							accessibilityRole="button"
+							accessibilityLabel={`Cosa significa ${word}`}
+							onPress={() => select(word)}
+							style={styles.chip}
+						>
+							<Text style={styles.chipText}>{word}</Text>
+						</Pressable>
 					</Animated.View>
 				))}
 			</ScrollView>
+			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</View>
 	);
 }
