@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "metadata": {
     "catalogEpoch": "daily-v1",
-    "catalogVersion": "2026.08.12",
+    "catalogVersion": "2026.08.17",
     "releaseBaseChallengeId": "2026-01-26",
     "supportedFromChallengeId": "2026-01-26",
     "supportedThroughChallengeId": "2027-01-26"
@@ -14,11 +14,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.12"
+        "version": "2026.08.17"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.12",
+      "catalogVersion": "2026.08.17",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -81,123 +81,123 @@
             "grid": [
               [
                 "A",
-                "O",
-                "N",
+                "R",
+                "V",
                 "A",
-                "O",
-                "L",
-                "R",
-                "I",
-                "F",
-                "F"
-              ],
-              [
-                "U",
-                "F",
-                "N",
                 "E",
-                "O",
-                "R",
+                "F",
                 "M",
-                "L",
-                "G",
-                "A"
-              ],
-              [
-                "L",
-                "E",
-                "F",
-                "I",
-                "N",
                 "R",
                 "P",
-                "T",
-                "H",
-                "P"
+                "T"
               ],
               [
-                "E",
-                "T",
-                "N",
-                "A",
+                "V",
                 "F",
+                "N",
+                "N",
                 "E",
-                "L",
-                "E",
-                "E",
+                "U",
+                "O",
+                "F",
+                "G",
                 "E"
               ],
               [
-                "E",
-                "S",
-                "L",
-                "C",
-                "R",
-                "R",
-                "U",
-                "I",
-                "P",
-                "A"
-              ],
-              [
-                "R",
-                "V",
-                "A",
-                "E",
-                "F",
-                "I",
-                "M",
-                "R",
-                "A",
-                "P"
-              ],
-              [
-                "T",
-                "V",
-                "N",
-                "N",
-                "E",
-                "U",
-                "G",
-                "O",
-                "R",
-                "F"
-              ],
-              [
-                "E",
                 "B",
                 "L",
+                "F",
                 "I",
                 "A",
                 "O",
                 "G",
                 "G",
-                "D",
+                "H",
                 "D"
               ],
               [
+                "E",
+                "T",
+                "N",
                 "A",
+                "F",
+                "E",
+                "L",
+                "E",
+                "E",
+                "A"
+              ],
+              [
                 "S",
                 "V",
                 "D",
                 "P",
                 "R",
                 "R",
+                "R",
                 "B",
-                "O",
-                "O"
+                "P",
+                "E"
               ],
               [
+                "R",
+                "O",
+                "S",
+                "P",
+                "O",
+                "I",
+                "O",
                 "E",
+                "A",
+                "M"
+              ],
+              [
                 "A",
                 "G",
                 "S",
                 "T",
                 "S",
                 "E",
+                "G",
                 "Z",
+                "R",
+                "R"
+              ],
+              [
                 "A",
-                "P"
+                "P",
+                "C",
+                "R",
+                "N",
+                "U",
+                "D",
+                "I",
+                "D",
+                "E"
+              ],
+              [
+                "H",
+                "T",
+                "A",
+                "E",
+                "L",
+                "T",
+                "U",
+                "Q",
+                "O",
+                "V"
+              ],
+              [
+                "A",
+                "L",
+                "L",
+                "E",
+                "N",
+                "I",
+                "C",
+                "C",
+                "O",
+                "C"
               ]
             ],
             "words": [
@@ -325,6 +325,119 @@
                     "col": 0
                   }
                 ]
+              },
+              {
+                "word": "COCCINELLA",
+                "translation": "ladybug",
+                "definition": "A small red beetle with black spots",
+                "row": 9,
+                "col": 9,
+                "direction": "horizontal-reverse",
+                "points": 100,
+                "cells": [
+                  {
+                    "row": 9,
+                    "col": 9
+                  },
+                  {
+                    "row": 9,
+                    "col": 8
+                  },
+                  {
+                    "row": 9,
+                    "col": 7
+                  },
+                  {
+                    "row": 9,
+                    "col": 6
+                  },
+                  {
+                    "row": 9,
+                    "col": 5
+                  },
+                  {
+                    "row": 9,
+                    "col": 4
+                  },
+                  {
+                    "row": 9,
+                    "col": 3
+                  },
+                  {
+                    "row": 9,
+                    "col": 2
+                  },
+                  {
+                    "row": 9,
+                    "col": 1
+                  },
+                  {
+                    "row": 9,
+                    "col": 0
+                  }
+                ]
+              },
+              {
+                "word": "VERME",
+                "translation": "worm",
+                "definition": "A small elongated invertebrate",
+                "row": 8,
+                "col": 9,
+                "direction": "vertical-reverse",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 8,
+                    "col": 9
+                  },
+                  {
+                    "row": 7,
+                    "col": 9
+                  },
+                  {
+                    "row": 6,
+                    "col": 9
+                  },
+                  {
+                    "row": 5,
+                    "col": 9
+                  },
+                  {
+                    "row": 4,
+                    "col": 9
+                  }
+                ]
+              },
+              {
+                "word": "ROSPO",
+                "translation": "toad",
+                "definition": "An amphibian with dry warty skin",
+                "row": 5,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 5,
+                    "col": 0
+                  },
+                  {
+                    "row": 5,
+                    "col": 1
+                  },
+                  {
+                    "row": 5,
+                    "col": 2
+                  },
+                  {
+                    "row": 5,
+                    "col": 3
+                  },
+                  {
+                    "row": 5,
+                    "col": 4
+                  }
+                ]
               }
             ]
           }
@@ -448,11 +561,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.12"
+        "version": "2026.08.17"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.12",
+      "catalogVersion": "2026.08.17",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -514,9 +627,9 @@
             "difficulty": "easy",
             "grid": [
               [
-                "F",
                 "I",
                 "E",
+                "R",
                 "A",
                 "R",
                 "U",
@@ -526,27 +639,27 @@
                 "L"
               ],
               [
-                "R",
                 "I",
                 "R",
                 "S",
-                "O",
                 "E",
+                "O",
                 "N",
                 "I",
                 "O",
-                "N"
+                "N",
+                "Q"
               ],
               [
-                "Q",
                 "E",
                 "N",
                 "O",
-                "M",
                 "E",
+                "M",
                 "I",
                 "Z",
                 "I",
+                "A",
                 "S"
               ],
               [
@@ -559,79 +672,79 @@
                 "O",
                 "E",
                 "C",
-                "N"
-              ],
-              [
-                "G",
-                "U",
-                "F",
-                "U",
-                "N",
-                "Q",
-                "F",
-                "A",
-                "V",
-                "B"
+                "O"
               ],
               [
                 "L",
-                "F",
                 "T",
-                "H",
-                "Z",
-                "C",
-                "F",
+                "N",
                 "G",
-                "P",
-                "R"
-              ],
-              [
-                "E",
-                "E",
-                "V",
-                "D",
-                "O",
+                "N",
+                "U",
                 "F",
-                "F",
-                "T",
-                "R",
+                "A",
+                "U",
                 "T"
               ],
               [
+                "Q",
+                "A",
+                "I",
+                "F",
+                "Z",
+                "V",
+                "F",
+                "B",
+                "L",
+                "T"
+              ],
+              [
+                "F",
+                "T",
+                "U",
+                "T",
+                "O",
+                "F",
+                "H",
+                "C",
+                "G",
+                "I"
+              ],
+              [
+                "P",
+                "R",
+                "E",
+                "R",
+                "A",
+                "E",
+                "V",
+                "D",
+                "F",
+                "R"
+              ],
+              [
+                "T",
+                "R",
+                "T",
+                "L",
+                "E",
+                "M",
                 "P",
                 "M",
                 "R",
+                "I"
+              ],
+              [
                 "I",
-                "A",
+                "E",
                 "E",
                 "S",
                 "A",
+                "A",
                 "M",
-                "L"
-              ],
-              [
-                "O",
-                "T",
-                "E",
                 "L",
                 "O",
-                "M",
-                "E",
-                "N",
-                "A",
-                "C"
-              ],
-              [
-                "L",
-                "N",
-                "E",
-                "I",
-                "F",
-                "A",
-                "O",
-                "S",
-                "R",
-                "O"
+                "D"
               ]
             ],
             "words": [
@@ -753,6 +866,115 @@
                   {
                     "row": 0,
                     "col": 3
+                  }
+                ]
+              },
+              {
+                "word": "MATITA",
+                "translation": "pencil",
+                "definition": "A writing instrument with graphite",
+                "row": 8,
+                "col": 5,
+                "direction": "diagonal-up-reverse",
+                "points": 60,
+                "cells": [
+                  {
+                    "row": 8,
+                    "col": 5
+                  },
+                  {
+                    "row": 7,
+                    "col": 4
+                  },
+                  {
+                    "row": 6,
+                    "col": 3
+                  },
+                  {
+                    "row": 5,
+                    "col": 2
+                  },
+                  {
+                    "row": 4,
+                    "col": 1
+                  },
+                  {
+                    "row": 3,
+                    "col": 0
+                  }
+                ]
+              },
+              {
+                "word": "LAUREA",
+                "translation": "degree",
+                "definition": "University qualification",
+                "row": 4,
+                "col": 0,
+                "direction": "diagonal-down",
+                "points": 60,
+                "cells": [
+                  {
+                    "row": 4,
+                    "col": 0
+                  },
+                  {
+                    "row": 5,
+                    "col": 1
+                  },
+                  {
+                    "row": 6,
+                    "col": 2
+                  },
+                  {
+                    "row": 7,
+                    "col": 3
+                  },
+                  {
+                    "row": 8,
+                    "col": 4
+                  },
+                  {
+                    "row": 9,
+                    "col": 5
+                  }
+                ]
+              },
+              {
+                "word": "DIRITTO",
+                "translation": "law",
+                "definition": "Legal studies",
+                "row": 9,
+                "col": 9,
+                "direction": "vertical-reverse",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 9,
+                    "col": 9
+                  },
+                  {
+                    "row": 8,
+                    "col": 9
+                  },
+                  {
+                    "row": 7,
+                    "col": 9
+                  },
+                  {
+                    "row": 6,
+                    "col": 9
+                  },
+                  {
+                    "row": 5,
+                    "col": 9
+                  },
+                  {
+                    "row": 4,
+                    "col": 9
+                  },
+                  {
+                    "row": 3,
+                    "col": 9
                   }
                 ]
               }
@@ -877,11 +1099,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.12"
+        "version": "2026.08.17"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.12",
+      "catalogVersion": "2026.08.17",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -943,96 +1165,60 @@
             "difficulty": "easy",
             "grid": [
               [
-                "S",
                 "O",
+                "L",
+                "L",
+                "E",
+                "T",
                 "I",
+                "V",
                 "N",
-                "S",
-                "Q",
-                "S",
                 "A",
-                "G",
                 "A"
               ],
               [
                 "C",
-                "O",
-                "F",
+                "Q",
                 "N",
-                "N",
-                "F",
-                "O",
                 "A",
+                "O",
+                "R",
+                "N",
+                "N",
                 "I",
-                "B"
+                "M"
               ],
               [
                 "I",
-                "A",
-                "I",
-                "A",
-                "U",
-                "L",
-                "E",
+                "O",
+                "H",
+                "S",
                 "C",
-                "T",
+                "I",
+                "C",
+                "C",
+                "Z",
                 "G"
               ],
               [
                 "A",
-                "N",
-                "D",
-                "A",
-                "D",
-                "I",
-                "C",
-                "O",
-                "R",
-                "B"
-              ],
-              [
-                "B",
-                "G",
-                "A",
-                "N",
-                "A",
-                "A",
-                "Q",
-                "I",
-                "N",
-                "O"
-              ],
-              [
-                "A",
-                "R",
-                "N",
-                "N",
-                "C",
-                "M",
-                "S",
-                "O",
-                "H",
-                "S"
-              ],
-              [
-                "T",
-                "I",
-                "C",
-                "O",
-                "Z",
-                "S",
                 "O",
                 "V",
                 "B",
-                "V"
+                "V",
+                "S",
+                "C",
+                "A",
+                "R",
+                "O"
               ],
               [
-                "T",
-                "A",
-                "F",
-                "O",
-                "I",
+                "B",
                 "E",
+                "E",
+                "I",
+                "P",
+                "A",
                 "E",
                 "I",
                 "O",
@@ -1042,25 +1228,61 @@
                 "A",
                 "A",
                 "U",
-                "N",
                 "O",
+                "C",
+                "E",
+                "S",
+                "P",
                 "B",
-                "O",
-                "V",
-                "Q",
-                "R"
+                "O"
               ],
               [
+                "T",
+                "V",
+                "Q",
+                "O",
+                "R",
+                "S",
+                "R",
                 "Q",
                 "F",
-                "O",
-                "N",
+                "N"
+              ],
+              [
+                "T",
                 "E",
+                "F",
                 "H",
+                "I",
                 "O",
                 "N",
+                "A",
                 "L",
                 "M"
+              ],
+              [
+                "A",
+                "I",
+                "G",
+                "N",
+                "T",
+                "V",
+                "I",
+                "G",
+                "E",
+                "E"
+              ],
+              [
+                "E",
+                "N",
+                "O",
+                "C",
+                "R",
+                "E",
+                "L",
+                "L",
+                "D",
+                "T"
               ]
             ],
             "words": [
@@ -1192,6 +1414,103 @@
                     "col": 0
                   }
                 ]
+              },
+              {
+                "word": "VITELLO",
+                "translation": "veal",
+                "definition": "Meat from a calf",
+                "row": 0,
+                "col": 6,
+                "direction": "horizontal-reverse",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 6
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 0
+                  }
+                ]
+              },
+              {
+                "word": "PESCA",
+                "translation": "peach",
+                "definition": "A fuzzy-skinned sweet fruit",
+                "row": 5,
+                "col": 7,
+                "direction": "diagonal-up-reverse",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 5,
+                    "col": 7
+                  },
+                  {
+                    "row": 4,
+                    "col": 6
+                  },
+                  {
+                    "row": 3,
+                    "col": 5
+                  },
+                  {
+                    "row": 2,
+                    "col": 4
+                  },
+                  {
+                    "row": 1,
+                    "col": 3
+                  }
+                ]
+              },
+              {
+                "word": "PERA",
+                "translation": "pear",
+                "definition": "A sweet fruit wider at the bottom",
+                "row": 4,
+                "col": 4,
+                "direction": "diagonal-down",
+                "points": 40,
+                "cells": [
+                  {
+                    "row": 4,
+                    "col": 4
+                  },
+                  {
+                    "row": 5,
+                    "col": 5
+                  },
+                  {
+                    "row": 6,
+                    "col": 6
+                  },
+                  {
+                    "row": 7,
+                    "col": 7
+                  }
+                ]
               }
             ]
           }
@@ -1315,11 +1634,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.12"
+        "version": "2026.08.17"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.12",
+      "catalogVersion": "2026.08.17",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -1382,123 +1701,123 @@
             "grid": [
               [
                 "A",
-                "O",
-                "N",
+                "R",
+                "V",
                 "A",
-                "O",
-                "L",
-                "R",
-                "I",
-                "F",
-                "F"
-              ],
-              [
-                "U",
-                "F",
-                "N",
                 "E",
-                "O",
-                "R",
+                "F",
                 "M",
-                "L",
-                "G",
-                "A"
-              ],
-              [
-                "L",
-                "E",
-                "F",
-                "I",
-                "N",
                 "R",
                 "P",
-                "T",
-                "H",
-                "P"
+                "T"
               ],
               [
-                "E",
-                "T",
-                "N",
-                "A",
+                "V",
                 "F",
+                "N",
+                "N",
                 "E",
-                "L",
-                "E",
-                "E",
+                "U",
+                "O",
+                "F",
+                "G",
                 "E"
               ],
               [
-                "E",
-                "S",
-                "L",
-                "C",
-                "R",
-                "R",
-                "U",
-                "I",
-                "P",
-                "A"
-              ],
-              [
-                "R",
-                "V",
-                "A",
-                "E",
-                "F",
-                "I",
-                "M",
-                "R",
-                "A",
-                "P"
-              ],
-              [
-                "T",
-                "V",
-                "N",
-                "N",
-                "E",
-                "U",
-                "G",
-                "O",
-                "R",
-                "F"
-              ],
-              [
-                "E",
                 "B",
                 "L",
+                "F",
                 "I",
                 "A",
                 "O",
                 "G",
                 "G",
-                "D",
+                "H",
                 "D"
               ],
               [
+                "E",
+                "T",
+                "N",
                 "A",
+                "F",
+                "E",
+                "L",
+                "E",
+                "E",
+                "A"
+              ],
+              [
                 "S",
                 "V",
                 "D",
                 "P",
                 "R",
                 "R",
+                "R",
                 "B",
-                "O",
-                "O"
+                "P",
+                "E"
               ],
               [
+                "R",
+                "O",
+                "S",
+                "P",
+                "O",
+                "I",
+                "O",
                 "E",
+                "A",
+                "M"
+              ],
+              [
                 "A",
                 "G",
                 "S",
                 "T",
                 "S",
                 "E",
+                "G",
                 "Z",
+                "R",
+                "R"
+              ],
+              [
                 "A",
-                "P"
+                "P",
+                "C",
+                "R",
+                "N",
+                "U",
+                "D",
+                "I",
+                "D",
+                "E"
+              ],
+              [
+                "H",
+                "T",
+                "A",
+                "E",
+                "L",
+                "T",
+                "U",
+                "Q",
+                "O",
+                "V"
+              ],
+              [
+                "A",
+                "L",
+                "L",
+                "E",
+                "N",
+                "I",
+                "C",
+                "C",
+                "O",
+                "C"
               ]
             ],
             "words": [
@@ -1626,6 +1945,119 @@
                     "col": 0
                   }
                 ]
+              },
+              {
+                "word": "COCCINELLA",
+                "translation": "ladybug",
+                "definition": "A small red beetle with black spots",
+                "row": 9,
+                "col": 9,
+                "direction": "horizontal-reverse",
+                "points": 100,
+                "cells": [
+                  {
+                    "row": 9,
+                    "col": 9
+                  },
+                  {
+                    "row": 9,
+                    "col": 8
+                  },
+                  {
+                    "row": 9,
+                    "col": 7
+                  },
+                  {
+                    "row": 9,
+                    "col": 6
+                  },
+                  {
+                    "row": 9,
+                    "col": 5
+                  },
+                  {
+                    "row": 9,
+                    "col": 4
+                  },
+                  {
+                    "row": 9,
+                    "col": 3
+                  },
+                  {
+                    "row": 9,
+                    "col": 2
+                  },
+                  {
+                    "row": 9,
+                    "col": 1
+                  },
+                  {
+                    "row": 9,
+                    "col": 0
+                  }
+                ]
+              },
+              {
+                "word": "VERME",
+                "translation": "worm",
+                "definition": "A small elongated invertebrate",
+                "row": 8,
+                "col": 9,
+                "direction": "vertical-reverse",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 8,
+                    "col": 9
+                  },
+                  {
+                    "row": 7,
+                    "col": 9
+                  },
+                  {
+                    "row": 6,
+                    "col": 9
+                  },
+                  {
+                    "row": 5,
+                    "col": 9
+                  },
+                  {
+                    "row": 4,
+                    "col": 9
+                  }
+                ]
+              },
+              {
+                "word": "ROSPO",
+                "translation": "toad",
+                "definition": "An amphibian with dry warty skin",
+                "row": 5,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 5,
+                    "col": 0
+                  },
+                  {
+                    "row": 5,
+                    "col": 1
+                  },
+                  {
+                    "row": 5,
+                    "col": 2
+                  },
+                  {
+                    "row": 5,
+                    "col": 3
+                  },
+                  {
+                    "row": 5,
+                    "col": 4
+                  }
+                ]
               }
             ]
           }
@@ -1749,11 +2181,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.12"
+        "version": "2026.08.17"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.12",
+      "catalogVersion": "2026.08.17",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -1815,104 +2247,104 @@
             "difficulty": "easy",
             "grid": [
               [
-                "C",
-                "A",
-                "Q",
-                "Z",
-                "U",
-                "O",
-                "D",
                 "L",
+                "I",
+                "I",
+                "I",
                 "N",
-                "I"
+                "I",
+                "D",
+                "C",
+                "S",
+                "C"
               ],
               [
-                "L",
+                "E",
                 "A",
                 "P",
-                "O",
-                "I",
-                "L",
-                "I",
-                "I",
-                "I",
-                "N"
-              ],
-              [
-                "I",
-                "N",
-                "D",
-                "O",
-                "C",
-                "S",
-                "C",
-                "E",
                 "G",
-                "E"
+                "E",
+                "E",
+                "E",
+                "S",
+                "S",
+                "F"
               ],
               [
-                "E",
-                "U",
-                "E",
-                "S",
-                "R",
-                "S",
-                "F",
                 "I",
                 "N",
-                "P"
+                "N",
+                "O",
+                "P",
+                "U",
+                "C",
+                "A",
+                "A",
+                "Z"
               ],
               [
-                "U",
                 "B",
-                "C",
-                "A",
-                "A",
-                "T",
-                "Z",
+                "U",
                 "E",
                 "L",
-                "I"
-              ],
-              [
-                "D",
+                "R",
                 "I",
+                "D",
                 "G",
                 "P",
+                "R"
+              ],
+              [
+                "O",
+                "B",
                 "P",
                 "T",
-                "I",
                 "E",
+                "T",
+                "A",
                 "C",
+                "U",
                 "O"
               ],
               [
+                "W",
+                "I",
                 "H",
-                "R",
                 "G",
                 "I",
+                "I",
+                "I",
+                "G",
                 "E",
-                "R",
-                "R",
-                "E",
-                "R",
-                "L"
+                "R"
               ],
               [
-                "U",
-                "T",
-                "E",
-                "E",
-                "E",
                 "L",
-                "D",
                 "R",
                 "R",
+                "R",
+                "C",
+                "L",
+                "B",
+                "E",
+                "U",
                 "E"
               ],
               [
-                "N",
+                "I",
+                "T",
+                "E",
+                "C",
+                "E",
+                "Y",
+                "L",
+                "D",
                 "R",
+                "R"
+              ],
+              [
+                "N",
+                "E",
                 "A",
                 "R",
                 "B",
@@ -1923,16 +2355,16 @@
                 "E"
               ],
               [
+                "G",
+                "C",
+                "N",
+                "R",
                 "I",
                 "P",
                 "E",
                 "O",
                 "R",
-                "R",
-                "I",
-                "D",
-                "O",
-                "N"
+                "R"
               ]
             ],
             "words": [
@@ -2056,6 +2488,111 @@
                     "col": 8
                   }
                 ]
+              },
+              {
+                "word": "CACCIA",
+                "translation": "hunting",
+                "definition": "Pursuing wild animals as sport",
+                "row": 9,
+                "col": 1,
+                "direction": "diagonal-up",
+                "points": 60,
+                "cells": [
+                  {
+                    "row": 9,
+                    "col": 1
+                  },
+                  {
+                    "row": 8,
+                    "col": 2
+                  },
+                  {
+                    "row": 7,
+                    "col": 3
+                  },
+                  {
+                    "row": 6,
+                    "col": 4
+                  },
+                  {
+                    "row": 5,
+                    "col": 5
+                  },
+                  {
+                    "row": 4,
+                    "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "RUGBY",
+                "translation": "rugby",
+                "definition": "A team sport similar to football",
+                "row": 3,
+                "col": 9,
+                "direction": "diagonal-down-reverse",
+                "points": 50,
+                "cells": [
+                  {
+                    "row": 3,
+                    "col": 9
+                  },
+                  {
+                    "row": 4,
+                    "col": 8
+                  },
+                  {
+                    "row": 5,
+                    "col": 7
+                  },
+                  {
+                    "row": 6,
+                    "col": 6
+                  },
+                  {
+                    "row": 7,
+                    "col": 5
+                  }
+                ]
+              },
+              {
+                "word": "BOWLING",
+                "translation": "bowling",
+                "definition": "Rolling balls to knock down pins",
+                "row": 3,
+                "col": 0,
+                "direction": "vertical",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 3,
+                    "col": 0
+                  },
+                  {
+                    "row": 4,
+                    "col": 0
+                  },
+                  {
+                    "row": 5,
+                    "col": 0
+                  },
+                  {
+                    "row": 6,
+                    "col": 0
+                  },
+                  {
+                    "row": 7,
+                    "col": 0
+                  },
+                  {
+                    "row": 8,
+                    "col": 0
+                  },
+                  {
+                    "row": 9,
+                    "col": 0
+                  }
+                ]
               }
             ]
           }
@@ -2177,11 +2714,11 @@
       "source": {
         "kind": "bundledCatalog",
         "epoch": "daily-v1",
-        "version": "2026.08.12"
+        "version": "2026.08.17"
       },
       "releaseBaseChallengeId": "2026-01-26",
       "catalogEpoch": "daily-v1",
-      "catalogVersion": "2026.08.12",
+      "catalogVersion": "2026.08.17",
       "supportedFromChallengeId": "2026-01-26",
       "supportedThroughChallengeId": "2027-01-26",
       "theme": {
@@ -2243,16 +2780,16 @@
             "difficulty": "easy",
             "grid": [
               [
-                "R",
-                "G",
-                "E",
-                "H",
-                "Z",
-                "M",
-                "A",
+                "U",
+                "N",
+                "I",
                 "F",
-                "D",
-                "R"
+                "O",
+                "R",
+                "M",
+                "E",
+                "I",
+                "E"
               ],
               [
                 "O",
@@ -2264,78 +2801,66 @@
                 "R",
                 "A",
                 "S",
-                "I"
+                "O"
               ],
               [
                 "T",
                 "N",
-                "R",
-                "D",
-                "M",
-                "D",
-                "O",
-                "U",
-                "R",
-                "E"
-              ],
-              [
-                "P",
-                "E",
-                "I",
-                "N",
-                "I",
-                "E",
-                "O",
                 "G",
                 "I",
-                "E"
+                "E",
+                "O",
+                "O",
+                "R",
+                "A",
+                "L"
               ],
               [
-                "O",
-                "O",
-                "S",
                 "R",
-                "R",
-                "L",
-                "R",
+                "E",
+                "I",
                 "N",
                 "O",
-                "I"
-              ],
-              [
+                "I",
                 "O",
                 "P",
-                "O",
-                "S",
-                "E",
-                "R",
-                "L",
-                "L",
-                "M",
-                "C"
+                "I",
+                "O"
               ],
               [
-                "L",
-                "I",
-                "E",
                 "R",
-                "U",
+                "L",
+                "S",
+                "R",
+                "L",
                 "M",
                 "C",
-                "M",
-                "U",
-                "A"
+                "L",
+                "C",
+                "I"
               ],
               [
+                "E",
+                "R",
+                "C",
                 "S",
+                "E",
+                "M",
+                "U",
+                "A",
+                "S",
+                "S"
+              ],
+              [
                 "P",
                 "E",
                 "I",
                 "T",
-                "T",
-                "A",
+                "U",
+                "M",
                 "L",
                 "M",
+                "A",
                 "P"
               ],
               [
@@ -2344,20 +2869,32 @@
                 "T",
                 "E",
                 "B",
+                "T",
+                "A",
                 "O",
-                "O",
-                "C",
-                "R",
-                "A"
+                "F",
+                "R"
               ],
               [
+                "A",
                 "A",
                 "N",
                 "C",
                 "O",
                 "G",
+                "O",
+                "C",
                 "T",
+                "A"
+              ],
+              [
+                "I",
+                "N",
+                "I",
+                "Z",
+                "L",
                 "A",
+                "C",
                 "T",
                 "E",
                 "I"
@@ -2486,6 +3023,123 @@
                   {
                     "row": 8,
                     "col": 6
+                  }
+                ]
+              },
+              {
+                "word": "FASCIA",
+                "translation": "headband",
+                "definition": "A band worn around the head",
+                "row": 7,
+                "col": 8,
+                "direction": "vertical-reverse",
+                "points": 60,
+                "cells": [
+                  {
+                    "row": 7,
+                    "col": 8
+                  },
+                  {
+                    "row": 6,
+                    "col": 8
+                  },
+                  {
+                    "row": 5,
+                    "col": 8
+                  },
+                  {
+                    "row": 4,
+                    "col": 8
+                  },
+                  {
+                    "row": 3,
+                    "col": 8
+                  },
+                  {
+                    "row": 2,
+                    "col": 8
+                  }
+                ]
+              },
+              {
+                "word": "UNIFORME",
+                "translation": "uniform",
+                "definition": "Standardized clothing for a group",
+                "row": 0,
+                "col": 0,
+                "direction": "horizontal",
+                "points": 80,
+                "cells": [
+                  {
+                    "row": 0,
+                    "col": 0
+                  },
+                  {
+                    "row": 0,
+                    "col": 1
+                  },
+                  {
+                    "row": 0,
+                    "col": 2
+                  },
+                  {
+                    "row": 0,
+                    "col": 3
+                  },
+                  {
+                    "row": 0,
+                    "col": 4
+                  },
+                  {
+                    "row": 0,
+                    "col": 5
+                  },
+                  {
+                    "row": 0,
+                    "col": 6
+                  },
+                  {
+                    "row": 0,
+                    "col": 7
+                  }
+                ]
+              },
+              {
+                "word": "CALZINI",
+                "translation": "socks",
+                "definition": "Garments worn on the feet inside shoes",
+                "row": 9,
+                "col": 6,
+                "direction": "horizontal-reverse",
+                "points": 70,
+                "cells": [
+                  {
+                    "row": 9,
+                    "col": 6
+                  },
+                  {
+                    "row": 9,
+                    "col": 5
+                  },
+                  {
+                    "row": 9,
+                    "col": 4
+                  },
+                  {
+                    "row": 9,
+                    "col": 3
+                  },
+                  {
+                    "row": 9,
+                    "col": 2
+                  },
+                  {
+                    "row": 9,
+                    "col": 1
+                  },
+                  {
+                    "row": 9,
+                    "col": 0
                   }
                 ]
               }

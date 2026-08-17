@@ -1,4 +1,5 @@
-import type { Difficulty, Direction } from '@/lib/types';
+import type { Difficulty, Direction, Word } from '@/lib/types';
+import { wordDatabase } from '@/data/word-data';
 
 import { CATALOG_ROTATION_BASE, THEMES, type ThemeSeed } from './catalog-content';
 import { civilDayIndex, makeLocalCivilDate } from './date';
@@ -7,6 +8,8 @@ import { CANONICAL_PUZZLE_KEYS, CANONICAL_PUZZLE_LABELS, type ChallengeId, type 
 const GENERATOR_VERSION = 'daily-catalog-generator-v2';
 const DICTIONARY_VERSION = 'it-bundled-v2';
 const WORD_SEARCH_SIZE = 10;
+/** Three curated theme words alone left the daily grid far emptier than free play (10 words on the same 10x10 board). */
+const WORD_SEARCH_WORD_COUNT = 6;
 const PAROLIERE_SIZE = 4;
 const ITALIAN_LETTERS = 'AAAAAAAAEEEEEEEEEEIIIIIIIIOOOOOOONNNNNNRRRRRLLLLTTTSSSCCCDDDUUUMMPPGGFFVVBHZQ';
 
@@ -133,7 +136,7 @@ function buildPuzzlePayload(challengeId: ChallengeId, key: DailyPuzzleKey, seed:
 		case 'parola':
 			return { targetWord: target, maxAttempts: 6 };
 		case 'caccia':
-			return buildCacciaPayload(challengeId, seed.puzzleWords.caccia, theme);
+			return buildCacciaPayload(challengeId, seed, theme);
 		case 'paroliere':
 			return { grid: buildParoliereGrid(challengeId, target), durationSeconds: 180 };
 		case 'impiccato':
@@ -143,27 +146,49 @@ function buildPuzzlePayload(challengeId: ChallengeId, key: DailyPuzzleKey, seed:
 	}
 }
 
-function buildCacciaPayload(challengeId: ChallengeId, words: readonly [string, string, string], theme: DailyCatalogTheme): Extract<DailyCatalogPuzzlePayload, { readonly category: string }> {
+function buildCacciaPayload(challengeId: ChallengeId, seed: ThemeSeed, theme: DailyCatalogTheme): Extract<DailyCatalogPuzzlePayload, { readonly category: string }> {
 	const random = createSeededRandom(`${challengeId}:caccia-grid`);
 	const grid = Array.from({ length: WORD_SEARCH_SIZE }, () => Array.from({ length: WORD_SEARCH_SIZE }, () => ''));
 	const placedWords: DailyCatalogPlacedWord[] = [];
-	const orderedWords = [...words].sort((left, right) => normalizeLetters(right).length - normalizeLetters(left).length);
 	const directionOffset = randomIndex(random, WORD_SEARCH_DIRECTIONS.length);
-	for (const [wordIndex, word] of orderedWords.entries()) {
-		const normalized = normalizeLetters(word);
-		const placement = placeCatalogWord(grid, normalized, wordIndex, directionOffset, random);
-		if (placement === null) throw new Error(`Unable to place daily Caccia word ${word}`);
+	const place = (entry: Word): boolean => {
+		const normalized = normalizeLetters(entry.word);
+		const placement = placeCatalogWord(grid, normalized, placedWords.length, directionOffset, random);
+		if (placement === null) return false;
 		placedWords.push({
-			word,
-			translation: theme.label,
-			definition: theme.explanation,
+			word: entry.word,
+			translation: entry.translation,
+			definition: entry.definition,
 			row: placement.cells[0]?.row ?? 0,
 			col: placement.cells[0]?.col ?? 0,
 			direction: placement.direction,
 			points: normalized.length * 10,
 			cells: placement.cells,
 		});
+		return true;
+	};
+
+	// Curated theme words are mandatory — they carry the hidden-theme link — and
+	// go down longest first, because a 10-letter word barely fits a 10x10 board.
+	for (const word of [...seed.puzzleWords.caccia].sort((left, right) => normalizeLetters(right).length - normalizeLetters(left).length)) {
+		if (!place({ word, translation: theme.label, definition: theme.explanation })) throw new Error(`Unable to place daily Caccia word ${word}`);
 	}
+
+	// Then fill from the theme's word-data category up to a playable board size.
+	// Candidates the remaining space cannot fit are passed over rather than
+	// failing the day: the category offers 70+ alternatives.
+	const taken = new Set(placedWords.map((word) => normalizeLetters(word.word)));
+	for (const candidate of shuffle(wordDatabase[seed.cacciaFill], createSeededRandom(`${challengeId}:caccia-fill`))) {
+		if (placedWords.length === WORD_SEARCH_WORD_COUNT) break;
+		const normalized = normalizeLetters(candidate.word);
+		// Multi-word entries would collapse into a string the player never sees spelled that way.
+		if (/\s/.test(candidate.word) || normalized.length < 3 || normalized.length > WORD_SEARCH_SIZE || taken.has(normalized)) continue;
+		taken.add(normalized);
+		// Word-data stores lowercase headwords; daily words are published uppercase and accent-free like the grid.
+		place({ ...candidate, word: normalized });
+	}
+	if (placedWords.length !== WORD_SEARCH_WORD_COUNT) throw new Error(`Unable to fill daily Caccia grid for ${seed.themeId}`);
+
 	for (const row of grid) {
 		for (let col = 0; col < row.length; col += 1) {
 			if (row[col] === '') row[col] = randomLetter(random);

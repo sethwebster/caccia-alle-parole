@@ -57,6 +57,7 @@
     "lint": "expo lint",
     "test": "vitest",
     "update:daily-catalog": "bun scripts/update-daily-catalog-snapshots.ts",
+    "generate:dictionary": "bun scripts/generate-italian-dictionary.ts",
     "validate:daily-catalog": "vitest run scripts/validate-daily-catalog.test.ts"
   },
   "private": true

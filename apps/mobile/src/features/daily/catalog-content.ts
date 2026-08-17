@@ -1,4 +1,8 @@
+import type { wordDatabase } from '@/data/word-data';
+
 import type { DailyPuzzleKey } from './types';
+
+export type WordCategory = keyof typeof wordDatabase;
 
 export const CATALOG_CONTENT_SCHEMA_VERSION = 1;
 
@@ -10,6 +14,8 @@ export type ThemeSeed = {
 	readonly label: string;
 	readonly explanation: string;
 	readonly distractors: readonly [string, string, string];
+	/** Word-data category the daily Caccia grid draws its extra words from. */
+	readonly cacciaFill: WordCategory;
 	readonly puzzleWords: Record<DailyPuzzleKey, readonly [string, string, string]>;
 };
 
@@ -19,6 +25,7 @@ export const THEMES = [
 		label: 'Mercato italiano',
 		explanation: 'Tutte le parole richiamano banchi, prodotti e gesti tipici del mercato.',
 		distractors: ['Cinema di quartiere', 'Montagna innevata', 'Viaggio spaziale'],
+		cacciaFill: 'cibo',
 		puzzleWords: {
 			parola: ['SPESA', 'COSTA', 'SOLDI'],
 			caccia: ['FRUTTA', 'BANCONE', 'VERDURA'],
@@ -32,6 +39,7 @@ export const THEMES = [
 		label: 'Estate al mare',
 		explanation: 'La sfida raccoglie parole da spiaggia, onde, sole e vacanze.',
 		distractors: ['Biblioteca antica', 'Officina meccanica', 'Teatro lirico'],
+		cacciaFill: 'natura',
 		puzzleWords: {
 			parola: ['BARCA', 'ISOLA', 'BAGNO'],
 			caccia: ['OMBRELLONE', 'CONCHIGLIA', 'SCOGLIO'],
@@ -45,6 +53,7 @@ export const THEMES = [
 		label: 'Cucina di casa',
 		explanation: 'Ingredienti, utensili e profumi domestici legano ogni puzzle.',
 		distractors: ['Stazione ferroviaria', 'Giardino segreto', 'Laboratorio chimico'],
+		cacciaFill: 'cibo',
 		puzzleWords: {
 			parola: ['BRODO', 'BURRO', 'AGLIO'],
 			caccia: ['MESTOLO', 'RICETTA', 'TAGLIERE'],
@@ -58,6 +67,7 @@ export const THEMES = [
 		label: 'Giornata di scuola',
 		explanation: 'Ogni parola rimanda a lezioni, quaderni e vita in classe.',
 		distractors: ['Foresta tropicale', 'Partita allo stadio', 'Mercato notturno'],
+		cacciaFill: 'scuola',
 		puzzleWords: {
 			parola: ['ESAME', 'PENNA', 'CARTA'],
 			caccia: ['QUADERNO', 'LAVAGNA', 'COMPITO'],
@@ -71,6 +81,7 @@ export const THEMES = [
 		label: 'Viaggio in treno',
 		explanation: 'Binari, partenze e biglietti costruiscono il filo comune.',
 		distractors: ['Cena in famiglia', 'Museo egizio', 'Campo di grano'],
+		cacciaFill: 'viaggio',
 		puzzleWords: {
 			parola: ['TRENO', 'METRO', 'CORSA'],
 			caccia: ['VALIGIA', 'STAZIONE', 'BIGLIETTO'],
@@ -84,6 +95,7 @@ export const THEMES = [
 		label: 'Musica e ritmo',
 		explanation: 'Strumenti, note e palco fanno da tema nascosto della sfida.',
 		distractors: ['Pesca sul lago', 'Cantiere urbano', 'Cucina rustica'],
+		cacciaFill: 'musica',
 		puzzleWords: {
 			parola: ['SUONO', 'CANTO', 'DISCO'],
 			caccia: ['CHITARRA', 'PIANOFORTE', 'TAMBURO'],
@@ -97,6 +109,7 @@ export const THEMES = [
 		label: 'Montagna d\'inverno',
 		explanation: 'Neve, rifugi e sentieri alti tengono insieme i cinque giochi.',
 		distractors: ['Spiaggia affollata', 'Sala da ballo', 'Mercato del pesce'],
+		cacciaFill: 'natura',
 		puzzleWords: {
 			parola: ['MONTE', 'VENTO', 'LEGNA'],
 			caccia: ['RIFUGIO', 'SLITTA', 'VALANGA'],
@@ -110,6 +123,7 @@ export const THEMES = [
 		label: 'Serata al cinema',
 		explanation: 'Schermo, poltrone e pellicole legano ogni parola nascosta.',
 		distractors: ['Orto botanico', 'Cantiere navale', 'Fiera del libro'],
+		cacciaFill: 'hobby',
 		puzzleWords: {
 			parola: ['ICONA', 'SERIE', 'EPICO'],
 			caccia: ['SCHERMO', 'PELLICOLA', 'POLTRONA'],
@@ -123,6 +137,7 @@ export const THEMES = [
 		label: 'Giardino di casa',
 		explanation: 'Semi, attrezzi e fioriture compongono il filo verde della sfida.',
 		distractors: ['Sala operatoria', 'Studio radiofonico', 'Deposito ferroviario'],
+		cacciaFill: 'natura',
 		puzzleWords: {
 			parola: ['PRATO', 'FIORE', 'VANGA'],
 			caccia: ['POTATURA', 'CONCIME', 'SEMENZA'],
@@ -136,6 +151,7 @@ export const THEMES = [
 		label: 'Partita allo stadio',
 		explanation: 'Tifo, gol e spalti affollati guidano le parole di oggi.',
 		distractors: ['Sala da tavola', 'Miniera abbandonata', 'Osservatorio astronomico'],
+		cacciaFill: 'sport',
 		puzzleWords: {
 			parola: ['CAMPO', 'GIOCO', 'ARENA'],
 			caccia: ['TRIBUNA', 'ARBITRO', 'PORTIERE'],
@@ -149,6 +165,7 @@ export const THEMES = [
 		label: 'Città di notte',
 		explanation: 'Insegne, lampioni e vie deserte fanno da sfondo comune.',
 		distractors: ['Bosco di faggi', 'Casa di campagna', 'Molo dei pescatori'],
+		cacciaFill: 'citta',
 		puzzleWords: {
 			parola: ['NOTTE', 'VILLA', 'CORSO'],
 			caccia: ['LAMPIONE', 'SEMAFORO', 'VETRINA'],
@@ -162,6 +179,7 @@ export const THEMES = [
 		label: 'Passeggiata nel bosco',
 		explanation: 'Alberi, muschio e animali discreti collegano i cinque giochi.',
 		distractors: ['Sala macchine', 'Piazza del mercato', 'Cabina telefonica'],
+		cacciaFill: 'natura',
 		puzzleWords: {
 			parola: ['BOSCO', 'CERVO', 'FELCE'],
 			caccia: ['MUSCHIO', 'GHIANDA', 'SENTIERO'],
@@ -175,6 +193,7 @@ export const THEMES = [
 		label: 'Museo e pittura',
 		explanation: 'Tele, pennelli e sale silenziose reggono il tema di oggi.',
 		distractors: ['Fienile estivo', 'Palestra scolastica', 'Cabina di regia'],
+		cacciaFill: 'hobby',
 		puzzleWords: {
 			parola: ['MARMO', 'STILE', 'VETRO'],
 			caccia: ['PENNELLO', 'CORNICE', 'SCULTURA'],
@@ -188,6 +207,7 @@ export const THEMES = [
 		label: 'Colazione al bar',
 		explanation: 'Tazzine, banconi e profumi del mattino legano ogni parola.',
 		distractors: ['Cava di marmo', 'Sala di lettura', 'Pista da sci'],
+		cacciaFill: 'cibo',
 		puzzleWords: {
 			parola: ['CAFFE', 'TAZZA', 'DOLCE'],
 			caccia: ['CORNETTO', 'ZUCCHERO', 'BRIOCHE'],
@@ -201,6 +221,7 @@ export const THEMES = [
 		label: 'Vita in fattoria',
 		explanation: 'Stalle, campi arati e animali domestici formano il filo comune.',
 		distractors: ['Metropolitana affollata', 'Sala congressi', 'Nave da crociera'],
+		cacciaFill: 'animali',
 		puzzleWords: {
 			parola: ['MUCCA', 'CAPRA', 'GRANO'],
 			caccia: ['TRATTORE', 'FIENILE', 'GALLINA'],
@@ -214,6 +235,7 @@ export const THEMES = [
 		label: 'Officina e mestieri',
 		explanation: 'Attrezzi, olio e mani sporche tengono unita la sfida.',
 		distractors: ['Sala da concerto', 'Spiaggia deserta', 'Aula magna'],
+		cacciaFill: 'trasporti',
 		puzzleWords: {
 			parola: ['FERRO', 'FUOCO', 'SALDO'],
 			caccia: ['MARTELLO', 'CACCIAVITE', 'TENAGLIA'],
@@ -227,6 +249,7 @@ export const THEMES = [
 		label: 'Feste di Natale',
 		explanation: 'Luci, regali e tavolate d\'inverno collegano ogni gioco.',
 		distractors: ['Corsa campestre', 'Cantina buia', 'Studio dentistico'],
+		cacciaFill: 'famiglia',
 		puzzleWords: {
 			parola: ['FESTA', 'DOLCI', 'TORTA'],
 			caccia: ['PRESEPE', 'GHIRLANDA', 'CANDELA'],
@@ -240,6 +263,7 @@ export const THEMES = [
 		label: 'Biblioteca silenziosa',
 		explanation: 'Scaffali, pagine e silenzio guidano le parole nascoste.',
 		distractors: ['Sala giochi', 'Porto commerciale', 'Serra tropicale'],
+		cacciaFill: 'scuola',
 		puzzleWords: {
 			parola: ['LEGGE', 'CALMA', 'FRASE'],
 			caccia: ['SCAFFALE', 'ROMANZO', 'LETTURA'],
@@ -253,6 +277,7 @@ export const THEMES = [
 		label: 'Cielo e temporale',
 		explanation: 'Nuvole, tuoni e pioggia battente reggono il tema di oggi.',
 		distractors: ['Sala prove', 'Mercato dei fiori', 'Rifugio alpino'],
+		cacciaFill: 'tempo',
 		puzzleWords: {
 			parola: ['LAMPO', 'PIOVE', 'OMBRA'],
 			caccia: ['OMBRELLO', 'GRANDINE', 'NUVOLA'],
@@ -266,6 +291,7 @@ export const THEMES = [
 		label: 'Corsia d\'ospedale',
 		explanation: 'Camici, visite e attese silenziose collegano i cinque giochi.',
 		distractors: ['Sala da ballo liscio', 'Officina navale', 'Vigneto assolato'],
+		cacciaFill: 'corpo',
 		puzzleWords: {
 			parola: ['LETTO', 'CUORE', 'ESITO'],
 			caccia: ['BARELLA', 'SIRINGA', 'CAMICE'],
@@ -279,6 +305,7 @@ export const THEMES = [
 		label: 'Viaggio nello spazio',
 		explanation: 'Stelle, razzi e orbite lontane formano il filo comune.',
 		distractors: ['Cantina del nonno', 'Fiera paesana', 'Salone da barbiere'],
+		cacciaFill: 'tecnologia',
 		puzzleWords: {
 			parola: ['ASTRO', 'CIELO', 'SONDA'],
 			caccia: ['PIANETA', 'COMETA', 'NAVETTA'],
@@ -292,6 +319,7 @@ export const THEMES = [
 		label: 'Sera a teatro',
 		explanation: 'Sipario, platea e battute imparate legano ogni parola.',
 		distractors: ['Campo da tennis', 'Panetteria di paese', 'Stazione spaziale'],
+		cacciaFill: 'musica',
 		puzzleWords: {
 			parola: ['OPERA', 'SCENA', 'VOLTO'],
 			caccia: ['SIPARIO', 'MASCHERA', 'PLATEA'],
@@ -305,6 +333,7 @@ export const THEMES = [
 		label: 'Porto e pescatori',
 		explanation: 'Reti, moli e barche al rientro reggono il tema nascosto.',
 		distractors: ['Aula di chimica', 'Bosco innevato', 'Sala d\'attesa'],
+		cacciaFill: 'trasporti',
 		puzzleWords: {
 			parola: ['CORDA', 'PESCE', 'TROTA'],
 			caccia: ['PESCATORE', 'GABBIANO', 'ANCORA'],
@@ -318,6 +347,7 @@ export const THEMES = [
 		label: 'Vendemmia d\'autunno',
 		explanation: 'Filari, cesti colmi e mosto dolce collegano i cinque giochi.',
 		distractors: ['Palestra affollata', 'Metro all\'alba', 'Studio televisivo'],
+		cacciaFill: 'cibo',
 		puzzleWords: {
 			parola: ['VIGNA', 'TERRA', 'SUOLO'],
 			caccia: ['GRAPPOLO', 'CANTINA', 'FILARE'],
@@ -331,6 +361,7 @@ export const THEMES = [
 		label: 'Giornata in ufficio',
 		explanation: 'Scrivanie, riunioni e scadenze tengono insieme la sfida.',
 		distractors: ['Spiaggia al tramonto', 'Grotta carsica', 'Circo itinerante'],
+		cacciaFill: 'professioni',
 		puzzleWords: {
 			parola: ['TURNO', 'FIRMA', 'LISTA'],
 			caccia: ['RIUNIONE', 'SCRIVANIA', 'AGENDA'],
@@ -344,6 +375,7 @@ export const THEMES = [
 		label: 'Animali selvatici',
 		explanation: 'Zanne, tane e savane lontane formano il filo comune.',
 		distractors: ['Sartoria di lusso', 'Panificio all\'alba', 'Sala d\'incisione'],
+		cacciaFill: 'animali',
 		puzzleWords: {
 			parola: ['TIGRE', 'LEONE', 'ZEBRA'],
 			caccia: ['GHEPARDO', 'ELEFANTE', 'GIRAFFA'],
@@ -357,6 +389,7 @@ export const THEMES = [
 		label: 'Vetrine di moda',
 		explanation: 'Tessuti, sfilate e specchi lucidi legano ogni parola.',
 		distractors: ['Rifugio di montagna', 'Cava di pietra', 'Sala macchinisti'],
+		cacciaFill: 'vestiti',
 		puzzleWords: {
 			parola: ['GONNA', 'ABITO', 'PERLA'],
 			caccia: ['SARTORIA', 'TESSUTO', 'CAMERINO'],
@@ -370,6 +403,7 @@ export const THEMES = [
 		label: 'Forno e panetteria',
 		explanation: 'Impasti, lievito e pane caldo reggono il tema di oggi.',
 		distractors: ['Officina elettrica', 'Sala d\'aspetto', 'Campo da golf'],
+		cacciaFill: 'cibo',
 		puzzleWords: {
 			parola: ['FORNO', 'PASTA', 'FARRO'],
 			caccia: ['FOCACCIA', 'GRISSINO', 'CIABATTA'],
@@ -383,6 +417,7 @@ export const THEMES = [
 		label: 'Giornata al lago',
 		explanation: 'Acque calme, canneti e barche a remi collegano i cinque giochi.',
 		distractors: ['Deserto roccioso', 'Sala parto', 'Fabbrica tessile'],
+		cacciaFill: 'natura',
 		puzzleWords: {
 			parola: ['LAGHI', 'PESCA', 'ACQUE'],
 			caccia: ['CANOTTO', 'LIBELLULA', 'GIUNCO'],
@@ -396,6 +431,7 @@ export const THEMES = [
 		label: 'Sotto il tendone',
 		explanation: 'Trapezi, luci colorate e applausi guidano le parole nascoste.',
 		distractors: ['Sala del catasto', 'Vigna in collina', 'Corsia autostradale'],
+		cacciaFill: 'hobby',
 		puzzleWords: {
 			parola: ['CIRCO', 'PISTA', 'MAGIA'],
 			caccia: ['TRAPEZIO', 'GIOCOLIERE', 'TENDONE'],

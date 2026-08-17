@@ -76,7 +76,7 @@ describe('daily-catalog deterministic challenge resolution', () => {
 	it('exposes fixed catalog metadata and at least one full future year', () => {
 		expect(CATALOG_METADATA).toEqual({
 			catalogEpoch: 'daily-v1',
-			catalogVersion: '2026.08.12',
+			catalogVersion: '2026.08.17',
 			releaseBaseChallengeId: '2026-01-26',
 			supportedFromChallengeId: '2026-01-26',
 			supportedThroughChallengeId: '2027-01-26',
