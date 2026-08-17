@@ -14,11 +14,12 @@ import type { DailyRoutePuzzleModel, DailyRouteReadyModel } from '@/features/dai
 import { DailyThemeCard } from '@/features/daily/daily-theme-card';
 import { DAILY_HOME_ROUTE } from '@/features/daily/route-policy';
 import { useDailyRouteController } from '@/features/daily/use-daily-route-controller';
+import type { OfficialAttemptGate } from '@/features/daily/official-attempt-gate';
 import { useGameSurface } from '@/hooks/use-game-surface';
 
 export default function DailyRoute() {
 	const surface = useGameSurface();
-	const { model, actions } = useDailyRouteController();
+	const { model, officialGate, actions } = useDailyRouteController();
 	const confirmGiveUp = () => confirmAbandonDailyAttempt(actions.giveUpActive);
 
 	return (
@@ -26,6 +27,9 @@ export default function DailyRoute() {
 			<StatusBar style="auto" />
 			<GameHeader title={DAILY_HOME_ROUTE.title} subtitle={DAILY_COPY.route.headerSubtitle} />
 				<ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+					{officialGate.kind === 'blocked' ? (
+						<OfficialGateCard gate={officialGate} onResolve={actions.resolveOfficialGate} />
+					) : null}
 					{model.kind === 'ready' ? (
 							<ReadyContent model={model} onLaunchCurrent={actions.launchCurrent} onLaunchPuzzle={actions.launchPuzzle} onGiveUp={confirmGiveUp} onShare={actions.shareResult} onAnswerTheme={actions.answerTheme} />
 					) : model.kind === 'subscriptionRequired' ? (
@@ -35,6 +39,25 @@ export default function DailyRoute() {
 				)}
 			</ScrollView>
 		</SafeAreaView>
+	);
+}
+
+/** Official play waits for the current build so today's words score the same for everyone. */
+function OfficialGateCard({ gate, onResolve }: { gate: Extract<OfficialAttemptGate, { kind: 'blocked' }>; onResolve: () => void }) {
+	const surface = useGameSurface();
+	return (
+		<View style={[styles.gateCard, { backgroundColor: surface.card }]}>
+			<Text style={[styles.gateTitle, { color: surface.text }]}>{gate.title}</Text>
+			<Text style={[styles.gateMessage, { color: surface.textSecondary }]}>{gate.message}</Text>
+			<Pressable
+				accessibilityRole="button"
+				disabled={gate.action === 'none'}
+				onPress={onResolve}
+				style={[styles.gateButton, gate.action === 'none' && styles.gateButtonDisabled]}
+			>
+				<Text style={styles.gateButtonText}>{gate.primaryLabel}</Text>
+			</Pressable>
+		</View>
 	);
 }
 

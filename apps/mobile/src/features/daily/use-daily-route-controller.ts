@@ -10,6 +10,8 @@ import type { ChallengeId } from './types';
 import { useDailyChallenge } from './use-daily-challenge';
 import { useDailyShare } from './use-daily-share';
 import { startPuzzleForMode } from './daily-route-start';
+import { useOfficialAttemptGate } from './use-official-attempt-gate';
+import type { OfficialAttemptGate } from './official-attempt-gate';
 
 type RouteChallengeParam =
 	| { readonly kind: 'valid'; readonly challengeId?: ChallengeId }
@@ -21,9 +23,11 @@ type DailyRouteActions = {
 	readonly giveUpActive: () => void;
 	readonly shareResult: () => void;
 	readonly answerTheme: (answerIndex: number) => void;
+	/** Applies the update an official attempt is waiting on. */
+	readonly resolveOfficialGate: () => void;
 };
 
-export function useDailyRouteController(): { readonly model: DailyRouteModel; readonly actions: DailyRouteActions } {
+export function useDailyRouteController(): { readonly model: DailyRouteModel; readonly officialGate: OfficialAttemptGate; readonly actions: DailyRouteActions } {
 	const router = useRouter();
 	const [actionError, setActionError] = useState<DailyRouteActionError>();
 	const [launchError, setLaunchError] = useState<DailyRouteLaunchError>();
@@ -33,14 +37,18 @@ export function useDailyRouteController(): { readonly model: DailyRouteModel; re
 	const mode = params.mode === 'replay' && routeChallenge.kind === 'valid' && routeChallenge.challengeId !== undefined ? 'replay' : 'official';
 	const daily = useDailyChallenge({ challengeId: routeChallenge.kind === 'valid' ? routeChallenge.challengeId : undefined, mode, enabled: routeChallenge.kind === 'valid' });
 	const shareDailyResult = useDailyShare();
+	// Everyone must play today's official attempt under the same dictionary, so a
+	// pending build blocks the start rather than silently changing which words score.
+	const { gate: officialGate, resolve: resolveOfficialGate } = useOfficialAttemptGate(mode);
 	const baseModel: DailyRouteModel = routeChallenge.kind === 'invalid' ? { kind: 'error', ...invalidDailyRouteState() } : daily.loaded ? buildDailyRouteModel(daily.snapshot) : { kind: 'loading', ...loadingDailyState() };
 	const model: DailyRouteModel = dailyRouteLaunchErrorModel(routeChallenge.kind === 'valid' ? dailyLoadErrorModel(baseModel, daily.loadError) : baseModel, launchError);
 
 	return {
 		model,
+		officialGate,
 		actions: {
 			launchCurrent: () => {
-				if (model.kind !== 'ready' || model.currentPuzzleHref === undefined) return;
+				if (model.kind !== 'ready' || model.currentPuzzleHref === undefined || officialGate.kind === 'blocked') return;
 				const href = model.currentPuzzleHref;
 				void launchDailyRoutePuzzle({
 					href,
@@ -50,7 +58,7 @@ export function useDailyRouteController(): { readonly model: DailyRouteModel; re
 				});
 			},
 			launchPuzzle: (puzzle) => {
-				if (model.kind !== 'ready' || !puzzle.canLaunch) return;
+				if (model.kind !== 'ready' || !puzzle.canLaunch || officialGate.kind === 'blocked') return;
 				void launchDailyRoutePuzzle({
 					href: puzzle.href,
 					start: () => model.activePuzzleKey === undefined || model.activePuzzleKey !== puzzle.key ? startPuzzleForMode(daily.orchestrator, model, puzzle) : Promise.resolve(activeAttemptFor(daily.snapshot)),
@@ -69,6 +77,7 @@ export function useDailyRouteController(): { readonly model: DailyRouteModel; re
 				if (model.kind !== 'ready') return;
 				void daily.orchestrator.recordThemeAnswer({ answerIndex }).then((result) => handleThemeResult(result, setActionError));
 			},
+			resolveOfficialGate,
 		},
 	};
 }
