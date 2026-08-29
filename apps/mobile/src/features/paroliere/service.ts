@@ -62,16 +62,25 @@ export const GRID_SIZE = 4;
 const GAME_DURATION = 180; // seconds
 const ACTIVITY_UPDATE_MS = 15_000;
 
-// Italian letter frequency distribution.
+// Italian letter frequency distribution, with a vowel-heavy final row so
+// practice boards retain enough connective letters for Italian word paths.
 const ITALIAN_LETTERS = 'AAAAEEEEIIIOOOUUULLLNNNRRRSSSTTTCCDDFGGMPBVZQHJ';
+const PLAYABLE_WORD_ROWS = [
+	['MARE', 'SOLE', 'PANE'],
+	['LUNA', 'VINO', 'SALE'],
+	['CANE', 'NERO', 'VELA'],
+] as const;
+const VOWELS = 'AAAAEEEEIIIIOOOOUUU';
 
 function generateRandomGrid(): string[][] {
-	return Array.from({ length: GRID_SIZE }, () =>
-		Array.from(
-			{ length: GRID_SIZE },
-			() => ITALIAN_LETTERS[Math.floor(Math.random() * ITALIAN_LETTERS.length)],
-		),
-	);
+	const rows = PLAYABLE_WORD_ROWS[Math.floor(Math.random() * PLAYABLE_WORD_ROWS.length)] ?? PLAYABLE_WORD_ROWS[0];
+	// Three embedded everyday words establish a reliable playable floor; the
+	// final row stays varied but deliberately contributes at least two vowels.
+	const finalRow = Array.from({ length: GRID_SIZE }, (_, index) => {
+		const source = index < 2 ? VOWELS : ITALIAN_LETTERS;
+		return source[Math.floor(Math.random() * source.length)] ?? 'A';
+	});
+	return [...rows.map((word) => [...word]), finalRow];
 }
 
 /** Longer words are worth more: 3=1, 4=2, 5=4, 6=6, 7+=10. */
@@ -304,11 +313,11 @@ function pathBetween(start: PathCell, end: PathCell): PathCell[] {
 	const colDistance = Math.abs(colDelta);
 	const steps = Math.max(rowDistance, colDistance);
 	if (steps === 0) return [];
-	if (rowDistance !== 0 && colDistance !== 0 && rowDistance !== colDistance) return [];
-	const rowStep = Math.sign(rowDelta);
-	const colStep = Math.sign(colDelta);
+	// Sparse pointer events can cross a corner without yielding the exact turning
+	// cell. Step both axes while either remains, which keeps every recovered cell
+	// adjacent and makes that corner path feel continuous.
 	return Array.from({ length: steps }, (_, index) => ({
-		row: start.row + rowStep * (index + 1),
-		col: start.col + colStep * (index + 1),
+		row: start.row + Math.sign(rowDelta) * Math.min(index + 1, rowDistance),
+		col: start.col + Math.sign(colDelta) * Math.min(index + 1, colDistance),
 	}));
 }

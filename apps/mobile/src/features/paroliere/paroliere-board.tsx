@@ -40,6 +40,7 @@ function formatTime(seconds: number): string {
 }
 
 export function GameBoard({ state, service }: { state: ParoliereState; service: ParoliereService }) {
+	const { selected, select, dismiss } = useWordMeaning();
 	return (
 		<Animated.View entering={FadeIn.duration(300)} style={styles.board}>
 			<View style={styles.stats}>
@@ -51,19 +52,24 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				<StatPill label="Punteggio" value={state.score} tone="accent" />
 				<StatPill label="Parole" value={state.foundWords.length} />
 			</View>
-			<WordDisplay currentWord={state.currentWord} outcome={state.lastOutcome} />
-			<LetterGrid grid={state.grid} currentPath={state.currentPath} service={service} />
-			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} /> : null}
+			<WordDisplay currentWord={state.currentWord} outcome={state.lastOutcome} onDefine={select} />
+			<LetterGrid grid={state.grid} currentPath={state.currentPath} service={service} onDefine={select} />
+			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} onDefine={select} /> : null}
+			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</Animated.View>
 	);
 }
 
-function WordDisplay({ currentWord, outcome }: { currentWord: string; outcome: SubmitOutcome | null }) {
+function WordDisplay({ currentWord, outcome, onDefine }: { currentWord: string; outcome: SubmitOutcome | null; onDefine: (word: string) => void }) {
 	const surface = useGameSurface();
 	const pulseStyle = useSubmitPulse(outcome);
 	const active = currentWord.length > 0;
 	return (
-		<View
+		<Pressable
+			accessibilityRole={active ? "button" : undefined}
+			accessibilityLabel={active ? `Cosa significa ${currentWord}` : undefined}
+			disabled={!active}
+			onPress={() => onDefine(currentWord)}
 			style={[
 				styles.wordDisplay,
 				active
@@ -88,7 +94,7 @@ function WordDisplay({ currentWord, outcome }: { currentWord: string; outcome: S
 					</Text>
 				</Animated.View>
 			) : null}
-		</View>
+		</Pressable>
 	);
 }
 
@@ -96,10 +102,12 @@ function LetterGrid({
 	grid,
 	currentPath,
 	service,
+	onDefine,
 }: {
 	grid: string[][];
 	currentPath: PathCell[];
 	service: ParoliereService;
+	onDefine: (word: string) => void;
 }) {
 	const surface = useGameSurface();
 	const [wrapSize, setWrapSize] = useState({ width: 0, height: 0 });
@@ -169,8 +177,11 @@ function LetterGrid({
 						{renderedRows.map((row) => (
 					<View key={row.key} style={styles.gridRow}>
 						{row.letters.map((cell) => (
-							<View
+							<Pressable
 								key={cell.key}
+								accessibilityRole="button"
+								accessibilityLabel={`Cosa significa ${cell.letter}`}
+								onLongPress={() => onDefine(cell.letter)}
 								style={[
 									styles.tile,
 									cell.selected
@@ -178,10 +189,8 @@ function LetterGrid({
 										: { backgroundColor: surface.card, borderColor: surface.border },
 								]}
 							>
-								<Text style={[styles.tileText, { color: cell.selected ? '#fff' : surface.text }]}>
-									{cell.letter}
-								</Text>
-							</View>
+								<Text style={[styles.tileText, { color: cell.selected ? '#fff' : surface.text }]}>{cell.letter}</Text>
+							</Pressable>
 								))}
 							</View>
 						))}
@@ -192,9 +201,8 @@ function LetterGrid({
 	);
 }
 
-function FoundWords({ words }: { words: string[] }) {
+function FoundWords({ words, onDefine }: { words: string[]; onDefine: (word: string) => void }) {
 	const surface = useGameSurface();
-	const { selected, select, dismiss } = useWordMeaning();
 	const sorted = [...words].sort();
 	return (
 		<View style={[styles.foundPanel, { backgroundColor: surface.card, borderColor: surface.border }]}>
@@ -205,7 +213,7 @@ function FoundWords({ words }: { words: string[] }) {
 						<Pressable
 							accessibilityRole="button"
 							accessibilityLabel={`Cosa significa ${word}`}
-							onPress={() => select(word)}
+							onPress={() => onDefine(word)}
 							style={styles.chip}
 						>
 							<Text style={styles.chipText}>{word}</Text>
@@ -213,7 +221,6 @@ function FoundWords({ words }: { words: string[] }) {
 					</Animated.View>
 				))}
 			</ScrollView>
-			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</View>
 	);
 }

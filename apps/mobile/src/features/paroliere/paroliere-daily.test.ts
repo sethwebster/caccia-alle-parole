@@ -80,6 +80,17 @@ describe('paroliere daily challenge mode', () => {
 		).toThrow(ParoliereChallengeConfigError);
 	});
 
+	it('builds practice boards with three embedded words and a vowel-rich fourth row', () => {
+		const random = vi.spyOn(Math, 'random').mockReturnValue(0);
+		const service = new ParoliereService();
+		service.startGame();
+		const grid = service.getState().grid;
+
+		expect(grid.slice(0, 3).map((row) => row.join(''))).toEqual(['MARE', 'SOLE', 'PANE']);
+		expect(grid[3]?.filter((letter) => 'AEIOU'.includes(letter)).length).toBeGreaterThanOrEqual(2);
+		random.mockRestore();
+	});
+
 	it('does not call Math.random when starting challenge rounds', () => {
 		const randomSpy = vi.spyOn(Math, 'random');
 		const service = createChallengeService();
@@ -145,6 +156,20 @@ describe('paroliere daily challenge mode', () => {
 		expect(service.getState().currentWord).toBe('MON');
 	});
 
+	it('recovers an adjacent path around a missed drag corner', () => {
+		const service = createChallengeService(90);
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+
+		service.extendSelection({ row: 2, col: 1 });
+
+		expect(service.getState().currentPath).toEqual([
+			{ row: 0, col: 0 },
+			{ row: 1, col: 1 },
+			{ row: 2, col: 1 },
+		]);
+	});
+
 	it('hit-tests points near a tile centre as inside that tile', () => {
 		expect(
 			findParoliereCellAtPoint({
@@ -155,14 +180,14 @@ describe('paroliere daily challenge mode', () => {
 		).toEqual({ row: 0, col: 0 });
 	});
 
-	it('hit-tests tile corners as dead zones so diagonal drags cannot clip neighbours', () => {
+	it('keeps tile corners selectable for smooth diagonal drags', () => {
 		expect(
 			findParoliereCellAtPoint({
 				...boardHitTestGeometry,
 				x: boardTileSize - 0.25,
 				y: boardTileSize - 0.25,
 			}),
-		).toBeNull();
+		).toEqual({ row: 0, col: 0 });
 	});
 
 	it('keeps the diagonal side of a tile selectable close to its corner', () => {
