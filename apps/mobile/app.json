@@ -79,7 +79,10 @@
         {
           "photosPermission": "L'app usa le tue foto per impostare l'immagine del profilo."
         }
-      ]
+      ],
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
