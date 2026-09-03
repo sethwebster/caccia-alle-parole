@@ -4,7 +4,7 @@ import type { TerminalAttemptContext } from '@/features/daily/types';
 import { makeChallengeId } from '@/features/daily/date';
 
 import { findParoliereCellAtPoint } from './paroliere-board-hit-test';
-import { ParoliereChallengeConfigError, ParoliereService } from './service';
+import { ParoliereChallengeConfigError, ParoliereService, paroliereDefineTarget } from './service';
 
 const activity = vi.hoisted(() => ({
 	endParoliereActivity: vi.fn(),
@@ -78,17 +78,6 @@ describe('paroliere daily challenge mode', () => {
 					},
 				}),
 		).toThrow(ParoliereChallengeConfigError);
-	});
-
-	it('builds practice boards with three embedded words and a vowel-rich fourth row', () => {
-		const random = vi.spyOn(Math, 'random').mockReturnValue(0);
-		const service = new ParoliereService();
-		service.startGame();
-		const grid = service.getState().grid;
-
-		expect(grid.slice(0, 3).map((row) => row.join(''))).toEqual(['MARE', 'SOLE', 'PANE']);
-		expect(grid[3]?.filter((letter) => 'AEIOU'.includes(letter)).length).toBeGreaterThanOrEqual(2);
-		random.mockRestore();
 	});
 
 	it('does not call Math.random when starting challenge rounds', () => {
@@ -252,6 +241,77 @@ describe('paroliere daily challenge mode', () => {
 		expect(JSON.parse(JSON.stringify(giveUpSummary))).toMatchObject({ context: challengeContext, reason: 'giveUp', score: 0 });
 		expect(activity.startParoliereActivity).toHaveBeenCalledTimes(2);
 		expect(activity.endParoliereActivity).toHaveBeenCalledTimes(2);
+	});
+
+	it('offers the actively traced word for definition before it is submitted', () => {
+		const service = createChallengeService();
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+		service.extendSelection({ row: 0, col: 1 });
+		service.extendSelection({ row: 0, col: 2 });
+		service.extendSelection({ row: 0, col: 3 });
+
+		const state = service.getState();
+
+		expect(state.currentWord).toBe('MARE');
+		expect(paroliereDefineTarget(state.currentWord, state.lastOutcome)).toBe('MARE');
+	});
+
+	it('keeps the released word definable after release clears the traced word', () => {
+		const service = createChallengeService();
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+		service.extendSelection({ row: 0, col: 1 });
+		service.extendSelection({ row: 0, col: 2 });
+		service.extendSelection({ row: 0, col: 3 });
+
+		service.release();
+		const state = service.getState();
+
+		// release() clears currentWord on every branch, so without the outcome
+		// fallback the define affordance is unreachable the moment a finger lifts.
+		expect(state.currentWord).toBe('');
+		expect(paroliereDefineTarget(state.currentWord, state.lastOutcome)).toBe('MARE');
+	});
+
+	it('keeps the last attempt definable whether or not it scored', () => {
+		const service = createChallengeService();
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+		service.extendSelection({ row: 1, col: 1 });
+		service.extendSelection({ row: 2, col: 2 });
+
+		service.release();
+		const state = service.getState();
+
+		// Deliberately makes no claim about MON's validity: this file's
+		// vi.mock('./dictionary') never applies (service.ts imports
+		// '@/lib/dictionary'), so these run against the real dictionary.
+		expect(state.lastOutcome?.word).toBe('MON');
+		expect(paroliereDefineTarget(state.currentWord, state.lastOutcome)).toBe('MON');
+	});
+
+	it('stops offering the previous attempt once the next trace begins', () => {
+		const service = createChallengeService();
+		service.startGame();
+		service.beginSelection({ row: 0, col: 0 });
+		service.extendSelection({ row: 0, col: 1 });
+		service.extendSelection({ row: 0, col: 2 });
+		service.extendSelection({ row: 0, col: 3 });
+		service.release();
+
+		service.beginSelection({ row: 1, col: 1 });
+		const state = service.getState();
+
+		expect(state.lastOutcome).toBeNull();
+		expect(paroliereDefineTarget(state.currentWord, state.lastOutcome)).toBeNull();
+	});
+
+	it('never offers a bare letter or a sub-scoring fragment for definition', () => {
+		expect(paroliereDefineTarget('M', null)).toBeNull();
+		expect(paroliereDefineTarget('MA', null)).toBeNull();
+		expect(paroliereDefineTarget('', null)).toBeNull();
+		expect(paroliereDefineTarget('', { word: 'MA', valid: false, nonce: 1 })).toBeNull();
 	});
 
 	it('keeps Live Activity start, update, and end lifecycle balanced in challenge mode', () => {

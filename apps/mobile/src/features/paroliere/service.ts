@@ -62,25 +62,35 @@ export const GRID_SIZE = 4;
 const GAME_DURATION = 180; // seconds
 const ACTIVITY_UPDATE_MS = 15_000;
 
-// Italian letter frequency distribution, with a vowel-heavy final row so
-// practice boards retain enough connective letters for Italian word paths.
+// Italian letter frequency distribution.
 const ITALIAN_LETTERS = 'AAAAEEEEIIIOOOUUULLLNNNRRRSSSTTTCCDDFGGMPBVZQHJ';
-const PLAYABLE_WORD_ROWS = [
-	['MARE', 'SOLE', 'PANE'],
-	['LUNA', 'VINO', 'SALE'],
-	['CANE', 'NERO', 'VELA'],
-] as const;
-const VOWELS = 'AAAAEEEEIIIIOOOOUUU';
 
 function generateRandomGrid(): string[][] {
-	const rows = PLAYABLE_WORD_ROWS[Math.floor(Math.random() * PLAYABLE_WORD_ROWS.length)] ?? PLAYABLE_WORD_ROWS[0];
-	// Three embedded everyday words establish a reliable playable floor; the
-	// final row stays varied but deliberately contributes at least two vowels.
-	const finalRow = Array.from({ length: GRID_SIZE }, (_, index) => {
-		const source = index < 2 ? VOWELS : ITALIAN_LETTERS;
-		return source[Math.floor(Math.random() * source.length)] ?? 'A';
-	});
-	return [...rows.map((word) => [...word]), finalRow];
+	return Array.from({ length: GRID_SIZE }, () =>
+		Array.from(
+			{ length: GRID_SIZE },
+			() => ITALIAN_LETTERS[Math.floor(Math.random() * ITALIAN_LETTERS.length)],
+		),
+	);
+}
+
+/** Shortest path the game will score, and the shortest fragment worth looking up. */
+const MIN_DEFINABLE_LENGTH = 3;
+
+/**
+ * Which word a define affordance should open.
+ *
+ * The actively traced word wins, so a definition is reachable before the path
+ * is submitted. `release` clears `currentWord` on every branch, so without a
+ * fallback the affordance would be unreachable the instant the finger lifts;
+ * the last attempt stays offered until the next trace begins (`beginSelection`
+ * clears `lastOutcome`). Single letters and short fragments resolve to null
+ * rather than opening a sheet that is guaranteed to read "unavailable".
+ */
+export function paroliereDefineTarget(currentWord: string, outcome: SubmitOutcome | null): string | null {
+	if (currentWord.length >= MIN_DEFINABLE_LENGTH) return currentWord;
+	const attempted = outcome?.word ?? '';
+	return attempted.length >= MIN_DEFINABLE_LENGTH ? attempted : null;
 }
 
 /** Longer words are worth more: 3=1, 4=2, 5=4, 6=6, 7+=10. */

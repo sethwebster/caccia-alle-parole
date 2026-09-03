@@ -14,6 +14,7 @@ import { findParoliereCellAtPoint } from './paroliere-board-hit-test';
 import { GRID_GAP, styles } from './paroliere-board.styles';
 import {
 	GRID_SIZE,
+	paroliereDefineTarget,
 	wordPoints,
 	type ParoliereService,
 	type ParoliereState,
@@ -41,6 +42,9 @@ function formatTime(seconds: number): string {
 
 export function GameBoard({ state, service }: { state: ParoliereState; service: ParoliereService }) {
 	const { selected, select, dismiss } = useWordMeaning();
+	// One target shared by both live surfaces, so the word display and a board
+	// long-press always define the same thing the player is looking at.
+	const defineTarget = paroliereDefineTarget(state.currentWord, state.lastOutcome);
 	return (
 		<Animated.View entering={FadeIn.duration(300)} style={styles.board}>
 			<View style={styles.stats}>
@@ -52,24 +56,48 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				<StatPill label="Punteggio" value={state.score} tone="accent" />
 				<StatPill label="Parole" value={state.foundWords.length} />
 			</View>
-			<WordDisplay currentWord={state.currentWord} outcome={state.lastOutcome} onDefine={select} />
-			<LetterGrid grid={state.grid} currentPath={state.currentPath} service={service} onDefine={select} />
+			<WordDisplay
+				currentWord={state.currentWord}
+				outcome={state.lastOutcome}
+				defineTarget={defineTarget}
+				onDefine={select}
+			/>
+			<LetterGrid
+				grid={state.grid}
+				currentPath={state.currentPath}
+				service={service}
+				defineTarget={defineTarget}
+				onDefine={select}
+			/>
 			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} onDefine={select} /> : null}
 			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</Animated.View>
 	);
 }
 
-function WordDisplay({ currentWord, outcome, onDefine }: { currentWord: string; outcome: SubmitOutcome | null; onDefine: (word: string) => void }) {
+function WordDisplay({
+	currentWord,
+	outcome,
+	defineTarget,
+	onDefine,
+}: {
+	currentWord: string;
+	outcome: SubmitOutcome | null;
+	defineTarget: string | null;
+	onDefine: (word: string) => void;
+}) {
 	const surface = useGameSurface();
 	const pulseStyle = useSubmitPulse(outcome);
+	// Highlight tracks the live trace; definability outlives it, because the
+	// released word stays on screen in the pulse and is still worth looking up.
 	const active = currentWord.length > 0;
+	const target = defineTarget;
 	return (
 		<Pressable
-			accessibilityRole={active ? "button" : undefined}
-			accessibilityLabel={active ? `Cosa significa ${currentWord}` : undefined}
-			disabled={!active}
-			onPress={() => onDefine(currentWord)}
+			accessibilityRole={target === null ? undefined : 'button'}
+			accessibilityLabel={target === null ? undefined : `Cosa significa ${target}`}
+			disabled={target === null}
+			onPress={target === null ? undefined : () => onDefine(target)}
 			style={[
 				styles.wordDisplay,
 				active
@@ -102,14 +130,17 @@ function LetterGrid({
 	grid,
 	currentPath,
 	service,
+	defineTarget,
 	onDefine,
 }: {
 	grid: string[][];
 	currentPath: PathCell[];
 	service: ParoliereService;
+	defineTarget: string | null;
 	onDefine: (word: string) => void;
 }) {
 	const surface = useGameSurface();
+	const target = defineTarget;
 	const [wrapSize, setWrapSize] = useState({ width: 0, height: 0 });
 	const [gestureState] = useState(() => new DragGestureState());
 	// True square sized to the space actually available, so rendered tiles and
@@ -179,9 +210,12 @@ function LetterGrid({
 						{row.letters.map((cell) => (
 							<Pressable
 								key={cell.key}
-								accessibilityRole="button"
-								accessibilityLabel={`Cosa significa ${cell.letter}`}
-								onLongPress={() => onDefine(cell.letter)}
+								// A tile defines the word being traced, never its own letter:
+								// a single character misses the dictionary for almost every
+								// tile, so that affordance only ever opened "unavailable".
+								accessibilityRole={target === null ? undefined : 'button'}
+								accessibilityLabel={target === null ? cell.letter : `Cosa significa ${target}`}
+								onLongPress={target === null ? undefined : () => onDefine(target)}
 								style={[
 									styles.tile,
 									cell.selected
