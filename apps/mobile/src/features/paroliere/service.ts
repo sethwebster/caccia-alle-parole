@@ -10,6 +10,8 @@ import {
 
 import { isValidWord } from '@/lib/dictionary';
 
+import { BOARD_SIZE, generateBoard } from './board-quality';
+
 export type PathCell = { row: number; col: number };
 export type ParoliereGameState = 'setup' | 'playing' | 'finished';
 export type ParoliereChallengeTerminalReason = Extract<TerminalReason, 'loss' | 'skip' | 'giveUp'>;
@@ -58,21 +60,9 @@ export class ParoliereChallengeConfigError extends Error {
 	}
 }
 
-export const GRID_SIZE = 4;
+export const GRID_SIZE = BOARD_SIZE;
 const GAME_DURATION = 180; // seconds
 const ACTIVITY_UPDATE_MS = 15_000;
-
-// Italian letter frequency distribution.
-const ITALIAN_LETTERS = 'AAAAEEEEIIIOOOUUULLLNNNRRRSSSTTTCCDDFGGMPBVZQHJ';
-
-function generateRandomGrid(): string[][] {
-	return Array.from({ length: GRID_SIZE }, () =>
-		Array.from(
-			{ length: GRID_SIZE },
-			() => ITALIAN_LETTERS[Math.floor(Math.random() * ITALIAN_LETTERS.length)],
-		),
-	);
-}
 
 /** Longer words are worth more: 3=1, 4=2, 5=4, 6=6, 7+=10. */
 export function wordPoints(length: number): number {
@@ -85,7 +75,7 @@ export function wordPoints(length: number): number {
 
 function initialState(challenge: ParoliereChallengeConfig | null): ParoliereState {
 	return {
-		grid: challenge === null ? generateRandomGrid() : copyGrid(challenge.grid),
+		grid: challenge === null ? generateBoard() : copyGrid(challenge.grid),
 		foundWords: [],
 		currentPath: [],
 		currentWord: '',
