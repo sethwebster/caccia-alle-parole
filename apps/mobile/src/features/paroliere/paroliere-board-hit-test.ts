@@ -13,7 +13,7 @@ export type ParoliereBoardHitTestInput = {
  * It reaches farther toward diagonal corners while preserving horizontal
  * and vertical dead zones between tiles, avoiding accidental side-neighbours.
  */
-const ACCEPT_RADIUS_RATIO = 0.56;
+const ACCEPT_RADIUS_RATIO = 0.65;
 
 export function findParoliereCellAtPoint({
 	boardSize,
@@ -28,6 +28,8 @@ export function findParoliereCellAtPoint({
 	const step = tile + gap;
 	const col = Math.min(gridSize - 1, Math.floor(x / step));
 	const row = Math.min(gridSize - 1, Math.floor(y / step));
+	// Never turn the physical gap into a tile hit while widening corner capture.
+	if (x - col * step >= tile || y - row * step >= tile) return null;
 	const centerX = col * step + tile / 2;
 	const centerY = row * step + tile / 2;
 	const radius = tile * ACCEPT_RADIUS_RATIO;

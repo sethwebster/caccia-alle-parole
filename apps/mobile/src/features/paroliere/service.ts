@@ -74,6 +74,25 @@ function generateRandomGrid(): string[][] {
 	);
 }
 
+/** Shortest path the game will score, and the shortest fragment worth looking up. */
+const MIN_DEFINABLE_LENGTH = 3;
+
+/**
+ * Which word a define affordance should open.
+ *
+ * The actively traced word wins, so a definition is reachable before the path
+ * is submitted. `release` clears `currentWord` on every branch, so without a
+ * fallback the affordance would be unreachable the instant the finger lifts;
+ * the last attempt stays offered until the next trace begins (`beginSelection`
+ * clears `lastOutcome`). Single letters and short fragments resolve to null
+ * rather than opening a sheet that is guaranteed to read "unavailable".
+ */
+export function paroliereDefineTarget(currentWord: string, outcome: SubmitOutcome | null): string | null {
+	if (currentWord.length >= MIN_DEFINABLE_LENGTH) return currentWord;
+	const attempted = outcome?.word ?? '';
+	return attempted.length >= MIN_DEFINABLE_LENGTH ? attempted : null;
+}
+
 /** Longer words are worth more: 3=1, 4=2, 5=4, 6=6, 7+=10. */
 export function wordPoints(length: number): number {
 	if (length <= 3) return 1;
@@ -304,11 +323,11 @@ function pathBetween(start: PathCell, end: PathCell): PathCell[] {
 	const colDistance = Math.abs(colDelta);
 	const steps = Math.max(rowDistance, colDistance);
 	if (steps === 0) return [];
-	if (rowDistance !== 0 && colDistance !== 0 && rowDistance !== colDistance) return [];
-	const rowStep = Math.sign(rowDelta);
-	const colStep = Math.sign(colDelta);
+	// Sparse pointer events can cross a corner without yielding the exact turning
+	// cell. Step both axes while either remains, which keeps every recovered cell
+	// adjacent and makes that corner path feel continuous.
 	return Array.from({ length: steps }, (_, index) => ({
-		row: start.row + rowStep * (index + 1),
-		col: start.col + colStep * (index + 1),
+		row: start.row + Math.sign(rowDelta) * Math.min(index + 1, rowDistance),
+		col: start.col + Math.sign(colDelta) * Math.min(index + 1, colDistance),
 	}));
 }
