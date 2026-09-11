@@ -1,5 +1,7 @@
 import type { Difficulty, Direction, Word } from '@/lib/types';
 import { wordDatabase } from '@/data/word-data';
+import { ITALIAN_LETTER_POOL } from '@/lib/italian-letters';
+import { createSeededRandom, randomIndex, shuffle, type SeededRandom } from '@/lib/seeded-random';
 
 import { CATALOG_ROTATION_BASE, THEMES, type ThemeSeed } from './catalog-content';
 import { civilDayIndex, makeLocalCivilDate } from './date';
@@ -11,9 +13,6 @@ const WORD_SEARCH_SIZE = 10;
 /** Three curated theme words alone left the daily grid far emptier than free play (10 words on the same 10x10 board). */
 const WORD_SEARCH_WORD_COUNT = 6;
 const PAROLIERE_SIZE = 4;
-const ITALIAN_LETTERS = 'AAAAAAAAEEEEEEEEEEIIIIIIIIOOOOOOONNNNNNRRRRRLLLLTTTSSSCCCDDDUUUMMPPGGFFVVBHZQ';
-
-type SeededRandom = () => number;
 
 const WORD_SEARCH_DIRECTIONS = [
 	{ direction: 'horizontal', rowStep: 0, colStep: 1 },
@@ -301,42 +300,12 @@ function hashIndex(value: string, size: number): number {
 	return Math.abs(hash) % size;
 }
 
-function hashValue(value: string): number {
-	let hash = 2166136261;
-	for (let index = 0; index < value.length; index += 1) hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
-	return hash >>> 0;
-}
-
-function createSeededRandom(seed: string): SeededRandom {
-	let state = hashValue(seed) || 0x9e3779b9;
-	return () => {
-		state += 0x6d2b79f5;
-		let value = state;
-		value = Math.imul(value ^ (value >>> 15), value | 1);
-		value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-		return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-	};
-}
-
-function randomIndex(random: SeededRandom, size: number): number {
-	return Math.floor(random() * size);
-}
-
 function randomLetter(random: SeededRandom): string {
-	return ITALIAN_LETTERS[randomIndex(random, ITALIAN_LETTERS.length)] ?? 'A';
+	return ITALIAN_LETTER_POOL[randomIndex(random, ITALIAN_LETTER_POOL.length)] ?? 'A';
 }
 
 function normalizeLetters(value: string): string {
 	return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toUpperCase();
-}
-
-function shuffle<T>(values: readonly T[], random: SeededRandom): T[] {
-	const result = [...values];
-	for (let index = result.length - 1; index > 0; index -= 1) {
-		const swapIndex = randomIndex(random, index + 1);
-		[result[index], result[swapIndex]] = [result[swapIndex], result[index]];
-	}
-	return result;
 }
 
 function cellKey(cell: { readonly row: number; readonly col: number }): string {
