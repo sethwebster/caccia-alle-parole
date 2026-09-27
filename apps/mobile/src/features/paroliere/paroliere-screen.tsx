@@ -23,7 +23,7 @@ import { GameBoard } from './paroliere-board';
 import { useParoliereGame, useResultReveal } from './hooks';
 
 const RULES = [
-	{ icon: '✨', text: 'Trascina tra lettere adiacenti' },
+	{ icon: '✨', text: 'Trascina o tocca lettere adiacenti' },
 	{ icon: '📏', text: 'Minimo 3 lettere per parola' },
 	{ icon: '💎', text: 'Paròle lunghe = Più punti' },
 ] as const;

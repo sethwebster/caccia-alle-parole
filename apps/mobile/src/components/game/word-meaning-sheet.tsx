@@ -33,10 +33,10 @@ export function WordMeaningSheet({ meaning, onDismiss }: { readonly meaning: Sel
 
 	return (
 		<Modal visible transparent animationType="fade" onRequestClose={onDismiss}>
-			<Pressable style={styles.backdrop} onPress={onDismiss}>
+			<Pressable accessible={false} style={styles.backdrop} onPress={onDismiss}>
 				<Animated.View entering={cardIn} style={[styles.card, { backgroundColor: surface.card, borderColor: surface.border }]}>
 					<ScrollView>
-					<Pressable onPress={(event) => event.stopPropagation()}>
+					<Pressable accessible={false} onPress={(event) => event.stopPropagation()}>
 						<Text style={[styles.found, { color: surface.text }]}>{meaning.found}</Text>
 						{definition === null ? (
 							<Text style={[styles.gloss, { color: surface.textTertiary }]}>Definizione non disponibile.</Text>

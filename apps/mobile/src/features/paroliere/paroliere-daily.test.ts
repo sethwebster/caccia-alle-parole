@@ -330,3 +330,28 @@ describe('paroliere daily challenge mode', () => {
 		expect(activity.endParoliereActivity).toHaveBeenCalledTimes(1);
 	});
 });
+
+
+describe('tap selection and definitions before submission', () => {
+	it('retains a valid tapped word for definition without scoring it until submitted', () => {
+		const service = createChallengeService();
+		service.startGame();
+		for (let col = 0; col < 4; col += 1) service.tapCell({ row: 0, col });
+		expect(paroliereDefineTarget(service.getState().currentWord, null)).toBe('MARE');
+		expect(service.getState().foundWords).toEqual([]);
+		service.release();
+		expect(service.getState().foundWords).toEqual(['MARE']);
+		service.destroy();
+	});
+
+	it('rejects a nonadjacent tap and clears a draft without changing the score', () => {
+		const service = createChallengeService();
+		service.startGame();
+		service.tapCell({ row: 0, col: 0 });
+		service.tapCell({ row: 3, col: 3 });
+		expect(service.getState().currentWord).toBe('M');
+		service.clearSelection();
+		expect(service.getState()).toMatchObject({ currentWord: '', currentPath: [], score: 0, foundWords: [] });
+		service.destroy();
+	});
+});

@@ -6,6 +6,9 @@ export const GRID_GAP = 10;
 
 export const styles = StyleSheet.create({
 	board: { flex: 1, alignItems: 'center', padding: 16, gap: 14 },
+	selectionActions: { flexDirection: 'row', gap: 12, alignSelf: 'stretch' },
+	selectionButton: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
+	selectionText: { fontFamily: GameFonts.body700, fontSize: 14 },
 	stats: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
 	wordDisplay: {
 		alignSelf: 'stretch',
