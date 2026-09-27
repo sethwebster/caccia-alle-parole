@@ -17,3 +17,7 @@ vite.config.ts.timestamp-*
 .playwright-mcp/
 graphify-out/
 .omo
+
+# Local TestFlight investigation artifacts
+.crash-reports/
+.crash-fix/
