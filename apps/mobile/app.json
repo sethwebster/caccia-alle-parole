@@ -2,7 +2,7 @@
   "expo": {
     "name": "Caccia Parole",
     "slug": "caccia-parole",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cacciaparole",
@@ -79,7 +79,10 @@
         {
           "photosPermission": "L'app usa le tue foto per impostare l'immagine del profilo."
         }
-      ]
+      ],
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

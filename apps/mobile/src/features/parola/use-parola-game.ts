@@ -141,6 +141,8 @@ function useWebKeyboard(onKey: (key: string) => void) {
 				onKey('ENTER');
 			} else if (e.key === 'Backspace') {
 				onKey('⌫');
+			} else if (e.key === '*') {
+				onKey('*');
 			} else if (/^[a-zA-Z]$/.test(e.key) && !/^[wWxXyYjJkK]$/.test(e.key)) {
 				onKey(e.key.toUpperCase());
 			}

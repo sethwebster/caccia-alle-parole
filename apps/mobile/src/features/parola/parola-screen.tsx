@@ -1,3 +1,5 @@
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { DefinedWord } from '@/components/game/defined-word';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -17,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Confetti } from '@/components/game/confetti';
 import { GameHeader } from '@/components/game/game-header';
 import { ResultModal, ResultStat } from '@/components/game/result-modal';
-import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
+import { GameFonts, GamePalette, GameRadius } from '@/constants/game-theme';
 import { DAILY_COPY } from '@/features/daily/daily-copy';
 import { formatPlayModeSubtitle } from '@/features/daily/route-policy';
 import type { DailyGameRouteSession } from '@/features/daily/use-daily-game-route-mode';
@@ -30,7 +32,7 @@ import { useParolaGame } from './use-parola-game';
 
 const KEYBOARD_ROWS = [
 	['Q', 'E', 'R', 'T', 'U', 'I', 'O', 'P'],
-	['A', 'S', 'D', 'F', 'G', 'H', 'L'],
+	['A', 'S', 'D', 'F', 'G', 'H', 'L', '*'],
 	['ENTER', 'Z', 'C', 'V', 'B', 'N', 'M', '⌫'],
 ] as const;
 
@@ -49,14 +51,31 @@ const DAILY_CAPTION = `La parola del giorno · ${new Date().toLocaleDateString('
 	month: 'long',
 })}`;
 
-export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
+/** Neutral paper and ink keep the familiar Wordle board legible in either theme. */
+function useParolaSurface() {
 	const surface = useGameSurface();
+	const dark = useColorScheme() === 'dark';
+	return {
+		...surface,
+		background: dark ? '#202124' : '#FAFAF8',
+		card: dark ? '#202124' : '#FFFFFF',
+		tile: dark ? '#54575C' : '#E5E7E8',
+		border: dark ? '#777B80' : '#C9CDD1',
+		text: dark ? '#FFFFFF' : '#202124',
+		textSecondary: dark ? '#D3D6DA' : '#51565C',
+		textTertiary: dark ? '#B7BDC4' : '#656B72',
+	};
+}
+
+export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGameRouteSession }) {
+	const surface = useParolaSurface();
 	const router = useRouter();
 	const isChallenge = routeSession.playMode.kind === 'challenge';
 	const game = useParolaGame(routeSession);
 	useScreenInteractive(game.hydrated);
 	const won = game.state.gameState === 'won';
 	const [showHelp, setShowHelp] = useState(false);
+	const [boardWidth, setBoardWidth] = useState(280);
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={[styles.safe, { backgroundColor: surface.background }]}>
@@ -70,9 +89,9 @@ export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGam
 			<View style={styles.content}>
 				{game.hydrated ? (
 					<>
-						<View style={styles.boardArea}>
-							<Board state={game.state} />
-							<Text style={[styles.dailyCaption, { color: surface.textTertiary }]}>{DAILY_CAPTION}</Text>
+						<View style={styles.boardArea} onLayout={({ nativeEvent: { layout } }) => setBoardWidth(Math.max(120, Math.min(340, layout.width - 24, (layout.height - 76) * 5 / 6)))}>
+							<Board state={game.state} width={boardWidth} />
+							<Text style={[styles.dailyCaption, { color: surface.textTertiary }]}>{game.state.gameState === 'playing' ? DAILY_CAPTION : 'Hai già giocato oggi. Torna domani!'}</Text>
 							{game.toast ? <ToastBanner key={game.toast.id} message={game.toast.message} /> : null}
 						</View>
 						<KeyboardPanel keyboardState={game.state.keyboardState} onKey={game.onKey} />
@@ -118,7 +137,7 @@ export function ParolaScreen({ routeSession }: { readonly routeSession: DailyGam
 }
 
 function HowToPlay() {
-	const surface = useGameSurface();
+	const surface = useParolaSurface();
 	const example = ['C', 'A', 'N', 'E', 'S'] as const;
 	return (
 		<View style={styles.howTo}>
@@ -126,7 +145,7 @@ function HowToPlay() {
 				Indovina la <Text style={styles.howToBold}>PAROLA</Text> in {MAX_GUESSES} tentativi.
 			</Text>
 			<Text style={[styles.howToText, { color: surface.textSecondary }]}>
-				• Ogni tentativo deve essere di 5 lettere.
+				• Ogni tentativo deve essere di 5 lettere. Usa * come segnaposto, poi sostituiscilo prima di inviare.
 			</Text>
 			<Text style={[styles.howToText, { color: surface.textSecondary }]}>
 				• Il colore delle tessere cambierà per mostrare quanto sei vicino.
@@ -157,19 +176,19 @@ function HowToPlay() {
 	);
 }
 
-function Board({ state }: { state: WordleState }) {
+function Board({ state, width }: { state: WordleState; width: number }) {
 	const emptyRows = Math.max(
 		0,
 		MAX_GUESSES - state.guesses.length - (state.gameState === 'playing' ? 1 : 0),
 	);
 	return (
-		<View style={styles.board}>
+		<View style={[styles.board, { width }]}>
 			{state.guesses.map((guess, rowIndex) => (
-				<View key={rowIndex} style={styles.row}>
+				<DefinedWord key={rowIndex} word={guess.word} style={styles.row}>
 					{guess.result.map((letter, colIndex) => (
 						<EvaluatedTile key={colIndex} result={letter} delayMs={colIndex * FLIP_STAGGER_MS} />
 					))}
-				</View>
+				</DefinedWord>
 			))}
 			{state.gameState === 'playing' ? <ActiveRow currentGuess={state.currentGuess} /> : null}
 			{Array.from({ length: emptyRows }, (_, i) => (
@@ -192,7 +211,7 @@ function useFlipProgress(delayMs: number) {
 }
 
 function EvaluatedTile({ result, delayMs }: { result: LetterResult; delayMs: number }) {
-	const surface = useGameSurface();
+	const surface = useParolaSurface();
 	const progress = useFlipProgress(delayMs);
 	const statusColor = STATUS_COLORS[result.status];
 	const front = surface.card;
@@ -221,7 +240,7 @@ function EvaluatedTile({ result, delayMs }: { result: LetterResult; delayMs: num
 }
 
 function ActiveRow({ currentGuess }: { currentGuess: string }) {
-	const surface = useGameSurface();
+	const surface = useParolaSurface();
 	return (
 		<View style={styles.row}>
 			{COLUMNS.map((i) => {
@@ -253,7 +272,7 @@ function ActiveRow({ currentGuess }: { currentGuess: string }) {
 }
 
 function EmptyRow() {
-	const surface = useGameSurface();
+	const surface = useParolaSurface();
 	return (
 		<View style={styles.row}>
 			{COLUMNS.map((i) => (
@@ -295,18 +314,19 @@ function Key({
 	status?: KeyboardState[string];
 	onPress: (key: string) => void;
 }) {
-	const surface = useGameSurface();
+	const surface = useParolaSurface();
 	const colored = status !== undefined && status !== 'empty';
 	const wide = label.length > 1;
 	const display = label === 'ENTER' ? 'INVIO' : label;
 	return (
 		<Pressable
-			accessibilityLabel={label === '⌫' ? 'Cancella' : label === 'ENTER' ? 'Invio' : label}
+			accessibilityRole="button"
+		accessibilityLabel={label === '⌫' ? 'Cancella' : label === 'ENTER' ? 'Invio' : label === '*' ? 'Segnaposto' : label}
 			onPress={() => onPress(label)}
 			style={({ pressed }) => [
 				styles.key,
 				wide && styles.keyWide,
-				{ backgroundColor: colored ? STATUS_COLORS[status] : surface.card },
+				{ backgroundColor: colored ? STATUS_COLORS[status] : surface.tile },
 				pressed && styles.keyPressed,
 			]}
 		>
@@ -340,11 +360,11 @@ function ToastBanner({ message }: { message: string }) {
 }
 
 function TargetCard({ word, data }: { word: string; data: Word }) {
-	const surface = useGameSurface();
+	const surface = useParolaSurface();
 	return (
 		<View style={[styles.targetCard, { backgroundColor: surface.tile, borderColor: surface.border }]}>
 			<Text style={[styles.targetLabel, { color: surface.textTertiary }]}>La parola era</Text>
-			<Text style={[styles.targetWord, { color: GamePalette.primary }]}>{word}</Text>
+			<DefinedWord word={word}><Text style={[styles.targetWord, { color: GamePalette.primary }]}>{word}</Text></DefinedWord>
 			<Text style={[styles.targetTranslation, { color: surface.textSecondary }]}>{data.translation}</Text>
 			<Text style={[styles.targetDefinition, { color: surface.textTertiary }]}>{`"${data.definition}"`}</Text>
 		</View>
@@ -361,7 +381,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		aspectRatio: 1,
 		borderWidth: 2,
-		borderRadius: GameRadius.sm,
+		borderRadius: 4,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
@@ -389,10 +409,9 @@ const styles = StyleSheet.create({
 	key: {
 		flex: 1,
 		height: 48,
-		borderRadius: GameRadius.sm,
+		borderRadius: 4,
 		alignItems: 'center',
 		justifyContent: 'center',
-		...GameShadow.subtle,
 	},
 	keyWide: { flex: 1.5 },
 	keyText: { fontSize: 16, fontFamily: GameFonts.display700 },

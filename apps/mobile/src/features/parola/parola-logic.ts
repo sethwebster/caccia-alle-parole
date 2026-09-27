@@ -1,3 +1,4 @@
+import { readParolaCookie, writeParolaCookie } from './parola-storage';
 import { wordleWords } from '@/data/wordle-data';
 import { isValidWord } from '@/lib/dictionary';
 import { loadJSON, saveJSON } from '@/lib/storage';
@@ -114,7 +115,7 @@ export function evaluateGuess(guess: string, target: string): LetterResult[] {
 }
 
 export function withLetter(state: WordleState, letter: string): WordleState {
-	if (state.gameState !== 'playing' || state.currentGuess.length >= WORD_LENGTH) return state;
+	if (state.gameState !== 'playing' || state.currentGuess.length >= WORD_LENGTH || !/^[A-Z*]$/.test(normalizeWord(letter.toUpperCase()))) return state;
 	return {
 		...state,
 		currentGuess: (state.currentGuess + normalizeWord(letter.toUpperCase())).slice(0, WORD_LENGTH),
@@ -161,6 +162,7 @@ export function submitCurrentGuess(state: WordleState): SubmitOutcome {
 	if (state.currentGuess.length !== WORD_LENGTH) {
 		return { kind: 'rejected', message: 'Lettere insufficienti' };
 	}
+	if (state.currentGuess.includes('*')) return { kind: 'rejected', message: 'Sostituisci i segnaposto prima di inviare' };
 	const guess = normalizeWord(state.currentGuess.toUpperCase());
 	if (!isValidWord(guess)) {
 		return { kind: 'rejected', message: 'Parola non valida' };
@@ -180,6 +182,7 @@ export function buildShareText(state: WordleState): string {
 }
 
 export async function persistState(state: WordleState): Promise<void> {
+	writeParolaCookie(state);
 	await saveJSON(STORAGE_KEY, state);
 }
 
@@ -190,7 +193,13 @@ export async function persistState(state: WordleState): Promise<void> {
  * discards the whole save (returns null).
  */
 export async function loadSavedState(): Promise<WordleState | null> {
-	const raw = await loadJSON<unknown>(STORAGE_KEY);
+	const primary = restoreSavedState(await loadJSON<unknown>(STORAGE_KEY));
+	const backup = restoreSavedState(readParolaCookie());
+	// Prefer the furthest valid progress so a stale store cannot reopen a finished day.
+	return backup !== null && (primary === null || backup.guesses.length > primary.guesses.length) ? backup : primary;
+}
+
+function restoreSavedState(raw: unknown): WordleState | null {
 	if (typeof raw !== 'object' || raw === null) return null;
 	const saved = raw as Record<string, unknown>;
 	if (saved.date !== getLocalDateString() || !Array.isArray(saved.guesses)) return null;
@@ -211,7 +220,7 @@ export async function loadSavedState(): Promise<WordleState | null> {
 	if (
 		state.gameState === 'playing' &&
 		typeof saved.currentGuess === 'string' &&
-		/^[A-Z]{0,5}$/.test(saved.currentGuess)
+		/^[A-Z*]{0,5}$/.test(saved.currentGuess)
 	) {
 		state = { ...state, currentGuess: saved.currentGuess };
 	}

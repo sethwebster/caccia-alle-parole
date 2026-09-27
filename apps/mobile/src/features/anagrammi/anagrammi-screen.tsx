@@ -1,3 +1,4 @@
+import { DefinedWord } from '@/components/game/defined-word';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
@@ -159,7 +160,7 @@ export function AnagrammiScreen({ routeSession }: { readonly routeSession: Daily
 			>
 				<View style={[styles.answerCard, { backgroundColor: surface.tile, borderColor: surface.border }]}>
 					<Text style={[styles.answerLabel, { color: surface.textTertiary }]}>La parola corretta</Text>
-					<Text style={styles.answerWord}>{round.targetWord}</Text>
+					<DefinedWord word={round.targetWord}><Text style={styles.answerWord}>{round.targetWord}</Text></DefinedWord>
 					<Text style={[styles.answerTranslation, { color: surface.text }]}>{round.translation}</Text>
 					<Text style={[styles.answerDefinition, { color: surface.textTertiary }]}>{`"${round.definition}"`}</Text>
 				</View>

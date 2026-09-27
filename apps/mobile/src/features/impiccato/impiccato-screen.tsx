@@ -1,3 +1,4 @@
+import { DefinedWord } from '@/components/game/defined-word';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
@@ -200,7 +201,7 @@ function AnswerCard({ round }: { round: ImpiccatoRound }) {
 	return (
 		<View style={[styles.answerCard, { backgroundColor: surface.tile, borderColor: surface.border }]}>
 			<Text style={[styles.answerLabel, { color: surface.textTertiary }]}>La parola era</Text>
-			<Text style={styles.answerWord}>{round.targetWord}</Text>
+			<DefinedWord word={round.targetWord}><Text style={styles.answerWord}>{round.targetWord}</Text></DefinedWord>
 			<Text style={[styles.answerTranslation, { color: surface.text }]}>{round.targetTranslation}</Text>
 			<Text style={[styles.answerDefinition, { color: surface.textTertiary }]}>
 				“{round.targetDefinition}”

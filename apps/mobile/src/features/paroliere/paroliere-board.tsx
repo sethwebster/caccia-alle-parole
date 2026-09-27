@@ -1,3 +1,4 @@
+import { MissedWordsPanel } from './missed-words-panel';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -40,8 +41,9 @@ function formatTime(seconds: number): string {
 	return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export function GameBoard({ state, service }: { state: ParoliereState; service: ParoliereService }) {
+export function GameBoard({ state, service, missedWords }: { state: ParoliereState; service: ParoliereService; missedWords: readonly string[] }) {
 	const { selected, select, dismiss } = useWordMeaning();
+	const surface = useGameSurface();
 	// One target shared by both live surfaces, so the word display and a board
 	// long-press always define the same thing the player is looking at.
 	const defineTarget = paroliereDefineTarget(state.currentWord, state.lastOutcome);
@@ -56,6 +58,7 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				<StatPill label="Punteggio" value={state.score} tone="accent" />
 				<StatPill label="Parole" value={state.foundWords.length} />
 			</View>
+			{state.gameState !== 'finished' ? <>
 			<WordDisplay
 				currentWord={state.currentWord}
 				outcome={state.lastOutcome}
@@ -69,7 +72,17 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				defineTarget={defineTarget}
 				onDefine={select}
 			/>
+			<View style={styles.selectionActions}>
+				<Pressable accessibilityRole="button" disabled={state.currentPath.length === 0} onPress={service.clearSelection} style={[styles.selectionButton, { backgroundColor: surface.tile, opacity: state.currentPath.length === 0 ? 0.4 : 1 }]}>
+					<Text style={[styles.selectionText, { color: surface.text }]}>Cancella</Text>
+				</Pressable>
+				<Pressable accessibilityRole="button" disabled={state.currentPath.length === 0} onPress={service.release} style={[styles.selectionButton, { backgroundColor: surface.tile, opacity: state.currentPath.length === 0 ? 0.4 : 1 }]}>
+					<Text style={[styles.selectionText, { color: GamePalette.primary }]}>Invia parola</Text>
+				</Pressable>
+			</View>
+			</> : null}
 			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} onDefine={select} /> : null}
+			{state.gameState === 'finished' ? <MissedWordsPanel words={missedWords} /> : null}
 			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</Animated.View>
 	);
@@ -106,8 +119,9 @@ function WordDisplay({
 			]}
 		>
 			<Text style={[styles.wordText, { color: active ? GamePalette.primary : surface.textTertiary }]}>
-				{currentWord || 'Seleziona le lettere'}
+				{currentWord || target || 'Seleziona le lettere'}
 			</Text>
+			{target !== null ? <Text style={{ color: surface.textSecondary, fontSize: 11 }}>Tocca per il significato</Text> : null}
 			{outcome ? (
 				<Animated.View
 					pointerEvents="none"
@@ -153,9 +167,11 @@ function LetterGrid({
 
 	const pan = Gesture.Pan()
 		.runOnJS(true)
-		.minDistance(0)
-		.onBegin((event) => {
-			const cell = cellAt(event.x, event.y);
+		.minDistance(6)
+		.onStart((event) => {
+			// Wait for movement before taking over a tile press. Recover the
+			// initial point so the first letter is retained even on a fast drag.
+			const cell = cellAt(event.x - event.translationX, event.y - event.translationY);
 			gestureState.begin(cell !== null);
 			if (cell) service.beginSelection(cell);
 		})
@@ -172,7 +188,7 @@ function LetterGrid({
 
 	const rowCounts = new Map<string, number>();
 	let rowIndex = 0;
-	const renderedRows: { key: string; letters: { key: string; letter: string; selected: boolean }[] }[] = [];
+	const renderedRows: { key: string; letters: { key: string; letter: string; selected: boolean; position: PathCell }[] }[] = [];
 
 	for (const row of grid) {
 		const currentRowIndex = rowIndex;
@@ -191,6 +207,7 @@ function LetterGrid({
 			return {
 				key: `${rowKey}:${letter}:${occurrence}`,
 				letter,
+				position: { row: currentRowIndex, col: currentColIndex },
 				selected: currentPath.some((c) => c.row === currentRowIndex && c.col === currentColIndex),
 			};
 		});
@@ -213,8 +230,10 @@ function LetterGrid({
 								// A tile defines the word being traced, never its own letter:
 								// a single character misses the dictionary for almost every
 								// tile, so that affordance only ever opened "unavailable".
-								accessibilityRole={target === null ? undefined : 'button'}
-								accessibilityLabel={target === null ? cell.letter : `Cosa significa ${target}`}
+								accessibilityRole="button"
+								accessibilityLabel={`${cell.letter}, riga ${cell.position.row + 1}, colonna ${cell.position.col + 1}`}
+								accessibilityHint={target === null ? 'Tocca per selezionare' : `Tieni premuto per il significato di ${target}`}
+								onPress={() => service.tapCell(cell.position)}
 								onLongPress={target === null ? undefined : () => onDefine(target)}
 								style={[
 									styles.tile,

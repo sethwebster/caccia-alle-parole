@@ -6,6 +6,9 @@ import { THEMES } from '@/features/daily/catalog-content';
 import { isValidWord, lookupWord } from './dictionary';
 
 describe('canonical dictionary', () => {
+	it('prefers a headword over a different word’s inflected form', () => {
+		expect(lookupWord('PORTA')?.lemma).toBe('porta');
+	});
 	it('accepts unaccented board spellings of accented Italian words', () => {
 		for (const word of ['TRIBU', 'CITTA', 'CAFFE', 'PERCHE']) expect(isValidWord(word)).toBe(true);
 	});
