@@ -14,6 +14,7 @@ import { findParoliereCellAtPoint } from './paroliere-board-hit-test';
 import { GRID_GAP, styles } from './paroliere-board.styles';
 import {
 	GRID_SIZE,
+	paroliereDefineTarget,
 	wordPoints,
 	type ParoliereService,
 	type ParoliereState,
@@ -40,6 +41,10 @@ function formatTime(seconds: number): string {
 }
 
 export function GameBoard({ state, service }: { state: ParoliereState; service: ParoliereService }) {
+	const { selected, select, dismiss } = useWordMeaning();
+	// One target shared by both live surfaces, so the word display and a board
+	// long-press always define the same thing the player is looking at.
+	const defineTarget = paroliereDefineTarget(state.currentWord, state.lastOutcome);
 	return (
 		<Animated.View entering={FadeIn.duration(300)} style={styles.board}>
 			<View style={styles.stats}>
@@ -51,19 +56,48 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				<StatPill label="Punteggio" value={state.score} tone="accent" />
 				<StatPill label="Parole" value={state.foundWords.length} />
 			</View>
-			<WordDisplay currentWord={state.currentWord} outcome={state.lastOutcome} />
-			<LetterGrid grid={state.grid} currentPath={state.currentPath} service={service} />
-			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} /> : null}
+			<WordDisplay
+				currentWord={state.currentWord}
+				outcome={state.lastOutcome}
+				defineTarget={defineTarget}
+				onDefine={select}
+			/>
+			<LetterGrid
+				grid={state.grid}
+				currentPath={state.currentPath}
+				service={service}
+				defineTarget={defineTarget}
+				onDefine={select}
+			/>
+			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} onDefine={select} /> : null}
+			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</Animated.View>
 	);
 }
 
-function WordDisplay({ currentWord, outcome }: { currentWord: string; outcome: SubmitOutcome | null }) {
+function WordDisplay({
+	currentWord,
+	outcome,
+	defineTarget,
+	onDefine,
+}: {
+	currentWord: string;
+	outcome: SubmitOutcome | null;
+	defineTarget: string | null;
+	onDefine: (word: string) => void;
+}) {
 	const surface = useGameSurface();
 	const pulseStyle = useSubmitPulse(outcome);
+	// Highlight tracks the live trace; definability outlives it, because the
+	// released word stays on screen in the pulse and is still worth looking up.
 	const active = currentWord.length > 0;
+	const target = defineTarget;
 	return (
-		<View
+		<Pressable
+			accessibilityRole={target === null ? undefined : 'button'}
+			accessibilityLabel={target === null ? undefined : `Cosa significa ${target}`}
+			disabled={target === null}
+			onPress={target === null ? undefined : () => onDefine(target)}
 			style={[
 				styles.wordDisplay,
 				active
@@ -88,7 +122,7 @@ function WordDisplay({ currentWord, outcome }: { currentWord: string; outcome: S
 					</Text>
 				</Animated.View>
 			) : null}
-		</View>
+		</Pressable>
 	);
 }
 
@@ -96,12 +130,17 @@ function LetterGrid({
 	grid,
 	currentPath,
 	service,
+	defineTarget,
+	onDefine,
 }: {
 	grid: string[][];
 	currentPath: PathCell[];
 	service: ParoliereService;
+	defineTarget: string | null;
+	onDefine: (word: string) => void;
 }) {
 	const surface = useGameSurface();
+	const target = defineTarget;
 	const [wrapSize, setWrapSize] = useState({ width: 0, height: 0 });
 	const [gestureState] = useState(() => new DragGestureState());
 	// True square sized to the space actually available, so rendered tiles and
@@ -169,8 +208,14 @@ function LetterGrid({
 						{renderedRows.map((row) => (
 					<View key={row.key} style={styles.gridRow}>
 						{row.letters.map((cell) => (
-							<View
+							<Pressable
 								key={cell.key}
+								// A tile defines the word being traced, never its own letter:
+								// a single character misses the dictionary for almost every
+								// tile, so that affordance only ever opened "unavailable".
+								accessibilityRole={target === null ? undefined : 'button'}
+								accessibilityLabel={target === null ? cell.letter : `Cosa significa ${target}`}
+								onLongPress={target === null ? undefined : () => onDefine(target)}
 								style={[
 									styles.tile,
 									cell.selected
@@ -178,10 +223,8 @@ function LetterGrid({
 										: { backgroundColor: surface.card, borderColor: surface.border },
 								]}
 							>
-								<Text style={[styles.tileText, { color: cell.selected ? '#fff' : surface.text }]}>
-									{cell.letter}
-								</Text>
-							</View>
+								<Text style={[styles.tileText, { color: cell.selected ? '#fff' : surface.text }]}>{cell.letter}</Text>
+							</Pressable>
 								))}
 							</View>
 						))}
@@ -192,9 +235,8 @@ function LetterGrid({
 	);
 }
 
-function FoundWords({ words }: { words: string[] }) {
+function FoundWords({ words, onDefine }: { words: string[]; onDefine: (word: string) => void }) {
 	const surface = useGameSurface();
-	const { selected, select, dismiss } = useWordMeaning();
 	const sorted = [...words].sort();
 	return (
 		<View style={[styles.foundPanel, { backgroundColor: surface.card, borderColor: surface.border }]}>
@@ -205,7 +247,7 @@ function FoundWords({ words }: { words: string[] }) {
 						<Pressable
 							accessibilityRole="button"
 							accessibilityLabel={`Cosa significa ${word}`}
-							onPress={() => select(word)}
+							onPress={() => onDefine(word)}
 							style={styles.chip}
 						>
 							<Text style={styles.chipText}>{word}</Text>
@@ -213,7 +255,6 @@ function FoundWords({ words }: { words: string[] }) {
 					</Animated.View>
 				))}
 			</ScrollView>
-			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</View>
 	);
 }

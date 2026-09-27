@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { lookupWord, type WordMeaning } from '@/lib/dictionary';
 
-export type SelectedWordMeaning = WordMeaning & { readonly found: string };
+export type SelectedWordMeaning = { readonly found: string; readonly meaning: WordMeaning | null };
 
 /**
  * Tap-to-define, shared by every game that shows words back to the player.
@@ -16,10 +16,7 @@ export function useWordMeaning(): {
 	const [selected, setSelected] = useState<SelectedWordMeaning | null>(null);
 
 	const select = useCallback((word: string) => {
-		const meaning = lookupWord(word);
-		// Every playable word comes from the dictionary, so a miss means the caller
-		// passed something the player never traced — nothing worth opening a sheet for.
-		if (meaning !== null) setSelected({ ...meaning, found: word });
+		setSelected({ found: word, meaning: lookupWord(word) });
 	}, []);
 
 	const dismiss = useCallback(() => setSelected(null), []);

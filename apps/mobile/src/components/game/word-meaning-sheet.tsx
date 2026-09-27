@@ -27,8 +27,9 @@ const POS_LABELS: Record<string, string> = {
 export function WordMeaningSheet({ meaning, onDismiss }: { readonly meaning: SelectedWordMeaning | null; readonly onDismiss: () => void }) {
 	const surface = useGameSurface();
 	if (meaning === null) return null;
+	const definition = meaning.meaning;
 	// An inflected form is worth naming: PARLIAMO teaches more as a form of "parlare".
-	const isInflection = meaning.found.toUpperCase() !== meaning.lemma.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+	const isInflection = definition !== null && meaning.found.toUpperCase() !== definition.lemma.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
 
 	return (
 		<Modal visible transparent animationType="fade" onRequestClose={onDismiss}>
@@ -36,23 +37,19 @@ export function WordMeaningSheet({ meaning, onDismiss }: { readonly meaning: Sel
 				<Animated.View entering={cardIn} style={[styles.card, { backgroundColor: surface.card, borderColor: surface.border }]}>
 					<Pressable onPress={(event) => event.stopPropagation()}>
 						<Text style={[styles.found, { color: surface.text }]}>{meaning.found}</Text>
-						{isInflection ? (
-							<Text style={[styles.lemma, { color: surface.textTertiary }]}>
-								da <Text style={styles.lemmaWord}>{meaning.lemma}</Text>
-							</Text>
-						) : null}
-						{meaning.pos.length > 0 ? <Text style={styles.pos}>{POS_LABELS[meaning.pos] ?? meaning.pos}</Text> : null}
-
-						<Animated.View entering={FadeIn.delay(60)}>
-							<Text style={[styles.sectionLabel, { color: surface.textTertiary }]}>Inglese</Text>
-							<Text style={[styles.gloss, { color: surface.text }]}>{meaning.english}</Text>
-							{meaning.italian.length > 0 ? (
-								<>
-									<Text style={[styles.sectionLabel, { color: surface.textTertiary }]}>Italiano</Text>
-									<Text style={[styles.gloss, { color: surface.text }]}>{meaning.italian}</Text>
-								</>
-							) : null}
-						</Animated.View>
+						{definition === null ? (
+							<Text style={[styles.gloss, { color: surface.textTertiary }]}>Definizione non disponibile.</Text>
+						) : (
+							<>
+								{isInflection ? <Text style={[styles.lemma, { color: surface.textTertiary }]}>da <Text style={styles.lemmaWord}>{definition.lemma}</Text></Text> : null}
+								{definition.pos.length > 0 ? <Text style={styles.pos}>{POS_LABELS[definition.pos] ?? definition.pos}</Text> : null}
+								<Animated.View entering={FadeIn.delay(60)}>
+									<Text style={[styles.sectionLabel, { color: surface.textTertiary }]}>Inglese</Text>
+									<Text style={[styles.gloss, { color: surface.text }]}>{definition.english}</Text>
+									{definition.italian.length > 0 ? <><Text style={[styles.sectionLabel, { color: surface.textTertiary }]}>Italiano</Text><Text style={[styles.gloss, { color: surface.text }]}>{definition.italian}</Text></> : null}
+								</Animated.View>
+							</>
+						)}
 					</Pressable>
 				</Animated.View>
 			</Pressable>
