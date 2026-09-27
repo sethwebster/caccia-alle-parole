@@ -181,6 +181,19 @@ export class ParoliereService {
 		});
 	};
 
+	/** Tap input keeps a path available for inspection until explicitly submitted. */
+	tapCell = (cell: PathCell): void => {
+		if (this.state.currentPath.length === 0) this.beginSelection(cell);
+		else {
+			const last = this.state.currentPath[this.state.currentPath.length - 1];
+			if (Math.abs(last.row - cell.row) <= 1 && Math.abs(last.col - cell.col) <= 1) this.extendSelection(cell);
+		}
+	};
+
+	clearSelection = (): void => {
+		this.set({ ...this.state, currentPath: [], currentWord: '', lastOutcome: null });
+	};
+
 	extendSelection = (cell: PathCell): void => {
 		const s = this.state;
 		if (s.gameState !== 'playing' || s.currentPath.length === 0) return;

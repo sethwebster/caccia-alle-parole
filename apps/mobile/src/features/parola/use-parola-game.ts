@@ -76,18 +76,14 @@ function useHydratedParola(
 	setStreak: (streak: number) => void,
 	setHydrated: (hydrated: boolean) => void,
 ) {
-	const mode = routeSession.playMode.kind;
-	const puzzle = routeSession.challenge?.puzzle;
-	const challengeId = routeSession.challenge?.context.challengeId;
-	const attemptId = routeSession.challenge?.context.attemptId;
 	useEffect(() => {
 		let cancelled = false;
 		(async () => {
-				if (mode === 'challenge') {
-					if (puzzle === undefined || challengeId === undefined) return;
+				if (routeSession.playMode.kind === 'challenge') {
+					if (routeSession.challenge === undefined) return;
 					const dailyStats = await loadDailyStatsSummary();
 					if (cancelled) return;
-					setState(stateFromPuzzle(challengeId, puzzle));
+					setState(stateFromPuzzle(routeSession.challenge.context.challengeId, routeSession.challenge.puzzle));
 					setStreak(dailyStats.currentStreak);
 					setHydrated(true);
 					return;
@@ -109,7 +105,7 @@ function useHydratedParola(
 		return () => {
 			cancelled = true;
 		};
-	}, [mode, puzzle, challengeId, attemptId, setState, setStreak, setHydrated]);
+	}, [routeSession, setState, setStreak, setHydrated]);
 }
 
 /**
