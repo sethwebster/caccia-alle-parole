@@ -76,14 +76,18 @@ function useHydratedParola(
 	setStreak: (streak: number) => void,
 	setHydrated: (hydrated: boolean) => void,
 ) {
+	const mode = routeSession.playMode.kind;
+	const puzzle = routeSession.challenge?.puzzle;
+	const challengeId = routeSession.challenge?.context.challengeId;
+	const attemptId = routeSession.challenge?.context.attemptId;
 	useEffect(() => {
 		let cancelled = false;
 		(async () => {
-				if (routeSession.playMode.kind === 'challenge') {
-					if (routeSession.challenge === undefined) return;
+				if (mode === 'challenge') {
+					if (puzzle === undefined || challengeId === undefined) return;
 					const dailyStats = await loadDailyStatsSummary();
 					if (cancelled) return;
-					setState(stateFromPuzzle(routeSession.challenge.context.challengeId, routeSession.challenge.puzzle));
+					setState(stateFromPuzzle(challengeId, puzzle));
 					setStreak(dailyStats.currentStreak);
 					setHydrated(true);
 					return;
@@ -105,7 +109,7 @@ function useHydratedParola(
 		return () => {
 			cancelled = true;
 		};
-	}, [routeSession, setState, setStreak, setHydrated]);
+	}, [mode, puzzle, challengeId, attemptId, setState, setStreak, setHydrated]);
 }
 
 /**
@@ -141,6 +145,8 @@ function useWebKeyboard(onKey: (key: string) => void) {
 				onKey('ENTER');
 			} else if (e.key === 'Backspace') {
 				onKey('⌫');
+			} else if (e.key === '*') {
+				onKey('*');
 			} else if (/^[a-zA-Z]$/.test(e.key) && !/^[wWxXyYjJkK]$/.test(e.key)) {
 				onKey(e.key.toUpperCase());
 			}

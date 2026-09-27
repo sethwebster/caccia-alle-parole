@@ -1,3 +1,5 @@
+import { findMissedWords } from './missed-words';
+import { MissedWordsPanel } from './missed-words-panel';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -46,6 +48,7 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 	useScreenInteractive();
 	const { modalVisible, dismissModal, burst } = useResultReveal(state);
 	const isChallenge = routeSession.playMode.kind === 'challenge';
+	const missedWords = useMemo(() => state.gameState === 'finished' ? findMissedWords(state.grid, state.foundWords) : [], [state.gameState, state.grid, state.foundWords]);
 
 	return (
 		<SafeAreaView style={[styles.safe, { backgroundColor: surface.background }]} edges={['top', 'bottom']}>
@@ -62,7 +65,7 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 					) : state.gameState === 'setup' ? (
 						<SetupCard onStart={service.startGame} />
 					) : (
-					<GameBoard state={state} service={service} />
+					<GameBoard state={state} service={service} missedWords={missedWords} />
 				)}
 			</View>
 			<Confetti burst={burst} />
@@ -97,6 +100,7 @@ export function ParoliereScreen({ routeSession }: { readonly routeSession: Daily
 					<ResultStat label="Punteggio" value={state.score} accent />
 					<ResultStat label="Parole" value={state.foundWords.length} />
 				</View>
+				<MissedWordsPanel words={missedWords} />
 			</ResultModal>
 		</SafeAreaView>
 	);

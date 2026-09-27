@@ -1,3 +1,4 @@
+import { MissedWordsPanel } from './missed-words-panel';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -40,7 +41,7 @@ function formatTime(seconds: number): string {
 	return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export function GameBoard({ state, service }: { state: ParoliereState; service: ParoliereService }) {
+export function GameBoard({ state, service, missedWords }: { state: ParoliereState; service: ParoliereService; missedWords: readonly string[] }) {
 	const { selected, select, dismiss } = useWordMeaning();
 	// One target shared by both live surfaces, so the word display and a board
 	// long-press always define the same thing the player is looking at.
@@ -56,6 +57,7 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				<StatPill label="Punteggio" value={state.score} tone="accent" />
 				<StatPill label="Parole" value={state.foundWords.length} />
 			</View>
+			{state.gameState !== 'finished' ? <>
 			<WordDisplay
 				currentWord={state.currentWord}
 				outcome={state.lastOutcome}
@@ -69,7 +71,9 @@ export function GameBoard({ state, service }: { state: ParoliereState; service: 
 				defineTarget={defineTarget}
 				onDefine={select}
 			/>
+			</> : null}
 			{state.foundWords.length > 0 ? <FoundWords words={state.foundWords} onDefine={select} /> : null}
+			{state.gameState === 'finished' ? <MissedWordsPanel words={missedWords} /> : null}
 			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</Animated.View>
 	);

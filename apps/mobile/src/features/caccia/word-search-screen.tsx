@@ -1,3 +1,5 @@
+import { WordMeaningSheet } from '@/components/game/word-meaning-sheet';
+import { useWordMeaning } from '@/hooks/use-word-meaning';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -295,6 +297,7 @@ function GameBoard({
 
 function WordChips({ words, foundWords }: { words: PlacedWord[]; foundWords: Set<string> }) {
 	const surface = useGameSurface();
+	const { selected, select, dismiss } = useWordMeaning();
 
 	return (
 		<View style={[styles.panel, { backgroundColor: surface.card, borderColor: surface.border }]}>
@@ -308,7 +311,10 @@ function WordChips({ words, foundWords }: { words: PlacedWord[]; foundWords: Set
 				{words.map((word) => {
 					const found = foundWords.has(word.word);
 					return (
-						<View
+						<Pressable
+							accessibilityRole="button"
+							accessibilityLabel={`Cosa significa ${word.word}`}
+							onPress={() => select(word.word)}
 							key={word.word}
 							style={[
 								styles.chip,
@@ -337,10 +343,11 @@ function WordChips({ words, foundWords }: { words: PlacedWord[]; foundWords: Set
 							>
 								{word.translation}
 							</Text>
-						</View>
+						</Pressable>
 					);
 				})}
 			</ScrollView>
+			<WordMeaningSheet meaning={selected} onDismiss={dismiss} />
 		</View>
 	);
 }

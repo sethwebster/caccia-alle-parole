@@ -43,6 +43,13 @@ function index(): Map<string, number> {
 		const map = new Map<string, number>();
 		const lines = FORM_BLOB.split('\n');
 		for (let i = 0; i < lines.length; i += 1) decodeForms(lines[i], i, map);
+		// A headword wins over another lemma's inflection (PORTA is also a
+		// form of "porto"). Keep acceptance unchanged; only choose its meaning.
+		lemmaLines ??= LEMMA_BLOB.split('\n');
+		for (let i = 0; i < lemmaLines.length; i += 1) {
+			const headword = normalizeWord(lemmaLines[i].split('|', 1)[0]);
+			if (map.has(headword)) map.set(headword, i);
+		}
 		formIndex = map;
 	}
 	return formIndex;
@@ -50,6 +57,11 @@ function index(): Map<string, number> {
 
 export function isValidWord(word: string): boolean {
 	return index().has(normalizeWord(word));
+}
+
+/** The same normalized forms used for scoring, without copying the dictionary. */
+export function dictionaryWords(): Iterable<string> {
+	return index().keys();
 }
 
 /** The meaning behind a found word — the lemma, so PARLIAMO explains itself through "parlare". */

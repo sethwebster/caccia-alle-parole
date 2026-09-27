@@ -1,4 +1,4 @@
-import { Modal, Pressable, StyleSheet, Text } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import Animated, { Easing, FadeIn, Keyframe } from 'react-native-reanimated';
 
 import { GameFonts, GamePalette, GameRadius, GameShadow } from '@/constants/game-theme';
@@ -35,6 +35,7 @@ export function WordMeaningSheet({ meaning, onDismiss }: { readonly meaning: Sel
 		<Modal visible transparent animationType="fade" onRequestClose={onDismiss}>
 			<Pressable style={styles.backdrop} onPress={onDismiss}>
 				<Animated.View entering={cardIn} style={[styles.card, { backgroundColor: surface.card, borderColor: surface.border }]}>
+					<ScrollView>
 					<Pressable onPress={(event) => event.stopPropagation()}>
 						<Text style={[styles.found, { color: surface.text }]}>{meaning.found}</Text>
 						{definition === null ? (
@@ -51,6 +52,10 @@ export function WordMeaningSheet({ meaning, onDismiss }: { readonly meaning: Sel
 							</>
 						)}
 					</Pressable>
+					</ScrollView>
+					<Pressable accessibilityRole="button" accessibilityLabel="Chiudi definizione" onPress={onDismiss} style={{ paddingVertical: 14, alignItems: 'center' }}>
+						<Text style={{ color: GamePalette.primary, fontFamily: GameFonts.body700 }}>Chiudi</Text>
+					</Pressable>
 				</Animated.View>
 			</Pressable>
 		</Modal>
@@ -60,6 +65,7 @@ export function WordMeaningSheet({ meaning, onDismiss }: { readonly meaning: Sel
 const styles = StyleSheet.create({
 	backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
 	card: {
+		maxHeight: '80%',
 		borderTopLeftRadius: GameRadius.lg,
 		borderTopRightRadius: GameRadius.lg,
 		borderWidth: 1,
