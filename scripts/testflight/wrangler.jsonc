@@ -1,0 +1,11 @@
+{
+  "name": "caccia-testflight-webhook",
+  "account_id": "76a59d239619ed344d267008c790ba18",
+  "main": "receiver.mjs",
+  "compatibility_date": "2026-09-27",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "traces": { "enabled": true }
+  }
+}

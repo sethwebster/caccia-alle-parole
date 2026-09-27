@@ -2,7 +2,8 @@ name: TestFlight crash fixes
 
 on:
   schedule:
-    - cron: '17,47 * * * *'
+    # Apple webhooks dispatch immediately; reconcile missed/delayed reports daily.
+    - cron: '17 9 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
