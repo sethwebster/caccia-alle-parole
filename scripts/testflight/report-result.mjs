@@ -1,0 +1,11 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+const issue = process.env.ISSUE;
+if (!/^\d+$/.test(issue ?? '')) throw new Error('Invalid issue number');
+let body;
+if (process.env.DOWNLOAD !== 'success') body = 'Automatic investigation failed or did not pass validation. Inspect this workflow run before retrying; no fix was published.';
+else if (process.env.PR_URL) body = `Draft fix: ${process.env.PR_URL}\n\nRelease simulator/device verification is required before merge or closing this crash.`;
+else body = (await readFile('.crash-fix/result.md', 'utf8')).slice(0,50000);
+body += `\n\n[Workflow run](https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}). To retry after adding evidence, dispatch this workflow with retry_issue=${issue}.`;
+await writeFile('/tmp/testflight-outcome.md', body);
+execFileSync('gh', ['issue','comment',issue,'--body-file','/tmp/testflight-outcome.md'], { stdio: 'inherit' });
