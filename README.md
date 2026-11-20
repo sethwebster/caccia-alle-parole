@@ -56,6 +56,7 @@ bun run build:web
 - [Mobile app](docs/apps/mobile.md)
 - [Design system](docs/cds/README.md)
 - [Migration plans](docs/plans/migration/README.md)
+- [TestFlight crash automation](scripts/testflight/README.md)
 
 ## App Ownership
 
